@@ -57,28 +57,29 @@ The first file to create when defining features is a feature file.  The system u
 1. Add the following content to myFeature.html:  
 
 ```
-Feature: Hello World  
-  In order to the system is running  
-  As a public user  
-  I should be able to view a hello world page from the application     
+    Feature: Hello World  
+      In order to the system is running  
+      As a public user  
+      I should be able to view a hello world page from the application     
 ```
 
 You have now created a simple, but empty, feature file.  See Defining a Simple Scenario for creating the first scenario in the file.  
 
 ###Define a Simple Scenario
 
-1. Open the helloWorld.html file you created in the previous section. 
+1. Open the helloWorld.html file you created in the previous section.   
+1. Update the file to have the following:  
+```
+    Feature: Hello World  
+      In order to the system is running  
+      As a public user  
+      I should be able to view a hello world page from the application  
 
-1. Update the file to have the following: 
-    Feature: Hello World
-      In order to the system is running
-      As a public user
-      I should be able to view a hello world page from the application
-
-    Scenario: View Hello World
-      Given I have a browser open
-      When I navigate to the Hello World Page
-      Then I should see a message of Hello World! 
+    Scenario: View Hello World  
+      Given I have a browser open  
+      When I navigate to the Hello World Page  
+      Then I should see a message of Hello World!   
+```
 
 You now have a complete feature file ready to be automated.
 
@@ -88,6 +89,84 @@ In order for the Gherkin Runner to access your feature and load it, you will nee
 A feature set file is a javascript file that defines the features that the Gherkin Runner should load.
 It can also include references to other feature set files.  This allows your to organize your features into 
 a hierarchy.
+  
+If no feature set file is specified when the Gherkin Runner starts it will look for a generic featureSet.js 
+under a features folder.  Path: <root of site>/features/featureSet.js. 
+
+To create this generic feature set file:  
+
+1. Create a file featureSet.js under the public folder.  
+1. Add the following code the the file:  
+```
+    define(function () {  
+      return {  
+        name: "Hello World Features",  //This is the name that will display in the Gherkin Runner.  
+        featureSetPaths: [  
+        ],  
+        featurePaths: [
+          "features/helloWorld" //This is the path to the file without the .html extension.
+        ]  
+      };  
+    });  
+```
+
+###Create a Library
+
+When the Gherkin Runner pareses a feature file it loads library files to match the steps to javascript methods.
+ A library file is an AMD module that returns an object with methods that the Gherkin Runner will math to the 
+ steps in the feature files it parses.  To keep the loading process simple, the Gherkin Runner assumes that each
+ folder in the hierarchy between a feature file and the root 'features' folder has a library.js file that it will load.
+ When matching steps to methods it will start first with the library file in the feature file's folder and then walk
+ up from there till it reaches the root library under the features folder.   
+
+For example, given a feature:  
+
+  * features/folder1/folder1_1/feature.html  
+
+The gherkin runner will load the following libraries:  
+
+  * features/folder1/folder1_1/library.js  
+  * features/folder1/library.js  
+  * features/library.js  
+
+If it doesn't find any of these libraries it will error out silently.  This is a problem with the way requiejs handles 404's.  
+
+If feature has steps A, B, C, and D and the libraries contained the following methods:  
+
+  * features/folder1/folder1_1/library.js - A  
+  * features/folder1/library.js - A, B  
+  * features/library.js - A, B, C  
+
+Each step would match to the following methods:  
+
+  * A = features/folder1/folder1_1/library.js - A  
+  * B = features/folder1/library.js - B  
+  * C = features/library.js - C  
+  * D = not found and would show as missing a step definition.  
+
+Before we can run and load our feature we need to add an empty library file.  The steps will not have step definitions
+ but the gherkin runner will load the feature so you can browse it in the gherkin runner.
+
+1. You also need to add a library.js file in the root of the features folder as well.  Right now the application
+will silently error our if it doesn't find a library file in the root features folder and every folder under till you
+get to the feature file. So add a library.js file with the following content:  
+```
+    define([], function () {
+      var _this = {};
+      return _this;
+    });
+```
+
+###Run the Feature before the Step Definition  
+
+After you have created the feature you can run the Gherkin Runner to validate your gherkin syntax.  
+  
+1. Start the application 'node index.js'  
+1. Navigate to the gherkinRunner in a browser:  http://machinename:3000/gherkinRunner.html  
+1. You should see your feature listed  
+
+![](images/HelloWorldWalkerNoDef.PNG)
+
 ###Create a Step Definition
 ###Run the Feature
 ###Define a Step with an Inline Argument

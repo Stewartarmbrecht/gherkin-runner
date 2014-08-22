@@ -1,11 +1,8 @@
 ﻿define(function () {
-    return {
-        name: "Features",
-        featureSetPaths: [
-            "Features/API/featureSet",
-            "Features/UI/featureSet",
-		],
-        featurePaths: [
-        ]
-    };
+  return {
+    name: "Hello World Features",  //This is the name that will display in the Gherkin Runner.
+    featurePaths: [
+      "features/helloWorld" //This is the path to the file without the .html extension.
+    ]
+  };
 });
