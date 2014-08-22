@@ -52,18 +52,18 @@ The list below is a dump of all the details of how the gherkinRunner works:
 
 The first file to create when defining features is a feature file.  The system uses html files to store feature definitions.
 
-1. Create a features folder in the root of the application. 
+1. Create a features folder in the root of the application.   
+1. Add a helloWorld.html file.  
+1. Add the following content to myFeature.html:  
 
-1. Add a helloWorld.html file.
- 
-1. Add the following content to myFeature.html:
- 
-    Feature: Hello World
-      In order to the system is running
-      As a public user
-      I should be able to view a hello world page from the application 
+```
+Feature: Hello World  
+  In order to the system is running  
+  As a public user  
+  I should be able to view a hello world page from the application     
+```
 
-You have now created a simple, but empty, feature file.  See Defining a Simple Scenario for creating the first scenario in the file.
+You have now created a simple, but empty, feature file.  See Defining a Simple Scenario for creating the first scenario in the file.  
 
 ###Define a Simple Scenario
 
