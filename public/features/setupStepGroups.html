@@ -1,0 +1,183 @@
+﻿<div id="the patient named X has an appointment called X with provider X with properties">
+Step Group: /the patient named ".*" has an appointment called ".*" with provider ".*" with properties/
+    And query new "AppointmentsOrg" manager for single or no entity "{1}_AppointmentRecurrence" with "AppointmentRecurrences?$filter=RecurrenceEnglish eq '{1}_AppointmentRecurrence'&$top=1"
+    And create or update entity "{1}_AppointmentRecurrence" of type "AppointmentRecurrence" with manager "AppointmentsOrg"
+        | Property              | Value                           | DataType |
+        | dayOfMonth            | 0                               | Number   | 
+        | dayOfWeekMask         | 0                               | Number   | 
+        | duration              | 15                              | Number   | 
+        | startTime             | {{eval(context.step.stepOwner.tableArg[0].Value.substring(2,context.step.stepOwner.tableArg[0].Value.length -2))}} | Date     |
+        | endTime               | {{eval(context.step.stepOwner.tableArg[1].Value.substring(2,context.step.stepOwner.tableArg[1].Value.length -2))}} | Date     |
+        | startTimeTZId         | 319                             | Number   |
+        | endTimeTZId           | 319                             | Number   |
+        | instance              | 0                               | Number   |
+        | interval              | 0                               | Number   |
+        | monthOfYear           | 0                               | Number   |
+        | occurrences           | 1                               | Number   |
+        | patternStartDate      | {{eval(context.step.stepOwner.tableArg[0].Value.substring(2,context.step.stepOwner.tableArg[0].Value.length -2))}} | Date     |
+        | patternEndDate        | {{eval(context.step.stepOwner.tableArg[1].Value.substring(2,context.step.stepOwner.tableArg[1].Value.length -2))}} | Date     |
+        | patternStartDateTZId  | 319                             | Number   |
+        | patternEndDateTZId    | 319                             | Number   |
+        | recurrenceTypeId      | -1                              | Number   |
+        | endTypeId             | 1                               | Number   |
+        | recurrenceEnglish     | {0}                             | String   |
+    And save changes for manager "AppointmentsOrg"
+    And query new "AppointmentsOrg" manager for single or no entity "{1}" with "Appointments?$filter=Subject eq '{1}'&$top=1"
+    And create or update entity "{1}" of type "Appointment" with manager "AppointmentsOrg"
+        | Property           | Value                                                | DataType |
+        | MERGE_PARENT_TABLE |                                                      |          |
+        | patientAppointment | True                                                 | Boolean  | 
+        | recurrenceId       | {{state.objects.{4}_AppointmentRecurrence.id()}}     | String   |
+        | statusId           | 4                                                    | Number   |
+    And save changes for manager "AppointmentsOrg"
+    And query new "AppointmentsOrg" manager for single or no entity "{0}_{1}_AppointmentMember" with "AppointmentMembers?$filter=(TopicRecordId eq {{context.state.objects.{1}.id()}}) and (MemberTypeId eq 1) and (MemberRecordId eq {{context.state.objects.{0}_Person.id()}})&$top=1"
+    And create or update entity "{0}_{1}_AppointmentMember" of type "AppointmentMember" with manager "AppointmentsOrg"
+        | Property       | Value                                              | DataType |
+        | topicId        | 41                                                 | Number   | 
+        | topicRecordId  | {{context.state.objects.{4}.id()}}                 | Number   | 
+        | memberTypeId   | 1                                                  | Number   | 
+        | memberRecordId | {{context.state.objects.{3}_Person.id()}}          | Number   | 
+    And query "AppointmentsOrg" manager for single or no entity "{2}_{1}_AppointmentMember" with "AppointmentMembers?$filter=(TopicRecordId eq {{context.state.objects.{1}.id()}}) and (MemberTypeId eq 3) and (MemberRecordId eq {{context.state.objects.{2}_Person.id()}})&$top=1"
+    And create or update entity "{2}_{1}_AppointmentMember" of type "AppointmentMember" with manager "AppointmentsOrg"
+        | Property       | Value                                              | DataType |
+        | topicId        | 41                                                 | Number   | 
+        | topicRecordId  | {{context.state.objects.{4}.id()}}                 | Number   | 
+        | memberTypeId   | 3                                                  | Number   | 
+        | memberRecordId | {{context.state.objects.{5}_Person.id()}}          | Number   | 
+    And save changes for manager "AppointmentsOrg"
+    And query new "AppointmentsOrg" manager for single or no entity "{1}_AppointmentFlow" with "AppointmentFlows?$filter=(AppointmentId eq {{context.state.objects.{1}.id()}}) and (FlowTypeId eq 4)&$top=1"
+    And create or update entity "{1}_AppointmentFlow" of type "AppointmentFlow" with manager "AppointmentsOrg"
+        | Property       | Value                                                                                          | DataType |
+        | flowTypeId     | 4                                                                                              | Number   | 
+        | appointmentId  | {{context.state.objects.{4}.id()}}                                                             | Number   | 
+        | flowDate       | {{new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 9, 0, 0, 0)}}| Date     | 
+    And save changes for manager "AppointmentsOrg"
+</div>
+<div id="the patient named X has an order called X with provider X with properties">
+Step Group: /the patient named ".*" has an order called ".*" with provider ".*" with properties/
+    And query new "OrdersOrg" manager for single or no entity "{1}" with "Orders?$filter=Name eq '{1}'&$top=1"
+    And create or update entity "{1}" of type "Order" with manager "OrdersOrg"
+        | Property              | Value                                     | DataType |
+        | patientPersonId       | {{context.state.objects.{3}_Person.id()}} | Number   | 
+        | name                  | {0}                                       | String   | 
+    And save changes for manager "OrdersOrg"
+</div>
+<div id="the practice has a staff member X with provider set to X">
+Step Group: /the practice has a staff member ".*" with provider set to ".*"/
+    And query new "SecurityAdmin" manager for single or no entity "{0}_User" with "Users?$filter=Email eq '{0}@leonardoMD.com'&$top=1"
+    And create or update entity "{0}_User" of type "User" with manager "SecurityAdmin"
+        | Property     | Value              | DataType |
+        | email        | {3}@leonardomd.com | String   | 
+        | password     | password1!         | String   | 
+        | firstName    | {3}                | String   | 
+        | lastName     | {3}                | String   | 
+    And save changes for manager "SecurityAdmin"
+    And query new "PeopleOrg" manager for single or no entity "{0}_Person" with "People?$filter=LastName eq '{0}'&$top=1"
+    And create or update entity "{0}_Person" of type "Person" with manager "PeopleOrg"
+        | Property     | Value                                   | DataType |
+        | userId       | {{context.state.objects.{3}_User.id()}} | Number   | 
+        | firstName    | {3}                                     | String   | 
+        | lastName     | {3}                                     | String   | 
+    And save changes for manager "PeopleOrg"
+    And query "PeopleOrg" manager for single or no entity "{0}" with "StaffMembers?$filter=PersonId eq {{context.state.objects.{0}_Person.id()}}&$top=1"
+    And create or update entity "{0}" of type "StaffMember" with manager "PeopleOrg"
+        | Property     | Value                                     | DataType |
+        | personId     | {{context.state.objects.{3}_Person.id()}} | Number   | 
+        | provider     | {4}                                       | Boolean  | 
+        | inactive     | true                                      | Boolean  | 
+    And save changes for manager "PeopleOrg"
+    And query new "SecurityOrg" manager for single or no entity "{0}_Requestor" with "Requestors?$filter=UserId eq {{context.state.objects.{0}_User.id()}}&$top=1"
+    And create or update entity "{0}_Requestor" of type "Requestor" with manager "SecurityOrg"
+        | Property   | Value                                   | DataType |
+        | userId     | {{context.state.objects.{3}_User.id()}} | Number   | 
+    And save changes for manager "SecurityOrg"
+</div>
+<div id="the practice has the following staff members">
+Step Group Outline: /the practice has the following staff members/
+    And query new "SecurityAdmin" manager for single or no entity "[[Name]]_User" with "Users?$filter=Email eq '[[Name]]@leonardoMD.com'&$top=1"
+    And create or update entity "[[Name]]_User" of type "User" with manager "SecurityAdmin"
+        | Property     | Value                   | DataType |
+        | email        | [[Name]]@leonardomd.com | String   | 
+        | password     | password1!              | String   | 
+        | firstName    | [[Name]]                | String   | 
+        | lastName     | [[Name]]                | String   | 
+    And save changes for manager "SecurityAdmin"
+    And query new "PeopleOrg" manager for single or no entity "[[Name]]_Person" with "People?$filter=LastName eq '[[Name]]'&$top=1"
+    And create or update entity "[[Name]]_Person" of type "Person" with manager "PeopleOrg"
+        | Property     | Value                                        | DataType |
+        | userId       | {{context.state.objects.[[Name]]_User.id()}} | Number   | 
+        | firstName    | [[Name]]                                     | String   | 
+        | lastName     | [[Name]]                                     | String   | 
+    And save changes for manager "PeopleOrg"
+    And query "PeopleOrg" manager for single or no entity "[[Name]]" with "StaffMembers?$filter=PersonId eq {{context.state.objects.[[Name]]_Person.id()}}&$top=1"
+    And create or update entity "[[Name]]" of type "StaffMember" with manager "PeopleOrg"
+        | Property     | Value                                          | DataType |
+        | personId     | {{context.state.objects.[[Name]]_Person.id()}} | Number   | 
+        | provider     | [[IsProvider]]                                 | Boolean  | 
+        | inactive     | true                                           | Boolean  | 
+    And save changes for manager "PeopleOrg"
+    And query new "SecurityOrg" manager for single or no entity "[[Name]]_Requestor" with "Requestors?$filter=UserId eq {{context.state.objects.[[Name]]_User.id()}}&$top=1"
+    And create or update entity "[[Name]]_Requestor" of type "Requestor" with manager "SecurityOrg"
+        | Property   | Value                                        | DataType |
+        | userId     | {{context.state.objects.[[Name]]_User.id()}} | Number   | 
+    And save changes for manager "SecurityOrg"
+</div>
+<div id="the provider named X has a patient named X">
+Step Group: /the provider named ".*" has a patient named ".*"/
+    And query new "PeopleOrg" manager for single or no entity "{1}_Person" with "People?$filter=LastName eq '{1}'&$top=1"
+    And create or update entity "{1}_Person" of type "Person" with manager "PeopleOrg"
+        | Property     | Value                         | DataType |
+        | firstName    | {4}                           | String   | 
+        | lastName     | {4}                           | String   | 
+    And save changes for manager "PeopleOrg"
+    And query new "PatientsOrg" manager for single or no entity "{1}" with "Patients?$filter=Id eq {{context.state.objects.{1}_Person.id()}}&$top=1"
+    And create or update entity "{1}" of type "Patient" with manager "PatientsOrg"
+        | Property          | Value                                            | DataType |
+        | id                | {{context.state.objects.{4}_Person.id()}}        | Number   | 
+        | inactive          | false                                            | Boolean  | 
+        | patientNumber     | {{context.state.objects.{4}_Person.id() + 9000}} | Number   | 
+        | providerId        | {{context.state.objects.{3}_Person.id()}}        | Number   | 
+    And save changes for manager "PatientsOrg"
+</div>
+<div id="the staff member X has permission X with level X">
+Step Group: /the staff member ".*" has permission ".*" with level ".*"/
+    And query new "TopicsData" manager for single or no entity "{1}" with "Topics?$filter=FriendlyName eq '{1}'&$top=1"
+    And query new "SecurityData" manager for single or no entity "TopicPermissionType_{1}_{2}" with "TopicPermissionTypes?$filter=(TopicId eq {{context.state.objects.{1}.id()}}) and (SecurityLevel eq {2})&$top=1"
+    And query new "SecurityOrg" manager for single or no entity "TopicPermissionRequestor_{0}_{1}_{2}" with "TopicPermissionRequestors?$filter=(RequestorId eq {{context.state.objects.{0}_Requestor.id()}}) and (TopicId eq {{context.state.objects.{1}.id()}})&$top=1"
+    And create or update entity "TopicPermissionRequestor_{0}_{1}_{2}" of type "TopicPermissionRequestor" with manager "SecurityOrg"
+        | Property              | Value                                            | DataType |
+        | requestorId           | {{context.state.objects.{3}_Requestor.id()}}               | Number   | 
+        | topicId               | {{context.state.objects.{4}.id()}}                         | Number   | 
+        | topicPermissionTypeId | {{context.state.objects.TopicPermissionType_{4}_{5}.id()}} | Number   | 
+    And save changes for manager "SecurityOrg"
+</div>
+<div id="the staff members have the following permissions">
+Step Group Outline: the staff members have the following permissions
+    And query new "TopicsData" manager for single or no entity "[[Permission]]" with "Topics?$filter=FriendlyName eq '[[Permission]]'&$top=1"
+    And query new "SecurityData" manager for single or no entity "TopicPermissionType_[[Permission]]_[[Level]]" with "TopicPermissionTypes?$filter=(TopicId eq {{context.state.objects.[[Permission]].id()}}) and (SecurityLevel eq [[Level]])&$top=1"
+    And query new "SecurityOrg" manager for single or no entity "TopicPermissionRequestor_[[User]]_[[Permission]]_[[Level]]" with "TopicPermissionRequestors?$filter=(RequestorId eq {{context.state.objects.[[User]]_Requestor.id()}}) and (TopicId eq {{context.state.objects.[[Permission]].id()}})&$top=1"
+    And create or update entity "TopicPermissionRequestor_[[User]]_[[Permission]]_[[Level]]" of type "TopicPermissionRequestor" with manager "SecurityOrg"
+        | Property              | Value                                                                       | DataType |
+        | requestorId           | {{context.state.objects.[[User]]_Requestor.id()}}                           | Number   | 
+        | topicId               | {{context.state.objects.[[Permission]].id()}}                               | Number   | 
+        | topicPermissionTypeId | {{context.state.objects.TopicPermissionType_[[Permission]]_[[Level]].id()}} | Number   | 
+    And save changes for manager "SecurityOrg"
+</div>
+<div id="the staff member X is linked to provider X">
+Step Group: /the staff member ".*" is linked to provider ".*"/
+    And query new "SecurityOrg" manager for single or no entity "ProviderStaff_{0}_{1}" with "ProviderStaffMembers?$filter=(ProviderPersonId eq {{context.state.objects.{1}_Person.id()}}) and (StaffPersonId eq {{context.state.objects.{0}_Person.id()}})&$top=1"
+    And create or update entity "ProviderStaff_{0}_{1}" of type "ProviderStaffMember" with manager "SecurityOrg"
+        | Property          | Value                                     | DataType |
+        | providerPersonId  | {{context.state.objects.{4}_Person.id()}} | Number   | 
+        | staffPersonId     | {{context.state.objects.{3}_Person.id()}} | Number   | 
+    And save changes for manager "SecurityOrg"
+</div>
+<div id="the staff members are linked to providers">
+Step Group Outline: the staff members are linked to providers
+    And query new "SecurityOrg" manager for single or no entity "ProviderStaff_[[StaffMember]]_[[Provider]]" with "ProviderStaffMembers?$filter=(ProviderPersonId eq {{context.state.objects.[[Provider]]_Person.id()}}) and (StaffPersonId eq {{context.state.objects.[[StaffMember]]_Person.id()}})&$top=1"
+    And create or update entity "ProviderStaff_[[StaffMember]]_[[Provider]]" of type "ProviderStaffMember" with manager "SecurityOrg"
+        | Property          | Value                                                 | DataType |
+        | providerPersonId  | {{context.state.objects.[[Provider]]_Person.id()}}    | Number   | 
+        | staffPersonId     | {{context.state.objects.[[StaffMember]]_Person.id()}} | Number   | 
+    And save changes for manager "SecurityOrg"
+</div>
