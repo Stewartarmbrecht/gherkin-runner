@@ -6,6 +6,8 @@
   _this.featureSets = ko.observableArray();
   _this.loadedFeatureSets = ko.observableArray();
   _this.featureSetPaths = ko.observableArray();
+  _this.libraryPaths = ko.observableArray();
+  _this.libraries = ko.observableArray();
   _this.selectedFeatureSets = ko.observableArray();
   _this.featurePaths = ko.observableArray();
   _this.selectedFeatures = ko.observableArray();
@@ -162,7 +164,8 @@
     _this.featureSetPaths.sort(_this.sortPaths);
     _this.selectedFeatureSets.sort(_this.sortPathObjects);
   };
-  _this.toggleFeatureSelection = function (walkingFeature) {
+  _this.toggleFeatureSelection = function (walkingFeature, walkingFeatureSet) {
+    walkingFeature.libraryPaths = walkingFeatureSet.libraryPaths;
     if (walkingFeature.selected()) {
       _this.featurePaths.remove(walkingFeature.path);
       _this.selectedFeatures.remove(walkingFeature);
@@ -272,13 +275,16 @@
     var dfd = $.Deferred();
     $(document).ready(function () {
       _this.loadConfiguration()
+        .then(function() {
+          return _this.loadLibraries();
+        })
         .then(function () {
           if (_this.featurePaths().length > 0) {
             var featureSet = {
               name: "Features",
-              featureSetPaths: [
-              ],
-              featurePaths: _this.featurePaths()
+              featureSetPaths: [],
+              featurePaths: _this.featurePaths(),
+              libraryPaths: _this.libraryPaths()
             }
             _this.log('Loading features...');
             return _this.loadFeatureSet(featureSet, _this.featureSets);
@@ -351,52 +357,64 @@
     featureSets.push(featureSet);
     _this.counts.featureSets.total(_this.counts.featureSets.total() + 1);
     featureSet.name = featureSet.name || "Unnamed Feature Set";
-    if (featureSet.featurePaths.length > 0)
+    if (featureSet.featurePaths && featureSet.featurePaths.length > 0)
       dfd = dfd.then(function () {
         return _this.loadFeatures(featureSet.featurePaths, featureSet.features);
       });
-    else if (featureSet.featureSetPaths && featureSet.featureSetPaths.length > 0)
+    if (featureSet.featureSetPaths && featureSet.featureSetPaths.length > 0)
       dfd = dfd.then(function () {
         return _this.loadFeatureSets(featureSet.featureSetPaths, featureSet.featureSets);
       });
+    return dfd.promise();
+  };
+  _this.loadLibraries = function () {
+    var addLibraryPaths  = function(libraryPaths){
+      libraryPaths.forEach(function(libraryPath){
+        if(!_this.libraryPaths().indexOf(libraryPath) > -1)
+          _this.libraryPaths.push(libraryPath);
+      })
+    };
+    if(_this.selectedFeatureSets)
+      _this.selectedFeatureSets().forEach(function(featureSet) { addLibraryPaths(featureSet.libraryPaths); });
+    if(_this.selectedFeatures)
+      _this.selectedFeatures().forEach(function(feature) { addLibraryPaths(feature.libraryPaths); });
+    var dfd = $.when();
+    _this.libraryPaths().forEach(function (libraryName) {
+      dfd = dfd.then(function () {
+        return _this.loadLibraryFile(_this.libraries, libraryName);
+      });
+    });
+    return dfd.promise();
+  };
+  _this.loadLibraryFile = function (libraries, libraryName) {
+    var dfd = new $.Deferred();
+    require.undef(libraryName);
+    require([libraryName], function (library) {
+      library.name = libraryName;
+      libraries.push(library);
+      dfd.resolve();
+    });
     return dfd.promise();
   };
   _this.loadFeatures = function (featurePaths, features) {
     featurePaths = featurePaths || [];
     var dfd = $.when();
     $.each(featurePaths, function (index, featureName) {
-      var folders = featureName.split("/");
-      var currentFolder = "";
-      var libraries = [];
-      $.each(folders, function (index, folder) {
-        if (index != folders.length - 1) {
-          currentFolder = currentFolder + folder + "/";
-          libraries[folders.length - 2 - index] = currentFolder + "library";
-        }
-      });
       dfd = dfd.then(function () {
-        return _this.loadFeatureFile(featurePaths, features, featureName, libraries);
+        return _this.loadFeatureFile(features, featureName);
       });
     });
     return dfd.promise();
   };
-  _this.loadFeatureFile = function (featurePaths, features, featureName, libraries) {
+  _this.loadFeatureFile = function (features, featureName) {
     var dfd = new $.Deferred();
     require.undef("Scripts/text!" + featureName + ".html");
     require(["Scripts/text!" + featureName + ".html"], function (featureText) {
       _this.loadImports(featureText)
         .then(function (importedFeatureText) {
-          $.each(libraries, function (index, lib) {
-            require.undef(lib);
-          });
-          require(libraries, function () {
-            $.each(arguments, function (index, library) {
-              library.name = libraries[index];
-            });
-            features.push(_this.loadFeature(importedFeatureText, arguments));
-            _this.counts.features.total(_this.counts.features.total() + 1);
-            dfd.resolve();
-          });
+          features.push(_this.loadFeature(importedFeatureText, arguments));
+          _this.counts.features.total(_this.counts.features.total() + 1);
+          dfd.resolve();
         });
     });
     return dfd.promise();
@@ -423,9 +441,8 @@
     });
     return dfd.promise();
   };
-  _this.loadFeature = function (featureText, libraries) {
+  _this.loadFeature = function (featureText) {
     var feature = _this.parseFeature(featureText);
-    feature.libraries = ko.observableArray(libraries);
     _this.loadStepGroups(feature.stepGroups, feature);
     _this.loadScenarios(feature.backgrounds, feature);
     _this.loadScenarios(feature.scenarios, feature);
@@ -610,7 +627,7 @@
   _this.libraryMethods = [];
   _this.loadStepMethod = function (step, feature, isSubStep) {
     _this.loadStepMethodName(step);
-    $.each(feature.libraries(), function (index, library) {
+    $.each(_this.libraries(), function (index, library) {
       if (!step.method)
         $.each(Object.keys(library), function (index, property) {
           if (typeof library[property] === 'function') {
@@ -645,7 +662,6 @@
                 }
               }
             }
-
           }
         });
     });

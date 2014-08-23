@@ -146,7 +146,7 @@
                 </div>
                 <div data-bind="attr: { 'class': 'name walking-level' + level }">
                     <a href="javascript:void();"
-                        data-bind="click: $root.toggleFeatureSelection">
+                        data-bind="click: function() { $root.toggleFeatureSelection($data, $parent); }">
                         <i data-bind="visible: selected" class="icon-check text-success" title="Feature set selected"></i>
                         <i data-bind="visible: !selected()" class="icon-check-empty" title="Select feature set"></i>
                     </a>
