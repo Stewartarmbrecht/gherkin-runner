@@ -234,6 +234,13 @@
         _this.featurePaths.push(path);
       });
     }
+    var libraryPathParam = _this.getURLParameter("libraryPaths");
+    if (libraryPathParam != 'null') {
+      var split = libraryPathParam.split(',');
+      $.each(split, function (index, path) {
+        _this.libraryPaths.push(path);
+      });
+    }
   };
   _this.stringToBoolean = function (string) {
     switch (string.toLowerCase()) {
@@ -1712,8 +1719,12 @@
       location = location + "?featurePaths=" + _this.featurePaths().join(',');
       featuresIncluded = true;
     }
-    if (_this.featureSetPaths().length > 0)
+    if (_this.featureSetPaths().length > 0) {
       location = location + (featuresIncluded ? "&" : "?") + "featureSetPaths=" + _this.featureSetPaths().join(',');
+      featuresIncluded = true;
+    }
+    if (_this.libraryPaths().length > 0)
+      location = location + (featuresIncluded ? "&" : "?") + "libraryPaths=" + _this.libraryPaths().join(',');
     window.location = location;
   };
 
