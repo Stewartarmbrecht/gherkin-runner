@@ -1509,7 +1509,31 @@
       debugger;
     if (step.shouldRun) {
       _this.replaceExpressions(stepOwner, stepOwner.state, step.inlineArgs, step.tableArg, stepOwner.exampleArg);
-      step.method(stepOwner, stepDeferred, stepOwner.state, step.inlineArgs, step.tableArg, stepOwner.exampleArg);
+      var callback = function(error) {
+        if(error)
+          stepDeferred.reject(error);
+        else
+          stepDeferred.resolve();
+      };
+      var executionContext = {
+        $context: {
+          step: stepOwner,
+          callback: callback,
+          state: stepOwner.state,
+          inlineArgs: step.inlineArgs,
+          tableArgs: step.tableArg,
+          exampleArg: stepOwner.exampleArg
+        }
+      };
+      var argsArray = [];
+      if(step.inlineArgs && step.inlineArgs.length > 0)
+        argsArray = argsArray.concat(step.inlineArgs);
+      if(step.tableArg && step.tableArg.length > 0)
+        argsArray.push(step.tableArg);
+      if(stepOwner.exampleArg && stepOwner.exampleArg.length > 0)
+        argsArray.push(stepOwner.exampleArg);
+      argsArray.push(callback);
+      step.method.apply(executionContext, argsArray);
     } else {
       stepDeferred.resolve();
     }

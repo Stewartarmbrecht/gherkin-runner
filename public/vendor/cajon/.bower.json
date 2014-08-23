@@ -1,0 +1,32 @@
+{
+  "name": "cajon",
+  "version": "0.2.4",
+  "homepage": "https://github.com/requirejs/cajon",
+  "authors": [
+    "jrburke.com"
+  ],
+  "description": "A file and module loader for JavaScript",
+  "main": "cajon.js",
+  "keywords": [
+    "AMD"
+  ],
+  "ignore": [
+    "demo",
+    "demo-shim",
+    "tests",
+    "tools",
+    "package.json",
+    ".npmignore"
+  ],
+  "license": "new BSD, and MIT",
+  "_release": "0.2.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.4",
+    "commit": "cee717c3e08112d191e0987fda3153961f127689"
+  },
+  "_source": "git://github.com/requirejs/cajon.git",
+  "_target": "~0.2.4",
+  "_originalSource": "cajon",
+  "_direct": true
+}

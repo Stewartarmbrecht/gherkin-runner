@@ -162,10 +162,22 @@ get to the feature file. So add a library.js file with the following content:
 After you have created the feature you can run the Gherkin Runner to validate your gherkin syntax.  
   
 1. Start the application 'node index.js'  
-1. Navigate to the gherkinRunner in a browser:  http://machinename:3000/gherkinRunner.html  
-1. You should see your feature listed  
+2. Navigate to the gherkinRunner in a browser:  http://machinename:3000/gherkinRunner.html  
+3. You should see your feature listed in the walker:  
 
 ![](images/HelloWorldWalkerNoDef.PNG)
+
+4. When you select the feature it will display as selected in the blue box where you can remove it:
+
+![](images/HelloWorldWalkerNoDefSelected.PNG)  
+
+5. Click Load to switch from the Walker view to the Runner view.  
+
+![](images/HelloWorldWalkerNoDefLoaded.PNG)  
+
+  * This screen shows you the feature you selected.  
+  * The red circles with the line through it shows you that the Feature, Scenario, and step that are missing step definitions.
+  * The scenario will be collapsed by default.  Just click the name to expand it.
 
 ###Create a Step Definition
 ###Run the Feature
