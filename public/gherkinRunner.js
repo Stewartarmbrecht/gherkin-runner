@@ -282,7 +282,7 @@
     var dfd = $.Deferred();
     $(document).ready(function () {
       _this.loadConfiguration()
-        .then(function() {
+        .then(function () {
           return _this.loadLibraries();
         })
         .then(function () {
@@ -375,16 +375,20 @@
     return dfd.promise();
   };
   _this.loadLibraries = function () {
-    var addLibraryPaths  = function(libraryPaths){
-      libraryPaths.forEach(function(libraryPath){
-        if(!_this.libraryPaths().indexOf(libraryPath) > -1)
+    var addLibraryPaths = function (libraryPaths) {
+      libraryPaths.forEach(function (libraryPath) {
+        if (!_this.libraryPaths().indexOf(libraryPath) > -1)
           _this.libraryPaths.push(libraryPath);
       })
     };
-    if(_this.selectedFeatureSets)
-      _this.selectedFeatureSets().forEach(function(featureSet) { addLibraryPaths(featureSet.libraryPaths); });
-    if(_this.selectedFeatures)
-      _this.selectedFeatures().forEach(function(feature) { addLibraryPaths(feature.libraryPaths); });
+    if (_this.selectedFeatureSets)
+      _this.selectedFeatureSets().forEach(function (featureSet) {
+        addLibraryPaths(featureSet.libraryPaths);
+      });
+    if (_this.selectedFeatures)
+      _this.selectedFeatures().forEach(function (feature) {
+        addLibraryPaths(feature.libraryPaths);
+      });
     var dfd = $.when();
     _this.libraryPaths().forEach(function (libraryName) {
       dfd = dfd.then(function () {
@@ -942,7 +946,9 @@
     var lines = featureText.split('\n');
     var lastRead = null;
     var feature = {};
+    var stepOwner = {};
     $.each(lines, function (index, line) {
+      var untrimmedLine = line;
       var lineNumber = index + 1;
       line = line.trim();
       if (line.length > 0) {
@@ -955,7 +961,18 @@
               lineNumber: lineNumber
             });
           lastRead = 'comment';
-        } else if (line.toLowerCase().trim().indexOf("##") === 0) {
+        } else if (lastRead === 'multi-line-argument') {
+          if(line.toLowerCase().trim().indexOf('"""') === 0)
+            lastRead = '';
+          else {
+            var step = stepOwner.steps()[stepOwner.steps().length - 1];
+            if(!step.multiLineArg)
+              step.multiLineArg = ko.observableArray();
+            step.multiLineArg.push(untrimmedLine);
+          }
+        } else if (line.toLowerCase().trim().indexOf('"""') === 0 && lastRead !== 'multi-line-argument') {
+          lastRead = 'multi-line-argument';
+        } else if (line.toLowerCase().trim().indexOf("##") === 0 || line.toLowerCase().trim().indexOf("#") === 0) {
           feature.lineComments.push(
             {
               id: _this.featureCount + '_' + lineNumber,
@@ -1532,31 +1549,30 @@
       debugger;
     if (step.shouldRun) {
       _this.replaceExpressions(stepOwner, stepOwner.state, step.inlineArgs, step.tableArg, stepOwner.exampleArg);
-      var callback = function(error) {
-        if(error)
+      var callback = function (error) {
+        if (error)
           stepDeferred.reject(error);
         else
           stepDeferred.resolve();
       };
-      var executionContext = {
-        $context: {
+      stepOwner.state.$context = {
           step: stepOwner,
           callback: callback,
-          state: stepOwner.state,
           inlineArgs: step.inlineArgs,
           tableArgs: step.tableArg,
           exampleArg: stepOwner.exampleArg
-        }
       };
       var argsArray = [];
-      if(step.inlineArgs && step.inlineArgs.length > 0)
+      if (step.inlineArgs && step.inlineArgs.length > 0)
         argsArray = argsArray.concat(step.inlineArgs);
-      if(step.tableArg && step.tableArg.length > 0)
+      if (step.multiLineArg && step.multiLineArg.length > 0)
+        argsArray = argsArray.push(step.multiLineArg);
+      if (step.tableArg && step.tableArg.length > 0)
         argsArray.push(step.tableArg);
-      if(stepOwner.exampleArg && stepOwner.exampleArg.length > 0)
+      if (stepOwner.exampleArg && stepOwner.exampleArg.length > 0)
         argsArray.push(stepOwner.exampleArg);
       argsArray.push(callback);
-      step.method.apply(executionContext, argsArray);
+      step.method.apply(stepOwner.state, argsArray);
     } else {
       stepDeferred.resolve();
     }

@@ -53,4 +53,46 @@ _this[/the list should be titled "(.*)"/] = function (title, callback) {
     })
     .fail(callback);
 };
+_this['I have a step with no arguments like this one'] = function(callback) {
+  this.args = arguments;
+  this.callback = callback;
+  callback();
+};
+_this['I have a step with "an inline argument" like this one'] = function(inlineParameter, callback) {
+  this.args = arguments;
+  this.callback = callback;
+  this["inline argument"] = inlineParameter;
+  callback();
+};
+_this['the step runs'] = function(callback) {
+  callback();
+};
+_this[/^the step method should have "([^\"]*)" argument$/] = function(argsLength, callback) {
+  if(this.args.length !== Number(argsLength))
+    callback(new Error('The args length did not equal "' + argsLength + '" it equaled "' + this.args.length + '"'));
+  else
+    callback();
+};
+_this[/^argument "([^\"]*)" should be the callback$/] = function(argNumber, callback) {
+  var argIndex = Number(argNumber) - 1;
+  if(this.args[argIndex] !== this.callback)
+    callback(new Error('Argument "' + argNumber + '" did not equal the callback function.'));
+  else
+    callback();
+};
+_this[/^argument "([^\"]*)" should have the value "([^"]*)"$/] = function(argNumber, argValue, callback) {
+  var argIndex = Number(argNumber) - 1;
+  if(this.args[Number(argIndex)] !== argValue)
+    callback(new Error('The "' + argNumber + '" argument did not equal "' + argValue + '" it equaled "' + this.args[argIndex] + '"'));
+  else
+    callback();
+};
+_this[/^argument "([^\"]*)" should be an array with these values:$/] = function(argNumber, tableArg, callback) {
+  var argIndex = Number(argNumber) - 1;
+  var tableArgArray = eval(tableArg.join());
+  if(this.args[Number(argIndex)] !== argValue)
+    callback(new Error('The "' + argNumber + '" argument did not equal "' + argValue + '" it equaled "' + this.args[argIndex] + '"'));
+  else
+    callback();
+};
 module.exports = _this;

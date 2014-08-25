@@ -17,3 +17,15 @@ Scenario: Add a To Do
   Then I should see an the new entry
    And the list should show that there is "1" item left
 
+Scenario: Add a To Do
+  Given the user is on the home page
+  When I enter text in the new entry field
+    """
+        My Multi-line test line 1
+       And this is line 2
+           vAnd this is line 3
+    """
+  And I hit enter
+  Then I should see an the new entry
+  And the list should show that there is "1" item left
+
