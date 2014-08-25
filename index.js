@@ -4,8 +4,17 @@ var app = express();
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
+// insert this before your routes
+app.use(function(req, res, next) {
+  for (var key in req.query)
+  {
+    req.query[key.toLowerCase()] = req.query[key];
+  }
+  next();
+});
+
 app.get('/', function(request, response) {
-  response.send('Hello World!')
+  response.redirect('/gherkinRunner.html');
 });
 
 app.listen(app.get('port'), function() {
