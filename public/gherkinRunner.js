@@ -419,8 +419,8 @@
   };
   _this.loadFeatureFile = function (features, featureName) {
     var dfd = new $.Deferred();
-    require.undef("Scripts/text!" + featureName + ".html");
-    require(["Scripts/text!" + featureName + ".html"], function (featureText) {
+    require.undef("scripts/text!" + featureName + ".html");
+    require(["scripts/text!" + featureName + ".html"], function (featureText) {
       _this.loadImports(featureText)
         .then(function (importedFeatureText) {
           features.push(_this.loadFeature(importedFeatureText, arguments));
@@ -437,7 +437,7 @@
     $.each(lines, function (index, line) {
       if (line.trim().indexOf('Import:') == 0) {
         importIndexes.push(index);
-        importPaths.push("Scripts/text!" + line.substring(line.indexOf('Import:') + 8) + ".html");
+        importPaths.push("scripts/text!" + line.substring(line.indexOf('Import:') + 8) + ".html");
       }
     });
     var dfd = new $.Deferred();
