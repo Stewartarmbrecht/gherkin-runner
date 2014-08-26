@@ -647,10 +647,10 @@
            data-bind="attr: { id: id }, template: { name: 'stepTemplate', foreach: subSteps }">
       </div>
       <!-- /ko -->
-      <!-- ko if: $data.multiLineArg !== undefined && $data.multiLineArg().length > 0 -->
+      <!-- ko if: $data.multiLineArg !== undefined && $data.multiLineArg.length > 0 -->
       <div class="table-arg"
            data-bind="css: { substep: stepOwner.type == 'step', example: stepOwner.exampleArg != null }">
-        <pre><code data-bind="text: $data.multiLineArg().join('\n')"></code></pre>
+        <pre><code data-bind="text: $data.multiLineArg.join('\n')"></code></pre>
       </div>
       <!-- /ko -->
       <!-- ko if: $data.tableArg !== undefined && $data.tableArg.length > 0 -->

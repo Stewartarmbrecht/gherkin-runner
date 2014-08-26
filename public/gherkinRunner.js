@@ -833,6 +833,7 @@
       methodName: step.methodName,
       method: step.method,
       inlineArgs: step.inlineArgs.slice(0),
+      multiLineArg: step.multiLineArg,
       libraryName: step.libraryName,
       libraryMethodName: step.libraryMethodName,
       libraryMethodFullName: step.libraryMethodFullName,
@@ -966,9 +967,7 @@
             lastRead = '';
           else {
             var step = stepOwner.steps()[stepOwner.steps().length - 1];
-            if(!step.multiLineArg)
-              step.multiLineArg = ko.observableArray();
-            step.multiLineArg.push(untrimmedLine);
+              step.multiLineArg.push(untrimmedLine);
           }
         } else if (line.toLowerCase().trim().indexOf('"""') === 0 && lastRead !== 'multi-line-argument') {
           lastRead = 'multi-line-argument';
@@ -1065,6 +1064,7 @@
           stepGroup.type = (outline ? 'step group outline' : 'step group');
           stepGroup.lineNumber = lineNumber;
           stepGroup.inlineArgs = [];
+          stepGroup.multiLineArg = [];
           stepGroup.steps = ko.observableArray();
           stepGroup.name = (outline ? line.trim().substr(19, line.trim().length - 19).trim() : line.trim().substr(11, line.trim().length - 11).trim());
           stepGroup.runCondition = null;
@@ -1115,6 +1115,7 @@
           step.methodName = null;
           step.method = null;
           step.inlineArgs = [];
+          step.multiLineArg = [];
           step.libraryName = null;
           step.libraryMethodName = null;
           step.libraryMethodFullName = null;
@@ -1566,9 +1567,9 @@
       if (step.inlineArgs && step.inlineArgs.length > 0)
         argsArray = argsArray.concat(step.inlineArgs);
       if (step.multiLineArg && step.multiLineArg.length > 0)
-        argsArray = argsArray.push(step.multiLineArg);
-      if (step.tableArg && step.tableArg.length > 0)
-        argsArray.push(step.tableArg);
+        argsArray.push(step.multiLineArg);
+      if (step.tableArgArray && step.tableArgArray.length > 0)
+        argsArray.push(step.tableArgArray);
       if (stepOwner.exampleArg && stepOwner.exampleArg.length > 0)
         argsArray.push(stepOwner.exampleArg);
       argsArray.push(callback);

@@ -27,7 +27,7 @@ Scenario: Multi-lline Argument
   Then the step method should have "2" argument
    And argument "1" should be an array with these values:
     """
-    ['      Like','      This','      One'stearm]
+    ['      Like','      This','      One']
     """
 
 Scenario: Table Argument
@@ -37,7 +37,8 @@ Scenario: Table Argument
     | Test 1.2  | Test 2.2  |
     | Test 1.3  | Test 2.3  |
   When the step runs
-  Then the step methods should have one argument that matches this object:
+  Then the step method should have "2" argument
+   And argument "1" should be an array with these values:
     """
     [
       ['Test 1.1', 'Test 2.1'],

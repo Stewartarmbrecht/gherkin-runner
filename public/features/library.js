@@ -1,5 +1,6 @@
 var gherkinRunner = require('gherkinRunner'),
-    utilities = require('features/utilities');
+    utilities = require('features/utilities'),
+    diff = require('vendor/deep-diff/releases/deep-diff-0.2.0.min').diff;
 var _this = {};
 _this.$ = null;
 _this['the user is on the home page'] = function (callback) {
@@ -58,11 +59,23 @@ _this['I have a step with no arguments like this one'] = function(callback) {
   this.callback = callback;
   callback();
 };
-_this['I have a step with "an inline argument" like this one'] = function(inlineParameter, callback) {
+_this[/I have a step with "(.*)" like this one/] = function(inlineArg, callback) {
   this.args = arguments;
   this.callback = callback;
-  this["inline argument"] = inlineParameter;
+  this["inline argument"] = inlineArg;
   callback();
+};
+_this[/I have a step with a multi line argument:/] = function(multiLineArg, callback) {
+    this.args = arguments;
+    this.callback = callback;
+    this["multi-line argument"] = multiLineArg;
+    callback();
+};
+_this[/I have a step with a table argument:/] = function(tableArg, callback) {
+    this.args = arguments;
+    this.callback = callback;
+    this["table argument"] = tableArg;
+    callback();
 };
 _this['the step runs'] = function(callback) {
   callback();
@@ -87,11 +100,12 @@ _this[/^argument "([^\"]*)" should have the value "([^"]*)"$/] = function(argNum
   else
     callback();
 };
-_this[/^argument "([^\"]*)" should be an array with these values:$/] = function(argNumber, tableArg, callback) {
+_this[/^argument "([^\"]*)" should be an array with these values:$/] = function(argNumber, valuesArrayText, callback) {
   var argIndex = Number(argNumber) - 1;
-  var tableArgArray = eval(tableArg.join());
-  if(this.args[Number(argIndex)] !== argValue)
-    callback(new Error('The "' + argNumber + '" argument did not equal "' + argValue + '" it equaled "' + this.args[argIndex] + '"'));
+  var valueArray = eval(valuesArrayText.join(''));
+    compareResult = diff(this.args[argIndex], valueArray);
+  if(compareResult && compareResult.length > 0)
+    callback(new Error('The "' + argNumber + '" argument did not match the specified array. "'));
   else
     callback();
 };
