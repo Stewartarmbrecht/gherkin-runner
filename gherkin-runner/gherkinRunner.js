@@ -402,6 +402,21 @@
     require.undef(libraryName);
     require([libraryName], function (library) {
       library.name = libraryName;
+      var libraryLoader = {
+        Given: function (methodName, func) {
+          library[methodName] = func;
+        },
+        When: function (methodName, func) {
+          library[methodName] = func;
+        },
+        Then: function (methodName, func) {
+          library[methodName] = func;
+        },
+        And: function (methodName, func) {
+          library[methodName] = func;
+        }
+      };
+      library.call(libraryLoader);
       libraries.push(library);
       dfd.resolve();
     });
@@ -419,8 +434,8 @@
   };
   _this.loadFeatureFile = function (features, featureName) {
     var dfd = new $.Deferred();
-    require.undef("scripts/text!" + featureName + ".html");
-    require(["scripts/text!" + featureName + ".html"], function (featureText) {
+    require.undef("gherkin-runner/scripts/text!" + featureName + ".feature");
+    require(["gherkin-runner/scripts/text!" + featureName + ".feature"], function (featureText) {
       _this.loadImports(featureText)
         .then(function (importedFeatureText) {
           features.push(_this.loadFeature(importedFeatureText, arguments));
@@ -437,7 +452,7 @@
     $.each(lines, function (index, line) {
       if (line.trim().indexOf('Import:') == 0) {
         importIndexes.push(index);
-        importPaths.push("scripts/text!" + line.substring(line.indexOf('Import:') + 8) + ".html");
+        importPaths.push("scripts/text!" + line.substring(line.indexOf('Import:') + 8) + ".feature");
       }
     });
     var dfd = new $.Deferred();
@@ -950,6 +965,8 @@
     var stepOwner = {};
     $.each(lines, function (index, line) {
       var untrimmedLine = line;
+      if(untrimmedLine.indexOf('\r') > 0)
+        untrimmedLine = untrimmedLine.replace(/(\r\n|\n|\r)/gm,"");
       var lineNumber = index + 1;
       line = line.trim();
       if (line.length > 0) {
@@ -963,11 +980,11 @@
             });
           lastRead = 'comment';
         } else if (lastRead === 'multi-line-argument') {
-          if(line.toLowerCase().trim().indexOf('"""') === 0)
+          if (line.toLowerCase().trim().indexOf('"""') === 0)
             lastRead = '';
           else {
             var step = stepOwner.steps()[stepOwner.steps().length - 1];
-              step.multiLineArg.push(untrimmedLine);
+            step.multiLineArg.push(untrimmedLine);
           }
         } else if (line.toLowerCase().trim().indexOf('"""') === 0 && lastRead !== 'multi-line-argument') {
           lastRead = 'multi-line-argument';
@@ -1557,11 +1574,11 @@
           stepDeferred.resolve();
       };
       stepOwner.state.$context = {
-          step: stepOwner,
-          callback: callback,
-          inlineArgs: step.inlineArgs,
-          tableArgs: step.tableArg,
-          exampleArg: stepOwner.exampleArg
+        step: stepOwner,
+        callback: callback,
+        inlineArgs: step.inlineArgs,
+        tableArgs: step.tableArg,
+        exampleArg: stepOwner.exampleArg
       };
       var argsArray = [];
       if (step.inlineArgs && step.inlineArgs.length > 0)
@@ -1747,3 +1764,5 @@
 
   return _this;
 });
+
+//# sourceURL=gherkin-runner/gherkinRunner.js

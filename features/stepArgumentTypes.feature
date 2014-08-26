@@ -16,7 +16,7 @@ Scenario: Inline Arguments
    And argument "1" should have the value "an inline argument"
    And argument "2" should be the callback
 
-Scenario: Multi-lline Argument
+Scenario: Multi-line Argument
   Given I have a step with a multi line argument:
     """
       Like

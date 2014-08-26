@@ -1,9 +1,9 @@
 /*jslint node: true */
 "use strict";
 module.exports = function () {
-  var gherkinRunner = require('gherkinRunner'),
+  var gherkinRunner = require('gherkin-runner/gherkinRunner'),
     utilities = require('features/support/utilities'),
-    diff = require('vendor/deep-diff/releases/deep-diff-0.2.0.min').diff;
+    diff = require('gherkin-runner/vendor/deep-diff/releases/deep-diff-0.2.0.min').diff;
   this.$ = null;
   this.Given(/^the user is on the home page$/, function (callback) {
     $.address.value('');
@@ -102,12 +102,17 @@ module.exports = function () {
     else
       callback();
   });
-  this.Then(/^argument "([^\"]*)" should be an array with these values:$/, function (argNumber, valuesArrayText, callback) {
+  this.Then(/^argument "([^\"]*)" should be an array with these values:$/, function (argNumber, expectedArrayText, callback) {
     var argIndex = Number(argNumber) - 1;
-    var valueArray = eval(valuesArrayText.join(''));
-    var compareResult = diff(this.args[argIndex], valueArray);
-    if (compareResult && compareResult.length > 0)
-      callback(new Error('The "' + argNumber + '" argument did not match the specified array. "'));
+    var expectedArray = eval(expectedArrayText.join(''));
+    var actualArray = this.args[argIndex];
+    var compareResult = diff(actualArray, expectedArray);
+    if (compareResult && compareResult.length > 0) {
+      var errorMsg = 'The "' + argNumber + '" argument did not match the specified array. ' +
+        '\nExpected Array: \n' + JSON.stringify(expectedArray) +
+        '\nActual Array: \n' + JSON.stringify(actualArray);
+      callback(new Error(errorMsg));
+    }
     else
       callback();
   });
