@@ -1581,7 +1581,7 @@ var requirejs, require, define;
              * moduleName may actually be just an URL.
              * Note that it **does not** call normalize on the moduleName,
              * it is assumed to have already been normalized. This is an
-             * internal API, not a public one. Use toUrl for the public API.
+             * internal API, not a gherkin-runner one. Use toUrl for the gherkin-runner API.
              */
             nameToUrl: function (moduleName, ext, skipExt) {
                 var paths, syms, i, parentModule, url,

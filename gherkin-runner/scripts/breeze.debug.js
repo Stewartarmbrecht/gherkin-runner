@@ -1663,7 +1663,7 @@ var __config = (function () {
     };
 
     __config._storeObject = function(obj, type, name) {
-        // uncomment this if we make this public.
+        // uncomment this if we make this gherkin-runner.
         //assertParam(obj, "obj").isObject().check();
         //assertParam(name, "objName").isString().check();
         var key = (typeof(type) === "string" ? type : type.prototype._$typeName) + "." + name;
@@ -3275,7 +3275,7 @@ var EntityAspect = (function() {
         }
 
         this.entity = entity;
-        // TODO: keep public or not?
+        // TODO: keep gherkin-runner or not?
         this.entityGroup = null;
         this.entityManager = null;
         this.entityState = EntityState.Detached;
@@ -4001,7 +4001,7 @@ var ComplexAspect = (function() {
         this.complexObject = complexObject;
         complexObject.complexAspect = this;
 
-        // TODO: keep public or not?
+        // TODO: keep gherkin-runner or not?
         this.originalValues = {};
 
         // if a standalone complexObject
@@ -7134,7 +7134,7 @@ var EntityType = (function () {
         return function() { };
     }
 
-    // May make public later.
+    // May make gherkin-runner later.
     proto._setCtor = function (aCtor, interceptor) {
 
         var proto = aCtor.prototype;
@@ -9388,7 +9388,7 @@ var EntityQuery = (function () {
     // protected methods
         
     proto._getFromEntityType = function (metadataStore, throwErrorIfNotFound) {
-        // Uncomment next two lines if we make this method public.
+        // Uncomment next two lines if we make this method gherkin-runner.
         // assertParam(metadataStore, "metadataStore").isInstanceOf(MetadataStore).check();
         // assertParam(throwErrorIfNotFound, "throwErrorIfNotFound").isBoolean().isOptional().check();
         var entityType = this.entityType;

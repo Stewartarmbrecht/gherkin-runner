@@ -735,7 +735,7 @@ ko.exportSymbol('utils.domNodeDisposal.removeDisposeCallback', ko.utils.domNodeD
     }
 
     function jQueryHtmlParse(html) {
-        // jQuery's "parseHTML" function was introduced in jQuery 1.8.0 and is a documented public API.
+        // jQuery's "parseHTML" function was introduced in jQuery 1.8.0 and is a documented gherkin-runner API.
         if (jQuery['parseHTML']) {
             return jQuery['parseHTML'](html) || []; // Ensure we always return an array and never null
         } else {

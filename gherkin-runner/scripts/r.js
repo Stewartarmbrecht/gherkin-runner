@@ -1791,7 +1791,7 @@ var requirejs, require, define, xpcUtil;
              * moduleName may actually be just an URL.
              * Note that it **does not** call normalize on the moduleName,
              * it is assumed to have already been normalized. This is an
-             * internal API, not a public one. Use toUrl for the public API.
+             * internal API, not a gherkin-runner one. Use toUrl for the gherkin-runner API.
              */
             nameToUrl: function (moduleName, ext, skipExt) {
                 var paths, pkgs, pkg, pkgPath, syms, i, parentModule, url,
@@ -4687,7 +4687,7 @@ parseStatement: true, parseSourceElement: true */
         case 'package':
         case 'private':
         case 'protected':
-        case 'public':
+        case 'gherkin-runner':
         case 'static':
         case 'yield':
         case 'let':
@@ -9676,7 +9676,7 @@ var RESERVED_WORDS = array_to_hash([
     "package",
     "private",
     "protected",
-    "public",
+    "gherkin-runner",
     "short",
     "static",
     "super",
@@ -15853,7 +15853,7 @@ define('uglifyjs2', ['exports', 'source-map', 'logger', 'env!env/file'], functio
     "use strict";
     var KEYWORDS = "break case catch const continue debugger default delete do else finally for function if in instanceof new return switch throw try typeof var void while with";
     var KEYWORDS_ATOM = "false null true";
-    var RESERVED_WORDS = "abstract boolean byte char class double enum export extends final float goto implements import int interface long native package private protected public short static super synchronized this throws transient volatile" + " " + KEYWORDS_ATOM + " " + KEYWORDS;
+    var RESERVED_WORDS = "abstract boolean byte char class double enum export extends final float goto implements import int interface long native package private protected gherkin-runner short static super synchronized this throws transient volatile" + " " + KEYWORDS_ATOM + " " + KEYWORDS;
     var KEYWORDS_BEFORE_EXPRESSION = "return new delete throw else case";
     KEYWORDS = makePredicate(KEYWORDS);
     RESERVED_WORDS = makePredicate(RESERVED_WORDS);
