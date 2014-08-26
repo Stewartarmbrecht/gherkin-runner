@@ -14,7 +14,7 @@ module.exports = function () {
     utilities.waitTillTrue(function () {
       return uiTestWindow[0].contentWindow.$ == undefined;
     }).then(function () {
-      uiTestWindow.attr('src', 'todoApp/index.html');
+      uiTestWindow.attr('src', '/todo-app/index.html');
       utilities.waitTillTrue(function () {
         return uiTestWindow[0].contentWindow.$;
       }).then(function () {
@@ -119,13 +119,31 @@ module.exports = function () {
   this.Given(/^I have a step like this one$/, function(callback) {
     callback();
   });
-  this.Then(/^I should be able to create a step definition using the following syntax$/, function(callback) {
+  this.Then(/^I can create a step definition using the following syntax$/, function(syntax, callback) {
     callback();
   });
-  this.Then(/^the value of "this" should be set to the world object$/, function(callback) {
+  this.Then(/^the value of "this" should be set to the world object$/, function(ignoredArg, callback) {
     callback();
   });
   this.Then(/^the callback argument should be a function$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I have a library$/, function(callback) {
+    callback();
+  });
+  this.When(/^I need to require another javascript module$/, function(callback) {
+    callback();
+  });
+  this.Then(/^I can specify a path that is from the root of the site like this "([^"]*)"$/, function(path, callback) {
+//    try {
+//      require([path], function(depedency) {
+//        callback();
+//      }, function(error) {
+//        callback(new Error("Failed get required resource.  Got error message: " + error.message));
+//      });
+//    } catch(error) {
+//      callback(new Error("Failed get required resource.  Got error message: " + error.message));
+//    }
     callback();
   });
 };

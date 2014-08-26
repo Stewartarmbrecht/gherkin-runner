@@ -364,6 +364,14 @@
     featureSets.push(featureSet);
     _this.counts.featureSets.total(_this.counts.featureSets.total() + 1);
     featureSet.name = featureSet.name || "Unnamed Feature Set";
+    if (featureSet.libraryPaths && featureSet.libraryPaths.length > 0)
+    {
+      featureSet.libraryPaths.forEach(function (libraryName) {
+        dfd = dfd.then(function () {
+          return _this.loadLibraryFile(_this.libraries, libraryName + '.js');
+        });
+      });
+    }
     if (featureSet.featurePaths && featureSet.featurePaths.length > 0)
       dfd = dfd.then(function () {
         return _this.loadFeatures(featureSet.featurePaths, featureSet.features);
@@ -383,11 +391,13 @@
     };
     if (_this.selectedFeatureSets)
       _this.selectedFeatureSets().forEach(function (featureSet) {
-        addLibraryPaths(featureSet.libraryPaths);
+        if(featureSet.libraryPaths)
+          addLibraryPaths(featureSet.libraryPaths);
       });
     if (_this.selectedFeatures)
       _this.selectedFeatures().forEach(function (feature) {
-        addLibraryPaths(feature.libraryPaths);
+        if(feature.libraryPaths)
+          addLibraryPaths(feature.libraryPaths);
       });
     var dfd = $.when();
     _this.libraryPaths().forEach(function (libraryName) {

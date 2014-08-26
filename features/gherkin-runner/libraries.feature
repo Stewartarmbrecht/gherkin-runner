@@ -1,7 +1,7 @@
 Feature: Libraries
-  In order to define and manage step definitions to use to execute features
+  In order to automate scenarios
   As a developer
-  I would like to use javascript libraries load step definitions
+  I would like to use javascript libraries to define and match steps to methods
 
   Scenario: Standard Library Definition
     Given this scenario
@@ -26,4 +26,17 @@ Feature: Libraries
       });
     };
     """
-  
+
+  Scenario: Step Definition
+    Given I have a step like this one
+    Then I can create a step definition using the following syntax
+    """
+    this.Given(/^I have a step like this one$/, function(callback) {
+      callback();
+    });
+    """
+
+  Scenario: Requiring Other Files
+    Given I have a library
+    When I need to require another javascript module
+    Then I can specify a path that is from the root of the site like this "features/support/utilities"
