@@ -21,6 +21,7 @@
     "tests"
   ],
   "dependencies": {
-    "deep-diff": "~0.2.0"
+    "deep-diff": "~0.2.0",
+    "cajon": "~0.2.4"
   }
 }

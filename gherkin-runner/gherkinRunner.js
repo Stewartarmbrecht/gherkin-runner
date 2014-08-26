@@ -984,10 +984,11 @@
             lastRead = '';
           else {
             var step = stepOwner.steps()[stepOwner.steps().length - 1];
-            step.multiLineArg.push(untrimmedLine);
+            step.multiLineArg.push(untrimmedLine.substring(multiLineArgumentIndent));
           }
         } else if (line.toLowerCase().trim().indexOf('"""') === 0 && lastRead !== 'multi-line-argument') {
           lastRead = 'multi-line-argument';
+          multiLineArgumentIndent = untrimmedLine.indexOf('"""');
         } else if (line.toLowerCase().trim().indexOf("##") === 0 || line.toLowerCase().trim().indexOf("#") === 0) {
           feature.lineComments.push(
             {

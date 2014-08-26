@@ -704,7 +704,7 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
-    require.config({ baseUrl: "../" });
+    require.config({ baseUrl: "/" });
     require(["gherkin-runner/gherkinRunner"/*, "../GherkinRunnerConfiguration?noExt"*/], function (gherkinRunner, config) {
       //$.restfulBreeze.setRootUrl(config.apiUrl);
       gherkinRunner.addFeaturesFromUrl();

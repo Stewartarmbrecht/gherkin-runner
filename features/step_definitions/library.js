@@ -116,4 +116,16 @@ module.exports = function () {
     else
       callback();
   });
+  this.Given(/^I have a step like this one$/, function(callback) {
+    callback();
+  });
+  this.Then(/^I should be able to create a step definition using the following syntax$/, function(callback) {
+    callback();
+  });
+  this.Then(/^the value of "this" should be set to the world object$/, function(callback) {
+    callback();
+  });
+  this.Then(/^the callback argument should be a function$/, function(callback) {
+    callback();
+  });
 };

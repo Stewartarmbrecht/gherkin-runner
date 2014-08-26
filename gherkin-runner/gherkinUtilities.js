@@ -1,5 +1,6 @@
 "use strict";
 define([], function () {
+  var diff = require('gherkin-runner/vendor/deep-diff/releases/deep-diff-0.2.0.min').diff;
   var _this = {};
   _this.$ = null;
   _this.waitTillTrue = function (trueFunc) {
@@ -90,6 +91,26 @@ define([], function () {
       count = count + 1;
     }, 100, _this, intv, count, selector, text, dfd)
     return dfd.promise();
+  };
+  _this.compareStringArrays = function (expectedArray, actualArray) {
+    var errorMsg = null;
+    if(expectedArray.length != actualArray.length)
+    {
+      errorMsg = errorMsg + 'The library code did not match the specified code on line count. ' +
+        '\nExpected Count: \n' + expectedArray.length +
+        '\nActual Count: \n' + actualArray.length + '\n';
+    } else if (diff(expectedArray, actualArray)) {
+      for(var i = 0; i < expectedArray.length; i++) {
+        if (actualArray[i] != expectedArray[i])
+          errorMsg = errorMsg + 'Line ' + i + ' did not match.\n' +
+            '\nExpected Line: \n' + expectedArray[i] +
+            '\nActual Line: \n' + actualArray[i] + '\n';
+      }
+      errorMsg = errorMsg + 'The library code did not match the specified code on lines. ' +
+        '\nExpected Array: \n' + expectedArray.join('\n') +
+        '\nActual Array: \n' + actualArray.join('\n');
+    }
+    return errorMsg;
   };
   return _this;
 });

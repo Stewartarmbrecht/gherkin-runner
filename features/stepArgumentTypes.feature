@@ -19,15 +19,15 @@ Scenario: Inline Arguments
 Scenario: Multi-line Argument
   Given I have a step with a multi line argument:
     """
-      Like
+    Like
       This
-      One
+        One
     """
   When the step runs
   Then the step method should have "2" argument
    And argument "1" should be an array with these values:
     """
-    ['      Like','      This','      One']
+    ['Like','  This','    One']
     """
 
 Scenario: Table Argument
