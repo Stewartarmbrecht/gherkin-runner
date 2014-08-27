@@ -402,7 +402,7 @@
     var dfd = $.when();
     _this.libraryPaths().forEach(function (libraryName) {
       dfd = dfd.then(function () {
-        return _this.loadLibraryFile(_this.libraries, libraryName);
+        return _this.loadLibraryFile(_this.libraries, libraryName + '.js');
       });
     });
     return dfd.promise();
