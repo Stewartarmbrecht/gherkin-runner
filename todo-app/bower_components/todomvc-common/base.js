@@ -205,5 +205,5 @@
 	};
 
 	redirect();
-	getFile('learn.json', Learn);
+	//getFile('/lodo-mvc/learn.json', Learn);
 })();
