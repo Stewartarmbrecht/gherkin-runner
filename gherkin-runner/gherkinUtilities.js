@@ -96,21 +96,31 @@ define([], function () {
     var errorMsg = null;
     if(expectedArray.length != actualArray.length)
     {
-      errorMsg = errorMsg + 'The library code did not match the specified code on line count. ' +
+      errorMsg = (errorMsg?errorMsg:'') + 'The library code did not match the specified code on line count. ' +
         '\nExpected Count: \n' + expectedArray.length +
         '\nActual Count: \n' + actualArray.length + '\n';
     } else if (diff(expectedArray, actualArray)) {
       for(var i = 0; i < expectedArray.length; i++) {
         if (actualArray[i] != expectedArray[i])
-          errorMsg = errorMsg + 'Line ' + i + ' did not match.\n' +
+          errorMsg = (errorMsg?errorMsg:'') + 'Line ' + i + ' did not match.\n' +
             '\nExpected Line: \n' + expectedArray[i] +
             '\nActual Line: \n' + actualArray[i] + '\n';
       }
+    }
+    if(errorMsg)
       errorMsg = errorMsg + 'The library code did not match the specified code on lines. ' +
         '\nExpected Array: \n' + expectedArray.join('\n') +
         '\nActual Array: \n' + actualArray.join('\n');
-    }
+
     return errorMsg;
   };
+  _this.convertMultlineStringToLineArray = function(multiLineString) {
+    var multiLineArray = multiLineString;
+    if (multiLineString.indexOf('\r\n') > -1)
+      multiLineArray = multiLineString.split('\r\n');
+    if (multiLineString.indexOf('\n') > -1)
+      multiLineArray = multiLineString.split('\n');
+    return multiLineArray;
+  }
   return _this;
 });
