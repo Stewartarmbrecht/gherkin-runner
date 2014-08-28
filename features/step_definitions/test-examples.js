@@ -13,4 +13,58 @@ module.exports = function () {
       callback(error);
     })
   });
+  this.Given(/^I am a standard step$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am run$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I should pass$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step that will fail$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I should fail$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I should be skipped$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with an inline parameter of "([^"]*)"$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with a multi-line parameter of$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with a table parameter of$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with an inline comment$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step followed by a full line comment$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with an inline expression of "([^"]*)" that verifies my inline parameter value is Hello World$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with a true conditional that succeeds$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with a true conditional that fails$/, function(callback) {
+    callback();
+  });
+  this.Given(/^I am a step with a false conditional that fails$/, function(callback) {
+    callback();
+  });
+  this.Given(/^X$/, function(callback) {
+    callback();
+  });
+  this.Given(/^Y$/, function(callback) {
+    callback();
+  });
+  this.Given(/^Z$/, function(callback) {
+    callback();
+  });
 };

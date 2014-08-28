@@ -5,7 +5,11 @@
     "features/test-examples/featureSetY/featureSetY"
   ],
   featurePaths: [
-    "features/test-examples/allCapabilities"
+    "features/test-examples/examplesOfScenarioSteps",
+    "features/test-examples/examplesOfScenarioOutlineSteps",
+    "features/test-examples/examplesOfBackgrounds",
+    "features/test-examples/examplesOfFeatureBackgrounds",
+    "features/test-examples/examplesOfStepGroups"
   ],
   libraryPaths: [
     '/features/step_definitions/test-examples'

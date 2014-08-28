@@ -665,6 +665,7 @@
     step.subSteps.push(stepCopy);
   }
   _this.libraryMethods = [];
+  _this.recommendedMethods = ko.observableArray();
   _this.loadStepMethod = function (step, feature, isSubStep) {
     _this.loadStepMethodName(step);
     $.each(_this.libraries(), function (index, library) {
@@ -710,6 +711,9 @@
         _this.counts.subSteps.missingMethods(_this.counts.subSteps.missingMethods() + 1);
       else
         _this.counts.steps.missingMethods(_this.counts.steps.missingMethods() + 1);
+      var recommendedMethod = 'this.Given(/^' + step.methodName + '$/, function(callback) {\n  callback();\n});\n';
+      if(_this.recommendedMethods.indexOf(recommendedMethod) == -1)
+        _this.recommendedMethods.push(recommendedMethod);
     }
   };
   _this.loadStepMethodName = function (step) {

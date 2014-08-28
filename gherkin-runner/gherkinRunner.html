@@ -12,18 +12,10 @@
   <link href="gherkinRunner.css" rel="stylesheet">
 
   <!-- include source files here... -->
-  <!--    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="../Scripts/jquery.address-1.6.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/q.js/0.9.6/q.min.js"></script>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.js"></script>-->
-  <script type="text/javascript" src="scripts/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery-2.0.3.js"></script>
   <script type="text/javascript" src="scripts/knockout-2.3.0.js"></script>
   <script type="text/javascript" src="scripts/knockout.mapping-latest.js"></script>
   <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
-  <script type="text/javascript" src="scripts/jquery.address-1.6.js"></script>
   <script type="text/javascript" src="scripts/jquery.address-1.6.js"></script>
   <script type="text/javascript" src="vendor/cajon/cajon.js"></script>
 </head>
@@ -99,8 +91,16 @@
     </a>
   </div>
   <!-- ko if: loaded -->
-  <div id="feature-sets" class="feature-sets"
-       data-bind="template: { name: 'featureSetTemplate', foreach: loadedFeatureSets }">
+  <div id="details">
+    <div id="feature-sets" class="feature-sets"
+         data-bind="template: { name: 'featureSetTemplate', foreach: loadedFeatureSets }">
+    </div>
+    <!-- ko if: recommendedMethods().length > 0 -->
+    <div id="recommended-methods">
+      <div>Recommended Library Methods:</div>
+      <pre><code data-bind="foreach: recommendedMethods"><span data-bind="text: $data"></span></code></pre>
+    </div>
+    <!-- /ko -->
   </div>
   <!-- /ko -->
 </div>
@@ -696,6 +696,11 @@
       <div class="steps" data-bind="template: { name: 'stepTemplate', foreach: steps }">
       </div>
     </div>
+  </div>
+</script>
+
+<script type="text/html" id="recommendedMethod">
+  <div class="recommended-method">
   </div>
 </script>
 

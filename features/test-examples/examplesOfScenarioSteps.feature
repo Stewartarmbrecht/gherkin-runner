@@ -1,4 +1,4 @@
-Feature: All Capabilities
+Feature: Examples of Scenario Steps
   In order to understand the types of steps that can be added to a scenario
   As a user
   I would like to see examples of all the types of steps a scenario can have
