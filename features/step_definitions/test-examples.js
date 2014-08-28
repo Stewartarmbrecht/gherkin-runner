@@ -26,18 +26,18 @@ module.exports = function () {
     callback();
   });
   this.Given(/^I should fail$/, function(callback) {
-    callback();
+    callback(new Error('I am failing on purpose.'));
   });
   this.Given(/^I should be skipped$/, function(callback) {
     callback();
   });
-  this.Given(/^I am a step with an inline parameter of "([^"]*)"$/, function(callback) {
+  this.Given(/^I am a step with an inline parameter of "([^"]*)"$/, function(inlineArg, callback) {
     callback();
   });
-  this.Given(/^I am a step with a multi-line parameter of$/, function(callback) {
+  this.Given(/^I am a step with a multi-line parameter of$/, function(multiLineArg, callback) {
     callback();
   });
-  this.Given(/^I am a step with a table parameter of$/, function(callback) {
+  this.Given(/^I am a step with a table parameter of$/, function(tableArg, callback) {
     callback();
   });
   this.Given(/^I am a step with an inline comment$/, function(callback) {
@@ -46,17 +46,17 @@ module.exports = function () {
   this.Given(/^I am a step followed by a full line comment$/, function(callback) {
     callback();
   });
-  this.Given(/^I am a step with an inline expression of "([^"]*)" that verifies my inline parameter value is Hello World$/, function(callback) {
+  this.Given(/^I am a step with an inline expression of "([^"]*)" that verifies my inline parameter value is Hello World$/, function(inlineArg, callback) {
     callback();
   });
   this.Given(/^I am a step with a true conditional that succeeds$/, function(callback) {
     callback();
   });
   this.Given(/^I am a step with a true conditional that fails$/, function(callback) {
-    callback();
+    callback(new Error('I failed on purpose.'));
   });
   this.Given(/^I am a step with a false conditional that fails$/, function(callback) {
-    callback();
+    callback(new Error('I failed on purpose.'));
   });
   this.Given(/^X$/, function(callback) {
     callback();

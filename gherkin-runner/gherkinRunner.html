@@ -72,7 +72,7 @@
           <i class="fa fa-angle-double-left" data-bind="visible: $root.toggleUIButtonPosition() === 'right'"></i></button>
       </div>
       <button class="btn btn-warning" data-bind="click: cancel"><i class="fa fa-stop"></i>&nbsp;Cancel</button>
-      <button class="btn btn-warning" data-bind="click: pauseOrUnPause, visible: paused"">
+      <button class="btn btn-warning" data-bind="click: pauseOrUnPause, visible: paused">
         <i class="fa fa-play"></i>&nbsp;Continue</button>
       <button class="btn btn-warning" data-bind="click: pauseOrUnPause, visible: !paused()">
         <i class="fa fa-pause"></i>&nbsp;Pause</button>
@@ -90,8 +90,8 @@
   </div>
   <!-- ko if: loaded -->
   <div id="details">
-    <div id="feature-sets" class="feature-sets panel-group"
-         data-bind="template: { name: 'featureSetTemplate', foreach: loadedFeatureSets }">
+    <div class="feature-sets panel-group"
+         data-bind="attr: { id: id }, template: { name: 'featureSetTemplate', foreach: loadedFeatureSets }">
     </div>
     <!-- ko if: recommendedMethods().length > 0 -->
     <div id="recommended-methods">
@@ -396,7 +396,7 @@
     <div class="title panel-heading">
       <div class="name panel-title">
         <h4>
-          <a data-toggle="collapse" data-bind="attr: { 'data-parent': $parent ? $parent.id : '#feature-sets', href: '#feature_set_body_' + id }">
+          <a data-toggle="collapse" data-bind="attr: { 'data-parent': $parent.id, href: '#feature_set_body_' + id }">
             <div class="inline">Feature Set:</div>
             <div class="inline" data-bind="text: name"></div>
           </a>
@@ -427,13 +427,13 @@
           </a>
         </div>
         <div class="icon-column">
-          <i class="fa fa-check-square-o-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
+          <i class="fa fa-check-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
           <i class="fa fa-times-circle text-danger faded" title="Failed" data-bind="visible: lastRunResult() === -1"></i>
           <i class="fa fa-question-circle faded" title="Skipped" data-bind="visible: lastRunResult() === 0"></i>
           <i class="fa fa-adjust text-warning faded" title="Canceled" data-bind="visible: lastRunResult() === 2"></i>
         </div>
         <div class="icon-column">
-          <i class="fa fa-check-square-o-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
+          <i class="fa fa-check-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
           <i class="fa fa-times-circle text-danger" title="Failed" data-bind="visible: runResult() === -1"></i>
           <i class="fa fa-question-circle" title="Skipped" data-bind="visible: runResult() === 0"></i>
           <i class="fa fa-adjust text-warning" title="Canceled" data-bind="visible: runResult() === 2"></i>
@@ -481,7 +481,7 @@
         <div class="icon-column">
           <a class="accordion-toggle collapsed" data-toggle="collapse"
              data-bind="attr: { 'data-target': '#' + id }" href="javascript:void();">
-            <i class="fa fa-check-square-o-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
+            <i class="fa fa-check-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
             <i class="fa fa-times-circle text-danger faded" title="Failed" data-bind="visible: lastRunResult() === -1"></i>
             <i class="fa fa-question-circle text-muted faded" title="Skipped" data-bind="visible: lastRunResult() === 0"></i>
             <i class="fa fa-adjust text-warning text-muted faded" title="Canceled"
@@ -491,7 +491,7 @@
         <div class="icon-column">
           <a class="accordion-toggle collapsed" data-toggle="collapse"
              data-bind="attr: { 'data-target': '#' + id }" href="javascript:void();">
-            <i class="fa fa-check-square-o-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
+            <i class="fa fa-check-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
             <i class="fa fa-times-circle text-danger" title="Failed" data-bind="visible: runResult() === -1"></i>
             <i class="fa fa-question-circle" title="Skipped" data-bind="visible: runResult() === 0"></i>
             <i class="fa fa-adjust text-warning" title="Canceled" data-bind="visible: runResult() === 2"></i>
@@ -562,7 +562,7 @@
           </a>
         </div>
         <div class="icon-column run-result">
-          <i class="fa fa-check-square-o-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
+          <i class="fa fa-check-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
           <a class="accordion-toggle collapsed" data-toggle="collapse" href="javascript:void();"
              data-bind="attr: { 'data-target': '#' + id + '_error' }, visible: lastRunResult() === -1">
             <i class="fa fa-times-circle text-danger faded" title="Failed"></i>
@@ -571,7 +571,7 @@
           <i class="fa fa-adjust text-warning" title="Canceled" data-bind="visible: lastRunResult() === 2"></i>
         </div>
         <div class="icon-column last-run-result">
-          <i class="fa fa-check-square-o-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
+          <i class="fa fa-check-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
           <a class="accordion-toggle collapsed" data-toggle="collapse" href="javascript:void();"
              data-bind="attr: { 'data-target': '#' + id + (subSteps().length > 0 ? '' : '_error') }, visible: runResult() === -1">
             <i class="fa fa-times-circle text-danger" title="Failed"></i>

@@ -70,6 +70,7 @@
     }
     return dfd.promise();
   }
+  _this.id = 'gherkin_runner'
 
   _this.resetCounts = function () {
     _this.resetRunCounts();
@@ -288,7 +289,8 @@
         .then(function () {
           if (_this.featurePaths().length > 0) {
             var featureSet = {
-              name: "Features",
+              name: "Selected Features",
+              id: "generated/selected_features_feature_set",
               featureSetPaths: [],
               featurePaths: _this.featurePaths(),
               libraryPaths: _this.libraryPaths()
@@ -1308,14 +1310,14 @@
     var result = null;
     var dfd = $.when();
     _this.runningFeatureSet(featureSet);
-    if (featureSet.featureSets().length == 0)
+    if (featureSet.features().length > 0)
       dfd = dfd.then(function () {
         return _this.runFeatures(featureSet.features)
           .then(function (runResult) {
             result = _this.updateAggregateRunResult(result, runResult);
           });
       });
-    else
+    if(featureSet.featureSets().length > 0)
       dfd = dfd.then(function () {
         return _this.runFeatureSets(featureSet.featureSets)
           .then(function (runResult) {
@@ -1417,7 +1419,8 @@
       if (isBackground)
         scenario.state = feature.state;
       else
-        scenario.state = $.extend(true, {}, feature.state, scenario.state);
+        scenario.state = $.extend(true, {}, feature.state);
+        //scenario.state = $.extend(true, {}, feature.state, scenario.state);
       dfd = dfd.then(function () {
         return _this.runSteps(scenario)
           .then(function (runResult) {
@@ -1701,6 +1704,7 @@
   };
   _this.initializeFeatureSet = function (featureSet, featureSetPath, level) {
     featureSet = featureSet || {};
+    featureSet.id = featureSet.id || featureSetPath.replace(/\/|\-/g, '_');
     featureSet.featureSetPaths = featureSet.featureSetPaths || [];
     featureSet.featurePaths = featureSet.featurePaths || [];
     featureSet.libraryPaths = featureSet.libraryPaths || [];
