@@ -58,7 +58,7 @@ a:hover {
 
 #details {
     position: absolute;
-    top: 15em;
+    top: 16.5em;
     left: 1.5em;
     right: 1.5em;   
 }
@@ -80,10 +80,18 @@ a:hover {
     margin-top: 4em;
 }
 
-.table-very-condensed {
-    line-height: 10px;
+.table-very-condensed, table.table-very-condensed>tbody>tr>td {
+    line-height: 8px; !important
     width: auto;
     margin: 0;
+}
+
+.table-very-condensed th {
+  line-height: 10px;
+}
+
+.table-very-condensed td {
+  line-height: 10px;
 }
 
 .hover-highlighted {
@@ -179,14 +187,6 @@ span.step-group {
 
 .hover:hover .hover-visible {
     visibility: visible;
-}
-
-.table-very-condensed th {
-    line-height: 10px;
-}
-
-.table-very-condensed td {
-    line-height: 10px;
 }
 
 .preserve-space {

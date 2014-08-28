@@ -349,6 +349,7 @@
     require.undef(featureSetName);
     require([featureSetName], function (featureSet) {
       featureSet = featureSet || {};
+      featureSet.id = featureSetName.replace(/\/|\-/g,'_');
       featureSet.featureSetPaths = featureSet.featureSetPaths || [];
       featureSet.featurePaths = featureSet.featurePaths || [];
       featureSet.libraryPaths = featureSet.libraryPaths || [];
@@ -452,7 +453,7 @@
     require(["gherkin-runner/scripts/text!" + featureName + ".feature"], function (featureText) {
       _this.loadImports(featureText)
         .then(function (importedFeatureText) {
-          features.push(_this.loadFeature(importedFeatureText, arguments));
+          features.push(_this.loadFeature(importedFeatureText, featureName));
           _this.counts.features.total(_this.counts.features.total() + 1);
           dfd.resolve();
         });
@@ -481,8 +482,8 @@
     });
     return dfd.promise();
   };
-  _this.loadFeature = function (featureText) {
-    var feature = _this.parseFeature(featureText);
+  _this.loadFeature = function (featureText, featureName) {
+    var feature = _this.parseFeature(featureText, featureName);
     _this.loadStepGroups(feature.stepGroups, feature);
     _this.loadScenarios(feature.backgrounds, feature);
     _this.loadScenarios(feature.scenarios, feature);
@@ -753,7 +754,7 @@
     }
 
   };
-  _this.replaceExpression = function (value, context, state) {
+  _this.replaceExpression = function (value) {
     if (value && value.indexOf('{{') >= 0) {
       var lookups = value.match(/{{([^{{][^}}]+)}}/g);
       if (!lookups)
@@ -978,7 +979,7 @@
     });
   };
 
-  _this.parseFeature = function (featureText) {
+  _this.parseFeature = function (featureText, featureName) {
     var lines = featureText.split('\n');
     var lastRead = null;
     var feature = {};
@@ -1020,7 +1021,7 @@
           //lastRead = 'inlineComment';
         } else if (line.toLowerCase().indexOf("feature:") === 0) {
           _this.featureCount++;
-          feature.id = _this.featureCount + '_' + lineNumber;
+          feature.id = featureName.replace(/\/|\-/g,'_');
           feature.type = 'feature';
           feature.name = line.substr(9, line.length - 9);
           feature.number = _this.featureCount;
@@ -1043,7 +1044,7 @@
           || line.toLowerCase().indexOf("feature background:") === 0
           || line.toLowerCase().indexOf("feature background outline:") === 0) {
           var scenario = {};
-          scenario.id = _this.featureCount + '_' + lineNumber;
+          scenario.id = featureName.replace(/\/|\-/g,'_') + '_' + lineNumber;
           scenario.lineNumber = lineNumber;
           scenario.steps = ko.observableArray();
           scenario.examples = [];
@@ -1097,7 +1098,7 @@
         } else if (line.toLowerCase().indexOf("step group:") === 0 || line.toLowerCase().indexOf("step group outline:") === 0) {
           var outline = line.toLowerCase().indexOf("step group outline:") === 0;
           var stepGroup = {};
-          stepGroup.id = _this.featureCount + '_' + lineNumber;
+          stepGroup.id = featureName.replace(/\/|\-/g,'_') + '_' + lineNumber;
           stepGroup.used = 0;
           stepGroup.type = (outline ? 'step group outline' : 'step group');
           stepGroup.lineNumber = lineNumber;
@@ -1131,7 +1132,7 @@
           line.toLowerCase().indexOf("and ") === 0 ||
           line.toLowerCase().indexOf("but ") === 0) {
           var step = {};
-          step.id = _this.featureCount + '_' + lineNumber;
+          step.id = featureName.replace(/\/|\-/g,'_') + '_' + lineNumber;
           step.type = 'step';
           step.name = line;
           step.runCondition = null;
@@ -1620,7 +1621,7 @@
   _this.setShouldRun = function (runner, inlineArgs, context, state) {
     if (runner.runCondition != null) {
       runner.runCondition = _this.replaceParameters(runner.runCondition, inlineArgs);
-      runner.runCondition = _this.replaceExpression('{{' + runner.runCondition + '}}', context, state);
+      runner.runCondition = _this.replaceExpression('{{' + runner.runCondition + '}}');
       runner.shouldRun = eval(runner.runCondition);
     } else {
       runner.shouldRun = true;
