@@ -121,21 +121,12 @@
         <a href="javascript:void();"
            data-bind="click: $root.walkFeatureSet">
           <strong class="inline" data-bind="text: name, css: { 'text-success': selected }"></strong>
-          &nbsp;<span data-bind="text: featureSetPaths.length"></span>&nbsp;/&nbsp;<span
-          data-bind="    text: featurePaths.length"></span>
+          &nbsp;<span data-bind="text: featureSetPaths?featureSetPaths.length:0"></span>&nbsp;/&nbsp;<span
+          data-bind="text: featurePaths?featurePaths.length:0"></span>
         </a>
       </div>
     </div>
     <div class="body" data-bind="visible: expanded">
-      <div data-bind="visible: featureSets().length > 0">
-        <div class="icons">
-          <div class="icon-column">
-          </div>
-        </div>
-        <div data-bind="attr: { 'class': 'section-title inline walking-level' + (level + 1) }">Feature Sets</div>
-      </div>
-      <div data-bind="template: { name: 'featureSetWalkingTemplate', foreach: featureSets }">
-      </div>
       <div data-bind="visible: features().length > 0">
         <div class="icons">
           <div class="icon-column">
@@ -147,6 +138,15 @@
         </div>
       </div>
       <div data-bind="template: { name: 'featureWalkingTemplate', foreach: features }">
+      </div>
+      <div data-bind="visible: featureSets().length > 0">
+        <div class="icons">
+          <div class="icon-column">
+          </div>
+        </div>
+        <div data-bind="attr: { 'class': 'section-title inline walking-level' + (level + 1) }">Feature Sets</div>
+      </div>
+      <div data-bind="template: { name: 'featureSetWalkingTemplate', foreach: featureSets }">
       </div>
     </div>
   </div>
@@ -404,10 +404,10 @@
       </div>
     </div>
     <div class="body">
-      <div class="section sub-features" data-bind="template: { name: 'featureSetTemplate', foreach: featureSets }">
-      </div>
       <div id="featuresAccordian" class="accordian"
            data-bind="template: { name: 'featureTemplate', foreach: features }">
+      </div>
+      <div class="section sub-features" data-bind="template: { name: 'featureSetTemplate', foreach: featureSets }">
       </div>
     </div>
   </div>
@@ -444,7 +444,7 @@
         <a class="accordion-toggle" data-toggle="collapse"
            data-bind="attr: { href: '#feature_' + $index(), 'data-target': '#feature_' + $index() }">
                         <span><strong
-                          data-bind="text: name, css: { 'text-error': missingChildMethods || runResult() === -1 }"></strong>
+                          data-bind="text: 'Feature: ' + name, css: { 'text-error': missingChildMethods || runResult() === -1 }"></strong>
                         </span>
         </a>
       </div>
@@ -454,13 +454,10 @@
         <div data-bind="foreach: description">
           <div class="feature-description" data-bind="text: line"></div>
         </div>
-        <div class="section-title">Feature Backgrounds</div>
         <div data-bind="template: { name: 'scenarioTemplate', foreach: backgrounds }">
         </div>
-        <div class="section-title">Scenarios</div>
         <div data-bind="template: { name: 'scenarioTemplate', foreach: scenarios }">
         </div>
-        <div class="section-title">Step Groups</div>
         <div data-bind="template: { name: 'stepGroupTemplate', foreach: stepGroups }">
         </div>
       </div>
@@ -522,7 +519,7 @@
                 data-bind="visible: exampleArgDisplay, text: exampleArgDisplay"></code>
           <strong>
             <div class="inline scenario-name"
-                 data-bind="visible: !exampleArgDisplay, text: name, css: { 'text-error': missingChildMethods || runResult() == -1 }"></div>
+                 data-bind="visible: !exampleArgDisplay, text: type.substring(0,1).toUpperCase() + type.substring(1) + ': ' + name, css: { 'text-error': missingChildMethods || runResult() == -1 }"></div>
           </strong>
         </a>
       </div>
@@ -548,7 +545,7 @@
 
 <script type="text/html" id="stepTemplate">
   <div
-    data-bind="css: { substep: stepOwner.type == 'step', step: stepOwner.type != 'step', example: stepOwner.exampleArg != null || (stepOwner.stepOwner && stepOwner.stepOwner.exampleArg != null) }">
+    data-bind="css: { substep: stepOwner.type == 'step', step: stepOwner.type != 'step', outline: outline, example: stepOwner.exampleArg != null || (stepOwner.stepOwner && stepOwner.stepOwner.exampleArg != null) }">
     <div class="title hover hover-highlighted">
       <div class="icons">
         <div class="icon-column breakpoint">
@@ -596,15 +593,15 @@
         <a class="collapsed" data-toggle="collapse" href="javascript:void();"
            data-bind="attr: { 'data-target': '#' + id }">
           <div data-bind="css: { 'text-error': missingChildMethods || missingMethod }">
-            <span data-bind="text: name"></span><span
-            data-bind="    visible: runCondition, text: ' if(' + runCondition + ')'"></span>
+            <span data-bind="text: name" class="step-group"></span><span
+              data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
           </div>
         </a>
         <!-- /ko -->
         <!-- ko if: $data.subSteps().length === 0-->
         <div data-bind="css: { 'text-error': missingChildMethods || missingMethod }">
-          <span data-bind="text: name"></span><span
-          data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
+          <span data-bind="text: name, css: {'step-group': methodName === 'Step Group'}"></span><span
+            data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
         </div>
         <!-- /ko -->
       </div>
@@ -620,7 +617,7 @@
               <span>Method Name: </span><code data-bind="text: libraryMethodName"></code>
             </div>
             <div>
-              <span>Method: </span><pre><code data-bind="text: method.toString()"></code></pre>
+              <span>Method: </span><pre><code data-bind="text: method ? method.toString() : ''"></code></pre>
             </div>
           </small>
         </div>
@@ -689,7 +686,7 @@
       <div class="name">
         <a class="accordion-toggle collapsed" data-toggle="collapse" href="javascript:void();"
            data-bind="attr: { 'data-target': '#' + id }">
-          <span data-bind="text: name, css: { 'text-error': missingChildMethods }"></span>
+          <span data-bind="text: 'Step Group: ' + name, css: { 'text-error': missingChildMethods }"></span>
           (<span data-bind="text: used, attr: {title: 'Used ' + used + ' times'}"></span>)
         </a>
       </div>
@@ -705,7 +702,10 @@
 <script type="text/javascript">
   $(document).ready(function () {
     requirejs.onError = function (err) {
-      alert("error: "+err);
+      var errorMsg = "error: "+err+"\n"+err.stack;
+      console.log(err);
+      console.log(errorMsg);
+      alert(errorMsg);
     };
     require.config({ baseUrl: "/" });
     require(["gherkin-runner/gherkinRunner"/*, "../GherkinRunnerConfiguration?noExt"*/], function (gherkinRunner, config) {

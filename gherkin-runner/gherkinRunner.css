@@ -119,6 +119,10 @@ a:hover {
     margin-left: 5.5em;
 }
 
+span.step-group {
+  font-weight: bold;
+}
+
 .substep.example .name {
     margin-left: 7.5em;
 }
@@ -147,6 +151,10 @@ a:hover {
 
 .scenario .example-arg-value {
     margin-left: 3.5em;
+}
+
+.step.outline {
+  font-style: italic;
 }
 
 .step .table-arg {

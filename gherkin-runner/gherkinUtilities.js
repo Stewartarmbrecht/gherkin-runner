@@ -114,6 +114,11 @@ define([], function () {
 
     return errorMsg;
   };
+  _this.compareMultiLineStrings = function (expectedString, actualString) {
+    var expectedArray = this.convertMultlineStringToLineArray(expectedString),
+        actualArray = this.convertMultlineStringToLineArray(actualString);
+    return _this.compareStringArrays(expectedArray, actualArray);
+  };
   _this.convertMultlineStringToLineArray = function(multiLineString) {
     var multiLineArray = multiLineString;
     if (multiLineString.indexOf('\r\n') > -1)

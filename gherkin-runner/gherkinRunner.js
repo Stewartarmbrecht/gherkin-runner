@@ -348,6 +348,10 @@
     var dfd = new $.Deferred();
     require.undef(featureSetName);
     require([featureSetName], function (featureSet) {
+      featureSet = featureSet || {};
+      featureSet.featureSetPaths = featureSet.featureSetPaths || [];
+      featureSet.featurePaths = featureSet.featurePaths || [];
+      featureSet.libraryPaths = featureSet.libraryPaths || [];
       _this.loadFeatureSet(featureSet, featureSets)
         .then(function () {
           dfd.resolve();
@@ -521,7 +525,7 @@
         _this.loadSubSteps(feature.stepGroups, step);
       }
       if (step.outline == true) {
-        step.methodName = 'Step Group';
+        step.methodName = 'Outline';
         step.method = function () {
         };
       } else {
@@ -541,7 +545,7 @@
             }
             //_this.loadInlineArgs(subStep);
             _this.loadStepMethod(subStep, feature, true);
-            subStep.name = _this.replaceExampleParameters(subStep.name, stepOwner.exampleArg);
+            subStep.name = _this.replaceExampleParameters(subStep.name, scenarioOrStepGroup.exampleArg);
           });
         } else {
           if (scenarioOrStepGroup.type.indexOf('background') > -1 && scenarioOrStepGroup.type.indexOf('outline') == -1) {
@@ -712,8 +716,10 @@
     var methodName = null;
     methodNameSplit = step.name.split('##');
     methodName = methodNameSplit[0].trim();
-    if (methodNameSplit[1])
+    if (methodNameSplit[1]){
+      step.comment = step.comment || ko.observable();
       step.comment(methodNameSplit[1]);
+    }
     step.methodName = _this.getMethodName(step);
   };
   _this.loadInlineArgs = function (step) {
@@ -909,13 +915,13 @@
               if (step.missingChildMethods || step.missingMethod)
                 resultMissingChildMethod = true;
             });
-          else if (item.subSteps && item.subSteps().length > 0)
+          else if (item.subSteps && item.subSteps().length > 0 && !(item.outline && item.type == 'step'))
             $.each(item.subSteps(), function (index, subStep) {
               computeProperties(subStep);
               if (subStep.missingMethod)
                 resultMissingChildMethod = true;
             });
-          if (item.clones && item.clones.length > 0)
+          if (item.clones && item.clones.length > 0 && !(item.outline && item.type == 'step'))
             $.map(item.clones, function (example) {
               computeProperties(example);
               if (example.missingChildMethods)
@@ -1689,6 +1695,10 @@
     });
   };
   _this.initializeFeatureSet = function (featureSet, featureSetPath, level) {
+    featureSet = featureSet || {};
+    featureSet.featureSetPaths = featureSet.featureSetPaths || [];
+    featureSet.featurePaths = featureSet.featurePaths || [];
+    featureSet.libraryPaths = featureSet.libraryPaths || [];
     featureSet.path = featureSetPath;
     featureSet.featureSets = ko.observableArray();
     featureSet.features = ko.observableArray();
