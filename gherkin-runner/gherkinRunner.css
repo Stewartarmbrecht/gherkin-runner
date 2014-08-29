@@ -265,7 +265,7 @@ span.step-group {
   margin: .5em 1em .5em 1em;
 }
 
-.feature-set > div.title > div.name {
+.gherkin-ui .feature-set > div.title > div.name {
   margin-left: 1em;
 }
 
