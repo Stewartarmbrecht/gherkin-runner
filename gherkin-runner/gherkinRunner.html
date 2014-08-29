@@ -22,7 +22,7 @@
 <iframe id="uitestwindow" width="100%" height="100%" style="display: none"></iframe>
 <iframe id="apitestwindow" width="100%" height="100%" style="display: none"></iframe>
 
-<div id="gherkin-walker-ui" class="container-fluid" data-bind="visible: view() == 'Walking'">
+<div id="gherkin-walker-ui" class="container-fluid hidden" data-bind="css: { hidden: view() == 'Running'}">
   <h2>Features Outline</h2>
 
   <div>
@@ -56,7 +56,7 @@
   </div>
 </div>
 
-<div id="gherkin-ui" class="container-fluid" data-bind="visible: view() == 'Running'">
+<div id="gherkin-ui" class="container-fluid hidden" data-bind="css: { hidden: view() != 'Running'}">
   <div class="row">
     <div id="gherkin-counts" class="counts"
          data-bind="template: { name: 'countsTemplate', data: counts }, css: { faded: uiWindowVisible }"></div>
