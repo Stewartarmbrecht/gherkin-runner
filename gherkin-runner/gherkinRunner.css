@@ -154,7 +154,7 @@ span.step-group {
 }
 
 .scenario .example-arg-columns {
-    margin-left: 12.5em;
+    margin-left: 12.1em;
 }
 
 .scenario .example-arg-value {
@@ -279,4 +279,12 @@ span.step-group {
 
 .feature-description-section {
   margin-bottom: .75em;
+}
+
+.feature-set-label {
+  margin-left: .5em;
+}
+
+.can-click {
+  cursor: pointer;
 }

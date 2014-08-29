@@ -1,5 +1,17 @@
 ﻿define(function () {
   var _this = {};
+
+  _this.encodeId = function encodeId(value) {
+    var hash = 0, i, chr, len;
+    if (value.length == 0) return hash;
+    for (i = 0, len = value.length; i < len; i++) {
+      chr   = value.charCodeAt(i);
+      hash  = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return 'gr' + hash;
+  };
+
   _this.configUrl = null;
   _this.config = {};
   _this.view = ko.observable('Walking');
@@ -21,10 +33,10 @@
     scenarios: { defined: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
     stepGroups: { defined: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
     steps: { defined: ko.observable(0), missingMethods: ko.observable(0), background: ko.observable(0), scenario: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
-    subSteps: { defined: ko.observable(0), missingMethods: ko.observable(0), background: ko.observable(0), scenario: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
+    subSteps: { defined: ko.observable(0), missingMethods: ko.observable(0), background: ko.observable(0), scenario: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) }
   };
   _this.countsPosition = ko.observable('left');
-  _this.countsMove = function () {
+  _this.countsMove = function countsMove() {
     if (_this.countsPosition() == 'left') {
       _this.countsPosition('right');
       $('#gherkin-counts').addClass('right');
@@ -34,7 +46,7 @@
     }
   };
   _this.toggleUIButtonPosition = ko.observable('right');
-  _this.toggleUIButtonMove = function () {
+  _this.toggleUIButtonMove = function toggleUIButtonMove() {
     if (_this.toggleUIButtonPosition() == 'left') {
       _this.toggleUIButtonPosition('right');
       $('#gherkin-toggle-ui-button').removeClass('left');
@@ -44,17 +56,17 @@
     }
   };
   _this.canceled = false;
-  _this.cancel = function () {
+  _this.cancel = function cancel() {
     _this.canceled = true;
   };
   _this.paused = ko.observable(false);
-  _this.pauseOrUnPause = function () {
+  _this.pauseOrUnPause = function pauseOrUnPause() {
     if (_this.paused())
       _this.paused(false);
     else
       _this.paused(true);
   };
-  _this.pauseIfNeeded = function () {
+  _this.pauseIfNeeded = function pauseIfNeeded() {
     var dfd = new $.Deferred();
     var count = 0;
     var paused = _this.paused;
@@ -70,9 +82,9 @@
     }
     return dfd.promise();
   }
-  _this.id = 'gherkin_runner'
+  _this.id = _this.encodeId('gherkin_runner');
 
-  _this.resetCounts = function () {
+  _this.resetCounts = function resetCounts() {
     _this.resetRunCounts();
     _this.counts.featureSets.total(0);
     _this.counts.featureSets.run(0);
@@ -96,7 +108,7 @@
     _this.counts.subSteps.scenario(0);
     _this.counts.subSteps.total(0);
   };
-  _this.resetRunCounts = function () {
+  _this.resetRunCounts = function resetRunCounts() {
     _this.counts.features.run(0);
     _this.counts.features.pass(0);
     _this.counts.features.fail(0);
@@ -122,7 +134,7 @@
     _this.counts.subSteps.fail(0);
     _this.counts.subSteps.skip(0);
   };
-  _this.resetRunResults = function () {
+  _this.resetRunResults = function resetRunResults() {
     $.each(_this.needComputedProperties.reverse(), function (index, item) {
       if (item.aborted || item.aborted !== undefined) {
         item.aborted = false;
@@ -138,10 +150,10 @@
       item.runResult(null);
     });
   };
-  _this.resetDefinitions = function () {
+  _this.resetDefinitions = function resetDefinitions() {
     _this.libraryMethods = [];
   };
-  _this.resetState = function () {
+  _this.resetState = function resetState() {
     $.each(_this.needComputedProperties.reverse(), function (index, item) {
       if (item.state) {
         item.state = {};
@@ -149,10 +161,10 @@
     });
   };
 
-  _this.addFeatureSet = function (featureSetPath) {
+  _this.addFeatureSet = function addFeatureSet(featureSetPath) {
     _this.featureSetPaths.push(featureSetPath);
   };
-  _this.toggleFeatureSetSelection = function (walkingFeatureSet) {
+  _this.toggleFeatureSetSelection = function toggleFeatureSetSelection(walkingFeatureSet) {
     if (walkingFeatureSet.selected()) {
       _this.featureSetPaths.remove(walkingFeatureSet.path);
       _this.selectedFeatureSets.remove(walkingFeatureSet);
@@ -165,7 +177,7 @@
     _this.featureSetPaths.sort(_this.sortPaths);
     _this.selectedFeatureSets.sort(_this.sortPathObjects);
   };
-  _this.toggleFeatureSelection = function (walkingFeature, walkingFeatureSet) {
+  _this.toggleFeatureSelection = function toggleFeatureSelection(walkingFeature, walkingFeatureSet) {
     walkingFeature.libraryPaths = walkingFeatureSet.libraryPaths;
     if (walkingFeature.selected()) {
       _this.featurePaths.remove(walkingFeature.path);
@@ -180,7 +192,7 @@
     _this.selectedFeatures.sort(_this.sortPathObjects);
   };
 
-  _this.sortPaths = function (a, b) {
+  _this.sortPaths = function sortPaths(a, b) {
     var aLevels = a.split('/').length;
     var bLevels = b.split('/').length;
     if (a == b)
@@ -198,7 +210,7 @@
       }
     }
   };
-  _this.sortPathObjects = function (a, b) {
+  _this.sortPathObjects = function sortPathObjects(a, b) {
     var aLevels = a.path.split('/').length;
     var bLevels = b.path.split('/').length;
     if (a.path == b.path)
@@ -217,10 +229,10 @@
     }
   };
 
-  _this.addFeature = function (featurePath) {
+  _this.addFeature = function addFeature(featurePath) {
     _this.featurePaths(featurePath);
   };
-  _this.addFeaturesFromUrl = function (featurePath) {
+  _this.addFeaturesFromUrl = function addFeaturesFromUrl(featurePath) {
     var featureSetPathParam = _this.getURLParameter("featureSetPaths");
     if (featureSetPathParam != 'null') {
       var split = featureSetPathParam.split(',');
@@ -243,7 +255,7 @@
       });
     }
   };
-  _this.stringToBoolean = function (string) {
+  _this.stringToBoolean = function stringToBoolean(string) {
     switch (string.toLowerCase()) {
       case "true":
       case "yes":
@@ -260,7 +272,7 @@
   };
 
   _this.start = null;
-  _this.log = function (message) {
+  _this.log = function log(message) {
     if (!_this.start)
       _this.start = new Date().getTime();
     if (console && console.log)
@@ -268,7 +280,7 @@
   };
 
   _this.loaded = ko.observable(false);
-  _this.load = function () {
+  _this.load = function load() {
     _this.loaded(false);
     var start = new Date().getTime();
     _this.status('Loading...');
@@ -290,7 +302,7 @@
           if (_this.featurePaths().length > 0) {
             var featureSet = {
               name: "Selected Features",
-              id: "generated/selected_features_feature_set",
+              id: "generated_selected_features_feature_set",
               featureSetPaths: [],
               featurePaths: _this.featurePaths(),
               libraryPaths: _this.libraryPaths()
@@ -324,7 +336,7 @@
     return dfd.promise();
   };
 
-  _this.loadConfiguration = function () {
+  _this.loadConfiguration = function loadConfiguration() {
     var dfd = $.Deferred();
     if (_this.configUrl) {
       require.undef(_this.configUrl);
@@ -337,7 +349,7 @@
       dfd.resolve();
     return dfd.promise();
   };
-  _this.loadFeatureSets = function (featureSetPaths, featureSets) {
+  _this.loadFeatureSets = function loadFeatureSets(featureSetPaths, featureSets) {
     var dfd = $.when();
     $.each(featureSetPaths, function (index, featureSetName) {
       dfd = dfd.then(function () {
@@ -346,12 +358,12 @@
     });
     return dfd.promise();
   };
-  _this.loadFeatureSetFile = function (featureSetName, featureSets) {
+  _this.loadFeatureSetFile = function loadFeatureSetFile(featureSetName, featureSets) {
     var dfd = new $.Deferred();
     require.undef(featureSetName);
     require([featureSetName], function (featureSet) {
       featureSet = featureSet || {};
-      featureSet.id = featureSetName.replace(/\/|\-/g,'_');
+      featureSet.id = _this.encodeId(featureSetName);
       featureSet.featureSetPaths = featureSet.featureSetPaths || [];
       featureSet.featurePaths = featureSet.featurePaths || [];
       featureSet.libraryPaths = featureSet.libraryPaths || [];
@@ -362,7 +374,7 @@
     });
     return dfd.promise();
   };
-  _this.loadFeatureSet = function (featureSet, featureSets) {
+  _this.loadFeatureSet = function loadFeatureSet(featureSet, featureSets) {
     var dfd = $.when();
     featureSet.features = ko.observableArray();
     featureSet.featureSets = ko.observableArray();
@@ -389,8 +401,8 @@
       });
     return dfd.promise();
   };
-  _this.loadLibraries = function () {
-    var addLibraryPaths = function (libraryPaths) {
+  _this.loadLibraries = function loadLibraries() {
+    var addLibraryPaths = function addLibraryPaths(libraryPaths) {
       libraryPaths.forEach(function (libraryPath) {
         if (!_this.libraryPaths().indexOf(libraryPath) > -1)
           _this.libraryPaths.push(libraryPath);
@@ -414,32 +426,32 @@
     });
     return dfd.promise();
   };
-  _this.loadLibraryFile = function (libraries, libraryName) {
+  _this.loadLibraryFile = function loadLibraryFile(libraries, libraryName) {
     var dfd = new $.Deferred();
     require.undef(libraryName);
     require([libraryName], function (library) {
-      library.name = libraryName;
       var libraryLoader = {
-        Given: function (methodName, func) {
-          library[methodName] = func;
+        Given: function Given(methodName, func) {
+          libraryLoader[methodName] = func;
         },
-        When: function (methodName, func) {
-          library[methodName] = func;
+        When: function When(methodName, func) {
+          libraryLoader[methodName] = func;
         },
-        Then: function (methodName, func) {
-          library[methodName] = func;
+        Then: function Then(methodName, func) {
+          libraryLoader[methodName] = func;
         },
-        And: function (methodName, func) {
-          library[methodName] = func;
+        And: function And(methodName, func) {
+          libraryLoader[methodName] = func;
         }
       };
+      libraryLoader.name = libraryName;
       library.call(libraryLoader);
-      libraries.push(library);
+      libraries.push(libraryLoader);
       dfd.resolve();
     });
     return dfd.promise();
   };
-  _this.loadFeatures = function (featurePaths, features) {
+  _this.loadFeatures = function loadFeatures(featurePaths, features) {
     featurePaths = featurePaths || [];
     var dfd = $.when();
     $.each(featurePaths, function (index, featureName) {
@@ -449,7 +461,7 @@
     });
     return dfd.promise();
   };
-  _this.loadFeatureFile = function (features, featureName) {
+  _this.loadFeatureFile = function loadFeatureFile(features, featureName) {
     var dfd = new $.Deferred();
     require.undef("gherkin-runner/scripts/text!" + featureName + ".feature");
     require(["gherkin-runner/scripts/text!" + featureName + ".feature"], function (featureText) {
@@ -462,7 +474,7 @@
     });
     return dfd.promise();
   };
-  _this.loadImports = function (featureText) {
+  _this.loadImports = function loadImports(featureText) {
     var lines = featureText.split('\n');
     var importIndexes = [];
     var importPaths = [];
@@ -484,14 +496,14 @@
     });
     return dfd.promise();
   };
-  _this.loadFeature = function (featureText, featureName) {
+  _this.loadFeature = function loadFeature(featureText, featureName) {
     var feature = _this.parseFeature(featureText, featureName);
     _this.loadStepGroups(feature.stepGroups, feature);
     _this.loadScenarios(feature.backgrounds, feature);
     _this.loadScenarios(feature.scenarios, feature);
     return feature;
   };
-  _this.loadScenarios = function (scenarios, feature) {
+  _this.loadScenarios = function loadScenarios(scenarios, feature) {
     $.each(scenarios(), function (index, scenario) {
       if (scenario.outline) {
         _this.loadExamples(scenario, feature);
@@ -504,7 +516,7 @@
       }
     });
   };
-  _this.loadExamples = function (outline, feature) {
+  _this.loadExamples = function loadExamples(outline, feature) {
     $.each(outline.examples, function (index, example) {
       var scenario = _this.cloneOutlineToScenario(outline, index);
       scenario.exampleArg = example;
@@ -513,28 +525,27 @@
     _this.loadSteps(outline.steps, feature, outline);
     _this.loadScenarios(outline.scenarios, feature);
   };
-  _this.loadStepGroups = function (stepGroups, feature) {
+  _this.loadStepGroups = function loadStepGroups(stepGroups, feature) {
     $.each(stepGroups(), function (index, stepGroup) {
       _this.counts.stepGroups.defined(_this.counts.stepGroups.defined() + 1);
       _this.loadSteps(stepGroup.steps, feature, stepGroup);
     });
   };
-  _this.loadSteps = function (steps, feature, scenarioOrStepGroup) {
+  _this.loadSteps = function loadSteps(steps, feature, scenarioOrStepGroup) {
     $.each(steps(), function (index, step) {
       if (_this.breakpoints().indexOf(step.id) >= 0)
-        debugger;
-      _this.loadInlineArgs(step);
+      //_this.loadInlineArgs(step);
       if (scenarioOrStepGroup.type.indexOf('step group') === -1 && step.outline == false) {
         _this.loadSubSteps(feature.stepGroups, step);
       }
       if (step.outline == true) {
         step.methodName = 'Outline';
-        step.method = function () {
+        step.method = function method() {
         };
       } else {
         if (step.subSteps().length > 0) {
           step.methodName = 'Step Group';
-          step.method = function () {
+          step.method = function method() {
           };
           _this.counts.stepGroups.total(_this.counts.stepGroups.total() + 1);
           $.each(step.subSteps(), function (index, subStep) {
@@ -565,7 +576,7 @@
       }
     });
   };
-  _this.loadSubSteps = function (stepGroups, step, scenario) {
+  _this.loadSubSteps = function loadSubSteps(stepGroups, step, scenario) {
     var stepName = _this.getMethodName(step)
     var foundStepGroup = null;
     $.each(stepGroups(), function (index, stepGroup) {
@@ -598,7 +609,7 @@
       }
     }
   };
-  _this.copyStepGroupStep = function (subStep, step, outlineParameters) {
+  _this.copyStepGroupStep = function copyStepGroupStep(subStep, step, outlineParameters) {
     var stepCopy = _this.cloneOutlineStepToStep(subStep);
 
     stepCopy.name = _this.replaceParameters(stepCopy.name, step.inlineArgs);
@@ -607,7 +618,7 @@
     if (outlineParameters)
       stepCopy.name = _this.replaceStepGroupOutlineParameters(stepCopy.name, outlineParameters);
 
-    _this.loadInlineArgs(stepCopy);
+    //_this.loadInlineArgs(stepCopy);
 
     $.merge(stepCopy.inlineArgs, step.inlineArgs);
     if (stepCopy.tableArgColumns.length > 0 && stepCopy.tableArgColumns[0].trim() == 'PARENT_TABLE_ARG') {
@@ -669,7 +680,7 @@
   }
   _this.libraryMethods = [];
   _this.recommendedMethods = ko.observableArray();
-  _this.loadStepMethod = function (step, feature, isSubStep) {
+  _this.loadStepMethod = function loadStepMethod(step, feature, isSubStep) {
     _this.loadStepMethodName(step);
     $.each(_this.libraries(), function (index, library) {
       if (!step.method)
@@ -677,8 +688,9 @@
           if (typeof library[property] === 'function') {
             var matcher = property;
             if (matcher.indexOf('/') === 0) {
-              matcher = new RegExp(matcher.substring(1, matcher.length - 1).toLowerCase());
-              if (step.methodName.toLowerCase().match(matcher)) {
+              matcher = new RegExp(matcher.substring(1, matcher.length - 1));
+              if (step.methodName.match(matcher)) {
+                step.inlineArgs = step.methodName.match(matcher).slice(1);
                 step.method = library[property];
                 step.libraryName = library.name;
                 step.libraryMethodName = property;
@@ -692,7 +704,7 @@
                 }
               }
             } else {
-              if (step.methodName.toLowerCase() === matcher.toLowerCase()) {
+              if (step.methodName === matcher) {
                 step.method = library[property];
                 step.libraryName = library.name;
                 step.libraryMethodName = property;
@@ -719,7 +731,7 @@
         _this.recommendedMethods.push(recommendedMethod);
     }
   };
-  _this.loadStepMethodName = function (step) {
+  _this.loadStepMethodName = function loadStepMethodName(step) {
     var methodName = null;
     methodNameSplit = step.name.split('##');
     methodName = methodNameSplit[0].trim();
@@ -729,40 +741,40 @@
     }
     step.methodName = _this.getMethodName(step);
   };
-  _this.loadInlineArgs = function (step) {
-    step.inlineArgs = step.name.match(/"[^"]*"/g);
-    if (!step.inlineArgs)
-      step.inlineArgs = [];
-    if (step.inlineArgs && step.inlineArgs.length > 0)
-      $.each(step.inlineArgs, function (index, token) {
-        if (token != null)
-          step.inlineArgs[index] = token.substring(1, token.length - 1);
-      });
-
-  };
+//  _this.loadInlineArgs = function loadInlineArgs(step) {
+//    step.inlineArgs = step.name.match(/"[^"]*"/g);
+//    if (!step.inlineArgs)
+//      step.inlineArgs = [];
+//    if (step.inlineArgs && step.inlineArgs.length > 0)
+//      $.each(step.inlineArgs, function (index, token) {
+//        if (token != null)
+//          step.inlineArgs[index] = token.substring(1, token.length - 1);
+//      });
+//
+//  };
 
   //The signature below matches the signature called for a step method.
-  _this.replaceExpressions = function (context, state, inlineArgs, tableArg, exampleArg) {
+  _this.replaceExpressions = function replaceExpressions(state, inlineArgs, multiLineArg, tableArgArray) {
     $.each(inlineArgs, function (index, inlineArg) {
-      inlineArgs[index] = _this.replaceExpression(inlineArg, context, state);
+      inlineArgs[index] = _this.replaceExpression.apply(state, [inlineArg]);
     });
-    $.each(tableArg, function (indexTR, tableRow) {
+    if(multiLineArg)
+      multiLineArg.forEach(function(lineArg){
+        _this.replaceExpression.apply(state, [lineArg]);
+      });
+    $.each(tableArgArray, function (indexTR, tableRow) {
       for (var property in tableRow) {
-        tableRow[property] = _this.replaceExpression(tableRow[property], context, state);
+        tableRow[property] = _this.replaceExpression.apply(state, [tableRow[property]]);
       }
     });
-    for (var property in exampleArg) {
-      exampleArg[property] = _this.replaceExpression(exampleArg[property], context, state);
-    }
-
   };
-  _this.replaceExpression = function (value) {
+  _this.replaceExpression = function replaceExpression(value) {
     if (value && value.indexOf('{{') >= 0) {
-      var lookups = value.match(/{{([^{{][^}}]+)}}/g);
-      if (!lookups)
+      var expressions = value.match(/{{([^{{][^}}]+)}}/g);
+      if (!expressions)
         throw new Error('Javascript function could not be parsed: ' + value);
 
-      $.each(lookups, function (i, lookup) {
+      $.each(expressions, function (i, lookup) {
         var lookupExp = lookup.substring(2, lookup.length - 2);
         try {
           var lookupValue = eval(lookupExp);
@@ -774,21 +786,21 @@
     }
     return value;
   };
-  _this.replaceParameters = function (value, parameters) {
+  _this.replaceParameters = function replaceParameters(value, parameters) {
     $.each(parameters, function (index, parameter) {
       value = value.replace(new RegExp('\\{' + index.toString() + '\\}', 'g'), parameter.toString());
     });
     return value;
   };
-  _this.replaceExampleParameters = function (value, exampleArg) {
-    if (exampleArg) {
+  _this.replaceExampleParameters = function replaceExampleParameters(value, exampleArg) {
+    if (exampleArg && value && value.replace) {
       for (var property in exampleArg) {
         value = value.replace(new RegExp('\\<' + property + '\\>', 'g'), exampleArg[property].toString());
       }
     }
     return value;
   };
-  _this.replaceStepGroupOutlineParameters = function (value, parameters) {
+  _this.replaceStepGroupOutlineParameters = function replaceStepGroupOutlineParameters(value, parameters) {
     if (parameters) {
       for (var property in parameters) {
         value = value.replace(new RegExp('\\[\\[' + property + '\\]\\]', 'g'), parameters[property].toString());
@@ -797,7 +809,7 @@
     return value;
   };
 
-  _this.getMethodName = function (step) {
+  _this.getMethodName = function getMethodName(step) {
     var methodName = null;
     methodNameSplit = step.name.split('##');
     methodName = methodNameSplit[0].trim();
@@ -811,7 +823,7 @@
       methodName = methodName.substr(5, step.name.length - 5);
     return methodName;
   };
-  _this.cloneOutlineToScenario = function (outline, exampleIndex) {
+  _this.cloneOutlineToScenario = function cloneOutlineToScenario(outline, exampleIndex) {
     var steps = ko.observableArray();
     var clone = {
       id: outline.id + '_' + outline.clones.length + 1,
@@ -849,13 +861,13 @@
     outline.clones[outline.clones.length] = clone;
     return clone;
   };
-  _this.cloneOutlineStepToStep = function (step, exampleArg) {
+  _this.cloneOutlineStepToStep = function cloneOutlineStepToStep(step, exampleArg) {
     var subSteps = ko.observableArray();
     var clone =
     {
       id: step.id + '_' + step.clones.length + 1,
       type: step.type,
-      name: _this.replaceExampleParameters(step.name, exampleArg),
+      name: step.name,
       runCondition: step.runCondition,
       originalName: step.originalName,
       lineNumber: step.lineNumber,
@@ -871,7 +883,7 @@
       methodName: step.methodName,
       method: step.method,
       inlineArgs: step.inlineArgs.slice(0),
-      multiLineArg: step.multiLineArg,
+      multiLineArg: step.multiLineArg.slice(0),
       libraryName: step.libraryName,
       libraryMethodName: step.libraryMethodName,
       libraryMethodFullName: step.libraryMethodFullName,
@@ -881,6 +893,9 @@
     if (exampleArg) {
       clone.name = _this.replaceExampleParameters(clone.name, exampleArg);
       clone.runCondition = (step.runCondition ? _this.replaceExampleParameters(step.runCondition, exampleArg) : null);
+      clone.multiLineArg.forEach(function(lineArg, index){
+        clone.multiLineArg[index] = (lineArg ? _this.replaceExampleParameters(lineArg, exampleArg) : null);
+      });
     }
     _this.needComputedProperties[_this.needComputedProperties.length] = clone;
     $.each(step.subSteps(), function (index, subStep) {
@@ -889,12 +904,22 @@
       subSteps.push(stepClone);
     });
 
-    $.each(step.tableArgArray, function (index, tableArg) {
-      var cloneTableArg = tableArg.slice(0);
-      clone.tableArgArray[index] = cloneTableArg;
+    $.each(step.tableArgArray, function (index, rowArg) {
+      var cloneRowArg = rowArg.slice(0);
+      if(exampleArg) {
+        $.each(cloneRowArg, function(index, columnArg) {
+          cloneRowArg[index] = _this.replaceExampleParameters(columnArg, exampleArg);
+        });
+      }
+      clone.tableArgArray[index] = cloneRowArg;
     });
     $.each(step.tableArg, function (index, tableRow) {
       var cloneTableRow = $.extend(true, {}, tableRow);
+      if(exampleArg) {
+        Object.keys(cloneTableRow).forEach(function(prop) {
+          cloneTableRow[prop] = _this.replaceExampleParameters(cloneTableRow[prop], exampleArg);
+        });
+      }
       clone.tableArg[index] = cloneTableRow;
     });
     step.clones[step.clones.length] = clone;
@@ -902,8 +927,8 @@
   };
 
   _this.needComputedProperties = [];
-  _this.addComputedProperties = function () {
-    var computeProperties = function (item) {
+  _this.addComputedProperties = function addComputedProperties() {
+    var computeProperties = function computeProperties(item) {
       if (!item.computed) {
         if (item.type != 'feature') {
           var resultMissingMethod = false;
@@ -981,7 +1006,7 @@
     });
   };
 
-  _this.parseFeature = function (featureText, featureName) {
+  _this.parseFeature = function parseFeature(featureText, featureName) {
     var lines = featureText.split('\n');
     var lastRead = null;
     var feature = {};
@@ -1023,7 +1048,7 @@
           //lastRead = 'inlineComment';
         } else if (line.toLowerCase().indexOf("feature:") === 0) {
           _this.featureCount++;
-          feature.id = featureName.replace(/\/|\-/g,'_');
+          feature.id = _this.encodeId(featureName);
           feature.type = 'feature';
           feature.name = line.substr(9, line.length - 9);
           feature.number = _this.featureCount;
@@ -1046,7 +1071,6 @@
           || line.toLowerCase().indexOf("feature background:") === 0
           || line.toLowerCase().indexOf("feature background outline:") === 0) {
           var scenario = {};
-          scenario.id = featureName.replace(/\/|\-/g,'_') + '_' + lineNumber;
           scenario.lineNumber = lineNumber;
           scenario.steps = ko.observableArray();
           scenario.examples = [];
@@ -1071,24 +1095,28 @@
           if (line.toLowerCase().indexOf("scenario:") === 0) {
             scenario.type = 'scenario';
             scenario.name = line.trim().substr(10, line.length - 10);
+            scenario.id = _this.encodeId(featureName + '_' + scenario.name);
             scenario.outline = false;
             feature.scenarios.push(scenario);
             lastRead = 'scenario';
           } else if (line.toLowerCase().indexOf("scenario outline:") === 0) {
             scenario.type = 'scenario outline';
             scenario.name = line.trim().substr(18, line.length - 18);
+            scenario.id = _this.encodeId(featureName + '_' + scenario.name);
             scenario.outline = true;
             feature.scenarios.push(scenario);
             lastRead = 'scenario outline';
           } else if (line.toLowerCase().indexOf("feature background:") === 0) {
             scenario.type = 'feature background';
             scenario.name = line.trim().substr(19, line.length - 19);
+            scenario.id = _this.encodeId(featureName + '_' + scenario.name);
             scenario.outline = false;
             feature.backgrounds.push(scenario);
             lastRead = 'feature background';
           } else if (line.toLowerCase().indexOf("feature background outline:") === 0) {
             scenario.type = 'feature background outline';
             scenario.name = line.trim().substr(27, line.length - 27);
+            scenario.id = _this.encodeId(featureName + '_' + scenario.name);
             scenario.outline = true;
             feature.backgrounds.push(scenario);
             lastRead = 'feature background outline';
@@ -1100,7 +1128,6 @@
         } else if (line.toLowerCase().indexOf("step group:") === 0 || line.toLowerCase().indexOf("step group outline:") === 0) {
           var outline = line.toLowerCase().indexOf("step group outline:") === 0;
           var stepGroup = {};
-          stepGroup.id = featureName.replace(/\/|\-/g,'_') + '_' + lineNumber;
           stepGroup.used = 0;
           stepGroup.type = (outline ? 'step group outline' : 'step group');
           stepGroup.lineNumber = lineNumber;
@@ -1108,6 +1135,7 @@
           stepGroup.multiLineArg = [];
           stepGroup.steps = ko.observableArray();
           stepGroup.name = (outline ? line.trim().substr(19, line.trim().length - 19).trim() : line.trim().substr(11, line.trim().length - 11).trim());
+          stepGroup.id = _this.encodeId(featureName + '_' + stepGroup.name);
           stepGroup.runCondition = null;
           if (stepGroup.name.indexOf('if(') > -1) {
             stepGroup.runCondition = stepGroup.name.trim().substring(stepGroup.name.trim().indexOf('if(') + 3, stepGroup.name.trim().length - 1);
@@ -1122,7 +1150,7 @@
         } else if ((lastRead == 'feature' || lastRead == 'featureDescription') && line.indexOf('<div') !== 0) {
           feature.description.push(
             {
-              id: _this.featureCount + '_' + lineNumber,
+              id: _this.encodeId(featureName + '_' + lineNumber),
               type: 'feature description',
               line: ko.observable(line.trim()),
               lineNumber: lineNumber
@@ -1134,9 +1162,9 @@
           line.toLowerCase().indexOf("and ") === 0 ||
           line.toLowerCase().indexOf("but ") === 0) {
           var step = {};
-          step.id = featureName.replace(/\/|\-/g,'_') + '_' + lineNumber;
           step.type = 'step';
           step.name = line;
+          step.id = _this.encodeId(featureName + '_' + stepOwner.id + '_' + step.name);
           step.runCondition = null;
           if (step.name.indexOf('if(') > -1) {
             step.runCondition = step.name.trim().substring(step.name.trim().indexOf('if(') + 3, step.name.trim().length - 1);
@@ -1214,7 +1242,7 @@
     return feature;
   };
 
-  _this.run = function () {
+  _this.run = function run() {
     _this.status('Running!');
     _this.log('Reseting run counts...');
     _this.resetRunCounts();
@@ -1244,10 +1272,10 @@
         _this.canceled = false;
       });
   };
-  _this.runSingleScenarioAndResetState = function (scenario, event) {
+  _this.runSingleScenarioAndResetState = function runSingleScenarioAndResetState(scenario, event) {
     _this.runSingleScenario(scenario, event, true);
   };
-  _this.runSingleScenario = function (scenario, event, resetState) {
+  _this.runSingleScenario = function runSingleScenario(scenario, event, resetState) {
     _this.status('Running!');
     var isBackground = scenario.type.indexOf('background') > -1;
     _this.log('Reseting run counts...');
@@ -1289,7 +1317,7 @@
 
   _this.runResult = ko.observable();
   _this.lastRunResult = ko.observable();
-  _this.runFeatureSets = function (featureSets) {
+  _this.runFeatureSets = function runFeatureSets(featureSets) {
     var result = null;
     var dfd = $.when();
     $.each(featureSets(), function (index, featureSet) {
@@ -1306,7 +1334,7 @@
     });
     return dfd.promise();
   };
-  _this.runFeatureSet = function (featureSet) {
+  _this.runFeatureSet = function runFeatureSet(featureSet) {
     var result = null;
     var dfd = $.when();
     _this.runningFeatureSet(featureSet);
@@ -1338,7 +1366,7 @@
     });
     return dfd.promise();
   };
-  _this.runFeatures = function (features) {
+  _this.runFeatures = function runFeatures(features) {
     var result = null;
     var dfd = $.when();
     $.each(features(), function (index, feature) {
@@ -1354,7 +1382,7 @@
     });
     return dfd.promise();
   };
-  _this.runFeature = function (feature) {
+  _this.runFeature = function runFeature(feature) {
     var result = null;
     var dfd = $.when();
     if (_this.runningFeature())
@@ -1386,7 +1414,7 @@
     });
     return dfd.promise();
   };
-  _this.runScenarios = function (feature, scenarios, isBackground) {
+  _this.runScenarios = function runScenarios(feature, scenarios, isBackground) {
     var result = null;
     var dfd = $.when();
     $.each(scenarios(), function (index, scenario) {
@@ -1402,7 +1430,7 @@
     });
     return dfd.promise();
   };
-  _this.runScenario = function (feature, scenario, isBackground) {
+  _this.runScenario = function runScenario(feature, scenario, isBackground) {
     var result = null;
     var dfd = $.when();
     if (_this.runningScenario())
@@ -1453,7 +1481,7 @@
     });
     return dfd.promise();
   };
-  _this.runSteps = function (stepOwner) {
+  _this.runSteps = function runSteps(stepOwner) {
     var result = null;
     var dfd = new $.when();
     $.each(stepOwner.steps(), function (index, step) {
@@ -1480,7 +1508,7 @@
     });
     return dfd.promise();
   };
-  _this.runSubSteps = function (step, stepOwner) {
+  _this.runSubSteps = function runSubSteps(step, stepOwner) {
     var result = null;
     var dfd = $.when();
     $.each(step.subSteps(), function (index, subStep) {
@@ -1498,7 +1526,7 @@
     });
     return dfd.promise();
   };
-  _this.runStep = function (step, stepOwner, subStep) {
+  _this.runStep = function runStep(step, stepOwner, subStep) {
     return _this.pauseIfNeeded()
       .then(function () {
         var dfd = $.Deferred();
@@ -1586,23 +1614,43 @@
         return dfd.promise();
       });
   };
-  _this.runStepMethod = function (step, stepOwner, stepDeferred) {
+  _this.runStepMethod = function runStepMethod(step, stepOwner, stepDeferred) {
     _this.setShouldRun(step, step.inlineArgs, stepOwner, stepOwner.state);
     if (_this.breakpoints().indexOf(step.id) >= 0)
       debugger;
     if (step.shouldRun) {
-      _this.replaceExpressions(stepOwner, stepOwner.state, step.inlineArgs, step.tableArg, stepOwner.exampleArg);
-      var callback = function (error) {
+      var callback = function callback(error) {
         if (error)
           stepDeferred.reject(error);
         else
           stepDeferred.resolve();
       };
       stepOwner.state.$context = {
-        step: stepOwner,
+        step: {
+          id: step.id,
+          name: step.name,
+          type: step.type,
+          libraryName: step.libraryName,
+          libraryMethodName: step.libraryMethodName,
+          originalName: step.originalName,
+          runCondition: step.runCondition,
+          scenario: {
+            id: stepOwner.id,
+            name: stepOwner.name,
+            type: stepOwner.type,
+            config: stepOwner.config,
+            feature: {
+              id: stepOwner.feature.id,
+              name: stepOwner.feature.name,
+              type: stepOwner.feature.type
+            }
+          }
+        },
         callback: callback,
         inlineArgs: step.inlineArgs,
-        tableArgs: step.tableArg,
+        multiLineArg: step.multiLineArg,
+        tableArgArray: step.tableArgArray,
+        tableArg: step.tableArg,
         exampleArg: stepOwner.exampleArg
       };
       var argsArray = [];
@@ -1612,16 +1660,15 @@
         argsArray.push(step.multiLineArg);
       if (step.tableArgArray && step.tableArgArray.length > 0)
         argsArray.push(step.tableArgArray);
-      if (stepOwner.exampleArg && stepOwner.exampleArg.length > 0)
-        argsArray.push(stepOwner.exampleArg);
       argsArray.push(callback);
+      _this.replaceExpressions(stepOwner.state, step.inlineArgs, step.multiLineArg, step.tableArgArray);
       step.method.apply(stepOwner.state, argsArray);
     } else {
       stepDeferred.resolve();
     }
   };
 
-  _this.setShouldRun = function (runner, inlineArgs, context, state) {
+  _this.setShouldRun = function setShouldRun(runner, inlineArgs, context, state) {
     if (runner.runCondition != null) {
       runner.runCondition = _this.replaceParameters(runner.runCondition, inlineArgs);
       runner.runCondition = _this.replaceExpression('{{' + runner.runCondition + '}}');
@@ -1631,7 +1678,7 @@
     }
   };
 
-  _this.updateAggregateRunResult = function (aggregateRunResult, childRunResult) {
+  _this.updateAggregateRunResult = function updateAggregateRunResult(aggregateRunResult, childRunResult) {
     if (childRunResult === -1)
       aggregateRunResult = -1;
     if (childRunResult === 2)
@@ -1644,22 +1691,22 @@
       aggregateRunResult = 1;
     return aggregateRunResult;
   };
-  _this.getURLParameter = function (name) {
+  _this.getURLParameter = function getURLParameter(name) {
     return decodeURI(
       (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search) || [, null])[1]
     );
   };
 
-  _this.showDashboard = function () {
+  _this.showDashboard = function showDashboard() {
     _this.view('Running');
   };
   _this.uiWindowVisible = ko.observable(false);
-  _this.showUIWindow = function () {
+  _this.showUIWindow = function showUIWindow() {
     var uiTestWindow = $('#uitestwindow')[0];
     uiTestWindow.style.display = 'block';
     _this.uiWindowVisible(true);
   };
-  _this.toggleUI = function () {
+  _this.toggleUI = function toggleUI() {
     var uiTestWindow = $('#uitestwindow')[0];
     if ($(uiTestWindow).is(':visible')) {
       uiTestWindow.style.display = 'none';
@@ -1670,7 +1717,7 @@
       _this.uiWindowVisible(true);
     }
   };
-  _this.setBreakpoint = function (entity) {
+  _this.setBreakpoint = function setBreakpoint(entity) {
     if (entity.breakpoint())
       _this.breakpoints.remove(entity.id);
     else
@@ -1679,7 +1726,7 @@
   };
   _this.breakpoints = ko.observableArray();
   _this.breakOnException = ko.observable(false);
-  _this.toggleOnException = function () {
+  _this.toggleOnException = function toggleOnException() {
     if (_this.breakOnException())
       _this.breakOnException(false);
     else
@@ -1687,7 +1734,7 @@
   };
 
   _this.rootFeatureSet = ko.observable();
-  _this.walk = function (startFeatureSetPath) {
+  _this.walk = function walk(startFeatureSetPath) {
     startFeatureSetPath = _this.getURLParameter('walkFeatureSet');
     if (startFeatureSetPath == "null")
       startFeatureSetPath = 'features/featureSet';
@@ -1702,9 +1749,9 @@
       }
     });
   };
-  _this.initializeFeatureSet = function (featureSet, featureSetPath, level) {
+  _this.initializeFeatureSet = function initializeFeatureSet(featureSet, featureSetPath, level) {
     featureSet = featureSet || {};
-    featureSet.id = featureSet.id || featureSetPath.replace(/\/|\-/g, '_');
+    featureSet.id = featureSet.id || _this.encodeId(featureSetPath);
     featureSet.featureSetPaths = featureSet.featureSetPaths || [];
     featureSet.featurePaths = featureSet.featurePaths || [];
     featureSet.libraryPaths = featureSet.libraryPaths || [];
@@ -1715,7 +1762,7 @@
     featureSet.expanded = ko.observable(false);
     featureSet.level = level
   };
-  _this.initializeFeature = function (featurePath, level) {
+  _this.initializeFeature = function initializeFeature(featurePath, level) {
     return {
       path: featurePath,
       name: featurePath.substring(featurePath.lastIndexOf('/') + 1),
@@ -1723,17 +1770,17 @@
       selected: ko.observable(false)
     };
   };
-  _this.walkFeatureSet = function (featureSet) {
+  _this.walkFeatureSet = function walkFeatureSet(featureSet) {
     if (featureSet.expanded()) {
       _this.walkCollapseFeatureSet(featureSet);
     } else {
       _this.walkExpandFeatureSet(featureSet);
     }
   };
-  _this.walkCollapseFeatureSet = function (featureSet) {
+  _this.walkCollapseFeatureSet = function walkCollapseFeatureSet(featureSet) {
     featureSet.expanded(false);
   };
-  _this.walkExpandFeatureSet = function (featureSet) {
+  _this.walkExpandFeatureSet = function walkExpandFeatureSet(featureSet) {
     if (!featureSet.featureSetPaths)
       featureSet.featureSetPaths = [];
     if (!featureSet.featurePaths)
@@ -1769,14 +1816,14 @@
     featureSet.expanded(true);
   };
 
-  _this.toggleWalking = function () {
+  _this.toggleWalking = function toggleWalking() {
     if (_this.view() == 'Running')
       _this.view('Walking');
     else
       _this.view('Running');
   };
 
-  _this.linkToPage = function () {
+  _this.linkToPage = function linkToPage() {
     var location = window.location.pathname;
     var featuresIncluded = false;
     if (_this.featurePaths().length > 0) {
@@ -1792,7 +1839,7 @@
     window.location = location;
   };
 
-  _this.toggleRunnerCollapse = function () {
+  _this.toggleRunnerCollapse = function toggleRunnerCollapse() {
     if(_this.allCollapsed())
       $('.collapsible').collapse('show');
     else

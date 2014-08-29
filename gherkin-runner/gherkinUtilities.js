@@ -1,5 +1,4 @@
 "use strict";
-define([], function () {
   var diff = require('gherkin-runner/vendor/deep-diff/releases/deep-diff-0.2.0.min').diff;
   var _this = {};
   _this.$ = null;
@@ -119,6 +118,15 @@ define([], function () {
         actualArray = this.convertMultlineStringToLineArray(actualString);
     return _this.compareStringArrays(expectedArray, actualArray);
   };
+  _this.convertObjectToLineArray = function (objectToConvert){
+    var objectString = JSON.stringify(objectToConvert, null, 2);
+    var result = [];
+    if(objectString.indexOf('\r\n') > -1)
+      result = objectString.split('\r\n');
+    else
+      result = objectString.split('\n');
+    return result;
+  };
   _this.convertMultlineStringToLineArray = function(multiLineString) {
     var multiLineArray = multiLineString;
     if (multiLineString.indexOf('\r\n') > -1)
@@ -127,5 +135,9 @@ define([], function () {
       multiLineArray = multiLineString.split('\n');
     return multiLineArray;
   }
-  return _this;
-});
+  _this.compareObjectToMultiLineString = function(object, multiLineString){
+    var expectedLineArray = _this.convertMultlineStringToLineArray(multiLineString),
+        actualLineArray = _this.convertObjectToLineArray(object);
+    return _this.compareStringArrays(expectedLineArray, actualLineArray);
+  };
+module.exports = _this;
