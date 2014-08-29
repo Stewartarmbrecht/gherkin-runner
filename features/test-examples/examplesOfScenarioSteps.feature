@@ -141,12 +141,72 @@ Feature: Examples of Scenario Steps
       | Value 1.1 | Value 2.1 |
       | Value 1.2 | Value 2.2 |
     When I am run
-    Then I should have my first argument to be an array of rows that each are an array of column values
-    And tableArg[0][0] should equal "Value 1.1"
-    And tableArg[1][1] should equal "Value 2.2"
-    And this.$context.tableArg should be an array of objects whose properties are the names of the columns
-    And this.$context.tableArg[1]['Column 1'] should equal "Value 1.2"
-    And this.$context.tableArg[0]['Column 2'] should equal "Value 2.1"
+    Then argument 1 to the matching method should be
+      """
+      [
+        [
+          "Value 1.1",
+          "Value 2.1"
+        ],
+        [
+          "Value 1.2",
+          "Value 2.2"
+        ]
+      ]
+      """
+    Then argument 2 to the matching method should be the callback function
+    And inside the method this.$context should be
+      """
+      {
+        "step": {
+          "id": "gr-1912800397",
+          "name": "Given I am a step with a table parameter of",
+          "type": "step",
+          "libraryName": "/features/step_definitions/test-examples.js",
+          "libraryMethodName": "/^I am a step with a table parameter of$/",
+          "originalName": "Given I am a step with a table parameter of",
+          "runCondition": null,
+          "scenario": {
+            "id": "gr-327850282",
+            "name": "This is a scenario with a table parameter step",
+            "type": "scenario",
+            "config": {},
+            "feature": {
+              "id": "gr-1383391462",
+              "name": "Examples of Scenario Steps",
+              "type": "feature"
+            }
+          }
+        },
+        "inlineArgs": [],
+        "multiLineArg": [],
+        "tableArgArray": [
+          [
+            "Value 1.1",
+            "Value 2.1"
+          ],
+          [
+            "Value 1.2",
+            "Value 2.2"
+          ]
+        ],
+        "tableArg": [
+          {
+            "Column 1": "Value 1.1",
+            "Column 1_Display": " Value 1.1 ",
+            "Column 2": "Value 2.1",
+            "Column 2_Display": " Value 2.1 "
+          },
+          {
+            "Column 1": "Value 1.2",
+            "Column 1_Display": " Value 1.2 ",
+            "Column 2": "Value 2.2",
+            "Column 2_Display": " Value 2.2 "
+          }
+        ],
+        "exampleArg": null
+      }
+      """
 
   Scenario: This is a scenario with a step with an inline comment
     Given I am a step with an inline comment ## Here is my comment

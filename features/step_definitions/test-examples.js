@@ -48,6 +48,9 @@ module.exports = function () {
   this.Then(/^I should be skipped$/, function(callback) {
     callback();
   });
+  this.Then(/^I should pass$/, function(callback) {
+    callback();
+  });
 
   this.Given(/^I am a standard step$/, function(callback) {
     this.stepArguments = arguments;
@@ -67,6 +70,11 @@ module.exports = function () {
     this.context = this.$context;
     callback();
   });
+  this.Given(/^I am a step with a table parameter of$/, function(tableArg, callback) {
+    this.stepArguments = arguments;
+    this.context = this.$context;
+    callback();
+  });
 
 
 
@@ -77,12 +85,6 @@ module.exports = function () {
     }, function(error){
       callback(error);
     })
-  });
-  this.Then(/^I should pass$/, function(callback) {
-    if(!pass)
-      callback(new Error('The step did not pass.'));
-    else
-      callback();
   });
   this.Given(/^I should have my first argument with a value of A$/, function(callback) {
     if(this.argumentValue === 'A')
@@ -102,11 +104,6 @@ module.exports = function () {
       callback();
     else
       callback(new Error('My argument value was not "'+multiLineArgFlattened+'" it was "' + actualValue + '"'));
-  });
-  this.Given(/^I am a step with a table parameter of$/, function(tableArg, callback) {
-    this.tableArgArray = arguments[0];
-    this.tableArg = this.$context.tableArg;
-    callback();
   });
   this.Given(/^I should have my first argument to be an array of rows that each are an array of column values$/, function(callback) {
     if(this.tableArgArray && this.tableArgArray.isArray() && this.tableArgArray[0] && this.tableArgArray[0].isArray())
