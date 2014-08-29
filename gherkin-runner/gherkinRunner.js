@@ -847,6 +847,7 @@
       lastError: ko.observable(),
       scenarios: ko.observableArray(),
       name: outline.name,
+      comments: outline.comments,
       outline: false,
       state: {},
       feature: outline.feature
@@ -868,6 +869,7 @@
       id: step.id + '_' + step.clones.length + 1,
       type: step.type,
       name: step.name,
+      comments: step.comments,
       runCondition: step.runCondition,
       originalName: step.originalName,
       lineNumber: step.lineNumber,
@@ -961,25 +963,6 @@
             });
           item.missingChildMethods = resultMissingChildMethod;
           item.hasChildBreakpoint = ko.observable(false);
-          //item.hasChildBreakpoint = ko.computed(function () {
-          //    var result = false;
-          //    if (item.scenarios && item.scenarios().length > 0)
-          //        $.each(item.scenarios(), function (index, scenario) {
-          //            if (scenario.hasChildBreakpoint() || scenario.breakpoint())
-          //                result = true;
-          //        });
-          //    else if (item.steps && item.steps().length > 0)
-          //        $.each(item.steps(), function (index, step) {
-          //            if (step.hasChildBreakpoint() || step.breakpoint())
-          //                result = true;
-          //        });
-          //    else if (item.subSteps && item.subSteps().length > 0)
-          //        $.each(item.subSteps(), function (index, subStep) {
-          //            if (subStep.breakpoint())
-          //                result = true;
-          //        });
-          //    return result;
-          //});
         } else {
           var resultMissingChildMethod = false;
           $.each(item.scenarios(), function (index, scenario) {
@@ -989,14 +972,6 @@
           });
           item.missingChildMethods = resultMissingChildMethod;
           item.hasChildBreakpoint = ko.observable(false);
-          //item.hasChildBreakpoint = ko.computed(function () {
-          //    var result = false;
-          //    $.each(item.scenarios(), function (index, scenario) {
-          //        if (scenario.hasChildBreakpoint())
-          //            result = true;
-          //    });
-          //    return result;
-          //});
         }
       }
       item.computed = true;
@@ -1011,6 +986,7 @@
     var lastRead = null;
     var feature = {};
     var stepOwner = {};
+    var lastObject = null;
     $.each(lines, function (index, line) {
       var untrimmedLine = line;
       if(untrimmedLine.indexOf('\r') > 0)
@@ -1018,16 +994,7 @@
       var lineNumber = index + 1;
       line = line.trim();
       if (line.length > 0) {
-        if (lastRead === 'comment' || line.toLowerCase().indexOf("comments:") === 0) {
-          feature.comments.push(
-            {
-              id: _this.featureCount + '_' + lineNumber,
-              type: 'comment',
-              line: ko.observable(line),
-              lineNumber: lineNumber
-            });
-          lastRead = 'comment';
-        } else if (lastRead === 'multi-line-argument') {
+        if (lastRead === 'multi-line-argument') {
           if (line.toLowerCase().trim().indexOf('"""') === 0)
             lastRead = '';
           else {
@@ -1038,14 +1005,8 @@
           lastRead = 'multi-line-argument';
           multiLineArgumentIndent = untrimmedLine.indexOf('"""');
         } else if (line.toLowerCase().trim().indexOf("##") === 0 || line.toLowerCase().trim().indexOf("#") === 0) {
-          feature.lineComments.push(
-            {
-              id: _this.featureCount + '_' + lineNumber,
-              type: 'line comment',
-              line: ko.observable(line),
-              lineNumber: lineNumber
-            });
-          //lastRead = 'inlineComment';
+          if(lastObject)
+            lastObject.comments.push(line);
         } else if (line.toLowerCase().indexOf("feature:") === 0) {
           _this.featureCount++;
           feature.id = _this.encodeId(featureName);
@@ -1066,6 +1027,7 @@
           feature.state = {};
           _this.needComputedProperties[_this.needComputedProperties.length] = feature;
           lastRead = 'feature';
+          lastObject = feature;
         } else if (line.toLowerCase().indexOf("scenario:") === 0
           || line.toLowerCase().indexOf("scenario outline:") === 0
           || line.toLowerCase().indexOf("feature background:") === 0
@@ -1091,6 +1053,8 @@
           scenario.lastError = ko.observable();
           scenario.state = {};
           scenario.scenarios = ko.observableArray();
+          scenario.comments = ko.observableArray();
+          lastObject = scenario;
           _this.needComputedProperties[_this.needComputedProperties.length] = scenario;
           if (line.toLowerCase().indexOf("scenario:") === 0) {
             scenario.type = 'scenario';
@@ -1137,6 +1101,8 @@
           stepGroup.name = (outline ? line.trim().substr(19, line.trim().length - 19).trim() : line.trim().substr(11, line.trim().length - 11).trim());
           stepGroup.id = _this.encodeId(featureName + '_' + stepGroup.name);
           stepGroup.runCondition = null;
+          stepGroup.comments = ko.observableArray();
+          lastObject = stepGroup;
           if (stepGroup.name.indexOf('if(') > -1) {
             stepGroup.runCondition = stepGroup.name.trim().substring(stepGroup.name.trim().indexOf('if(') + 3, stepGroup.name.trim().length - 1);
             stepGroup.name = stepGroup.name.substring(0, stepGroup.name.indexOf('if('));
@@ -1166,6 +1132,8 @@
           step.name = line;
           step.id = _this.encodeId(featureName + '_' + stepOwner.id + '_' + step.name);
           step.runCondition = null;
+          step.comments = ko.observableArray();
+          lastObject = step;
           if (step.name.indexOf('if(') > -1) {
             step.runCondition = step.name.trim().substring(step.name.trim().indexOf('if(') + 3, step.name.trim().length - 1);
             step.name = step.name.substring(0, step.name.indexOf('if('));

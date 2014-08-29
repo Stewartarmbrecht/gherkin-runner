@@ -288,3 +288,15 @@ span.step-group {
 .can-click {
   cursor: pointer;
 }
+
+.feature-comments {
+  margin-left: 7.75em;
+}
+
+.scenario-comments {
+  margin-left: 9em;
+}
+
+.step-comments {
+  margin-left: 11em;
+}

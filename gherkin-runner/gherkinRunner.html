@@ -464,6 +464,12 @@
             <i class="fa fa-info-circle" title="Feature Description"></i>
           </a>
         </div>
+        <div class="icon-column comment">
+          <a class="can-click" data-toggle="collapse"
+             data-bind="attr: { 'href': '#feature_comments_' + id }, css: { 'invisible': comments().length === 0 }">
+            <i class="fa fa-comment-o" title="Feature Comments"></i>
+          </a>
+        </div>
       </div>
       <div class="name">
         <a class="can-click" data-toggle="collapse"
@@ -477,6 +483,9 @@
     <div>
       <div class="collapse collapsible feature-description-section" data-bind="attr: { id: 'feature_description_' + id }, foreach: description">
         <div class="feature-description" data-bind="text: line"></div>
+      </div>
+      <div class="collapse collapsible feature-comments" data-bind="attr: { id: 'feature_comments_' + id }">
+        <pre><code data-bind="foreach: comments"><span data-bind="text: $data"></span></code></pre>
       </div>
       <div class="body collapse collapsible in" data-bind="attr: { id: 'feature_' + id }">
         <div data-bind="template: { name: 'scenarioTemplate', foreach: backgrounds }">
@@ -539,6 +548,12 @@
             <i class="fa fa-play-circle-o text-info" title="Run with Existing State"></i>
           </a>
         </div>
+        <div class="icon-column comment">
+          <a class="can-click" data-toggle="collapse"
+             data-bind="attr: { 'href': '#scenario_comments_' + id }, css: { 'invisible': comments().length === 0 }">
+            <i class="fa fa-comment-o" title="Scenario Comments"></i>
+          </a>
+        </div>
       </div>
       <div class="name">
         <a class="can-click" data-toggle="collapse"
@@ -555,6 +570,9 @@
           </strong>
         </a>
       </div>
+    </div>
+    <div class="collapse collapsible scenario-comments" data-bind="attr: { id: 'scenario_comments_' + id }">
+      <pre><code data-bind="foreach: comments"><span data-bind="text: $data"></span></code></pre>
     </div>
     <div class="body collapse collapsible"
          data-bind="attr: { id: id }">
@@ -620,6 +638,14 @@
             <i class="fa fa-info-circle" title="Step Information"></i>
           </a>
         </div>
+        <div class="icon-column blank">
+        </div>
+        <div class="icon-column comment">
+          <a class="can-click" data-toggle="collapse"
+             data-bind="attr: { 'href': '#step_comments_' + id }, css: { 'invisible': comments().length === 0 }">
+            <i class="fa fa-comment-o" title="Step Comments"></i>
+          </a>
+        </div>
       </div>
       <div class="name">
         <!-- ko if: $data.subSteps().length > 0 -->
@@ -640,6 +666,9 @@
       </div>
     </div>
     <div class="body">
+      <div class="collapse collapsible step-comments" data-bind="attr: { id: 'step_comments_' + id }">
+        <pre><code data-bind="foreach: comments"><span data-bind="text: $data"></span></code></pre>
+      </div>
       <div class="details info collapse" data-bind="attr: { id: id + '_info' }">
         <div class="well well-small indented">
           <small>

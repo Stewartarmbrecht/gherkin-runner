@@ -2,6 +2,7 @@ Feature: Examples of Scenario Steps
   In order to understand the types of steps that can be added to a scenario
   As a user
   I would like to see examples of all the types of steps a scenario can have
+  # This is an example of a comment added to the feature by placing it after the Feature: tag but before the description.
 
   Scenario: This is a scenario with a standard step
     Given I am a standard step
@@ -213,9 +214,10 @@ Feature: Examples of Scenario Steps
     When I am run
     Then I should pass
 
-  Scenario: This is a scenario with a full line comment
+  Scenario: This is a scenario with full line comments for the scenario and a step
+    # This is an example of a comment for the scenario by placing if after the scenario line.
     Given I am a step followed by a full line comment
-    ## Here is my full line comment
+      # This is an example of a comment for a step by placing it after the step.
     When I am run
     Then I should pass
 
@@ -248,3 +250,5 @@ Feature: Examples of Scenario Steps
     Given I am a step with a false conditional that fails if(I.Fail.To.Compile)
     When I am run
     Then I should pass
+
+# This is an example of a comment added to a feature by placing it at the end of the file.
