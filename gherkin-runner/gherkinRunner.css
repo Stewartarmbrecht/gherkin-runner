@@ -260,3 +260,23 @@ span.step-group {
     top: 1em;
     right: 1em;
 }
+
+.panel-group .panel {
+  margin: .5em 1em .5em 1em;
+}
+
+.feature-set > div.title > div.name {
+  margin-left: 1em;
+}
+
+.steps-list {
+  margin-bottom: .75em;
+}
+
+.scenarios-list {
+  margin-bottom: .75em;
+}
+
+.feature-description-section {
+  margin-bottom: .75em;
+}

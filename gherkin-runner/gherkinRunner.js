@@ -1792,6 +1792,17 @@
     window.location = location;
   };
 
+  _this.toggleRunnerCollapse = function () {
+    if(_this.allCollapsed())
+      $('.collapsible').collapse('show');
+    else
+      $('.collapsible').collapse('hide');
+
+    _this.allCollapsed(!_this.allCollapsed());
+  };
+
+  _this.allCollapsed = ko.observable(true);
+
   return _this;
 });
 

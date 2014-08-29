@@ -26,7 +26,8 @@
   <h2>Features Outline</h2>
 
   <div>
-    <button class="btn btn-default" data-bind="visible: featureSets().length > 0, click: $root.toggleWalking">Back to Running!
+    <button class="btn btn-default" data-bind="visible: featureSets().length > 0, click: $root.toggleWalking">Back to
+      Running!
     </button>
   </div>
   <div id="walking-feature-sets" class="feature-sets"
@@ -59,7 +60,8 @@
   <div class="row">
     <div id="gherkin-counts" class="counts"
          data-bind="template: { name: 'countsTemplate', data: counts }, css: { faded: uiWindowVisible }"></div>
-    <div class="runOverview col-md-offset-4 col-md-5" data-bind="template: { name: 'runOverviewTemplate', data: $data }"></div>
+    <div class="runOverview col-md-offset-4 col-md-5"
+         data-bind="template: { name: 'runOverviewTemplate', data: $data }"></div>
     <div class="action-buttons pull-right">
       <button class="btn btn-primary" data-bind="click: run"><i class="fa fa-play"></i>&nbsp;Run</button>
       <button class="btn btn-default" data-bind="click: load"><i class="fa fa-refresh"></i>&nbsp;Reload</button>
@@ -69,23 +71,34 @@
         <button class="btn btn-sm" data-bind="click: toggleUI">Toggle UI</button>
         <button class="btn btn-sm" data-bind="click: $root.toggleUIButtonMove">&nbsp;
           <i class="fa fa-angle-double-right" data-bind="visible: $root.toggleUIButtonPosition() === 'left'"></i>
-          <i class="fa fa-angle-double-left" data-bind="visible: $root.toggleUIButtonPosition() === 'right'"></i></button>
+          <i class="fa fa-angle-double-left" data-bind="visible: $root.toggleUIButtonPosition() === 'right'"></i>
+        </button>
       </div>
       <button class="btn btn-warning" data-bind="click: cancel"><i class="fa fa-stop"></i>&nbsp;Cancel</button>
       <button class="btn btn-warning" data-bind="click: pauseOrUnPause, visible: paused">
-        <i class="fa fa-play"></i>&nbsp;Continue</button>
+        <i class="fa fa-play"></i>&nbsp;Continue
+      </button>
       <button class="btn btn-warning" data-bind="click: pauseOrUnPause, visible: !paused()">
-        <i class="fa fa-pause"></i>&nbsp;Pause</button>
+        <i class="fa fa-pause"></i>&nbsp;Pause
+      </button>
     </div>
   </div>
   <div id="break-on-exception">
     <button class="btn btn-default" title="Currently NOT breaking on exceptions"
-       data-bind="visible: !breakOnException(), click: toggleOnException">
+            data-bind="visible: !breakOnException(), click: toggleOnException">
       <i class="fa fa-bug fa-large faded"></i>
     </button>
     <button class="btn btn-default" title="Currently breaking on exceptions"
-       data-bind="visible: breakOnException(), click: toggleOnException">
+            data-bind="visible: breakOnException(), click: toggleOnException">
       <i class="fa fa-bug fa-large text-danger"></i>
+    </button>
+    <button class="btn btn-default" title="Expand All Sections"
+            data-bind="visible: allCollapsed(), click: toggleRunnerCollapse">
+      <i class="fa fa-expand fa-large"></i>
+    </button>
+    <button class="btn btn-default" title="Collapse All Sections"
+            data-bind="visible: !allCollapsed(), click: toggleRunnerCollapse">
+      <i class="fa fa-compress fa-large"></i>
     </button>
   </div>
   <!-- ko if: loaded -->
@@ -163,7 +176,8 @@
           <i data-bind="visible: selected" class="fa fa-check-square-o text-success" title="Feature set selected"></i>
           <i data-bind="visible: !selected()" class="fa fa-square-o" title="Select feature set"></i>
         </a>
-        <a href="javascript:void();" data-bind="text: name, click: function() { $root.toggleFeatureSelection($data, $parent); }, css: { 'text-success': selected }"></a>
+        <a href="javascript:void();"
+           data-bind="text: name, click: function() { $root.toggleFeatureSelection($data, $parent); }, css: { 'text-success': selected }"></a>
       </div>
     </div>
   </div>
@@ -361,7 +375,7 @@
     </div>
     <div class="row">
       <button class="col-md-3 btn btn-default pull-left" data-bind="click: $root.linkToPage">Link It</button>
-      <span class="col-md-2 text-right">Message: </span>
+      <span class="col-md-2 text-right" data-bind="visible: statusMessage && statusMessage.length > 0">Message: </span>
       <span class="col-md-7 clip" data-bind="text: statusMessage"></span>
     </div>
     <div class="row">
@@ -393,18 +407,18 @@
 
 <script type="text/html" id="featureSetTemplate">
   <div class="feature-set panel panel-default">
-    <div class="title panel-heading">
-      <div class="name panel-title">
+    <div class="title">
+      <div class="name">
         <h4>
           <a data-toggle="collapse" data-bind="attr: { 'data-parent': $parent.id, href: '#feature_set_body_' + id }">
-            <div class="inline">Feature Set:</div>
-            <div class="inline" data-bind="text: name"></div>
+            <div class="inline feature-set-label text-muted">Feature Set:</div>
+            <div class="inline" data-bind="text: name, css: { 'text-success': runResult() === 1 }"></div>
           </a>
         </h4>
       </div>
     </div>
-    <div class="body panel-collapse collapse in" data-bind="attr: { id: 'feature_set_body_' + id }">
-      <div class="panel-body">
+    <div class="body collapse in" data-bind="attr: { id: 'feature_set_body_' + id }">
+      <div>
         <div class="panel-group"
              data-bind="attr: { id: 'feature_set_features_' + id }, template: { name: 'featureTemplate', foreach: features }">
         </div>
@@ -417,8 +431,8 @@
 </script>
 
 <script type="text/html" id="featureTemplate">
-  <div class="feature panel panel-default">
-    <div class="title panel-heading">
+  <div class="feature">
+    <div class="title hover hover-highlighted">
       <div class="icons">
         <div class="icon-column">
           <a href="javascript:void();"
@@ -427,8 +441,10 @@
           </a>
         </div>
         <div class="icon-column">
-          <i class="fa fa-check-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
-          <i class="fa fa-times-circle text-danger faded" title="Failed" data-bind="visible: lastRunResult() === -1"></i>
+          <i class="fa fa-check-circle-o text-success faded" title="Passed"
+             data-bind="visible: lastRunResult() === 1"></i>
+          <i class="fa fa-times-circle text-danger faded" title="Failed"
+             data-bind="visible: lastRunResult() === -1"></i>
           <i class="fa fa-question-circle faded" title="Skipped" data-bind="visible: lastRunResult() === 0"></i>
           <i class="fa fa-adjust text-warning faded" title="Canceled" data-bind="visible: lastRunResult() === 2"></i>
         </div>
@@ -442,24 +458,30 @@
           <i class="fa fa-ban text-danger" title="Missing Child Methods"
              data-bind="visible: missingChildMethods"></i>
         </div>
+        <div class="icon-column info">
+          <a class="collapsed hover-visible" data-toggle="collapse" href="javascript:void();"
+             data-bind="attr: { 'data-target': '#feature_description_' + id }">
+            <i class="fa fa-info-circle" title="Feature Description"></i>
+          </a>
+        </div>
       </div>
-      <div class="name panel-title">
+      <div class="name">
         <a data-toggle="collapse"
            data-bind="attr: { href: '#feature_' + id,'data-parent': 'feature_set_features_' + $parent.id }">
-          <span><strong
-            data-bind="text: 'Feature: ' + name, css: { 'text-danger': missingChildMethods || runResult() === -1 }"></strong>
+          <span><strong class="feature-label text-muted">Feature: </strong><strong
+            data-bind="text: name, css: { 'text-danger': missingChildMethods || runResult() === -1, 'text-success': runResult() === 1 }"></strong>
           </span>
         </a>
       </div>
     </div>
-    <div class="body panel-collapse collapse in" data-bind="attr: { id: 'feature_' + id }">
-      <div class="panel-body">
-        <div data-bind="foreach: description">
-          <div class="feature-description" data-bind="text: line"></div>
-        </div>
+    <div>
+      <div class="collapse collapsible feature-description-section" data-bind="attr: { id: 'feature_description_' + id }, foreach: description">
+        <div class="feature-description" data-bind="text: line"></div>
+      </div>
+      <div class="body collapse collapsible in" data-bind="attr: { id: 'feature_' + id }">
         <div data-bind="template: { name: 'scenarioTemplate', foreach: backgrounds }">
         </div>
-        <div data-bind="template: { name: 'scenarioTemplate', foreach: scenarios }">
+        <div data-bind="template: { name: 'scenarioTemplate', foreach: scenarios }" class="scenarios-list">
         </div>
         <div data-bind="template: { name: 'stepGroupTemplate', foreach: stepGroups }">
         </div>
@@ -481,9 +503,12 @@
         <div class="icon-column">
           <a class="accordion-toggle collapsed" data-toggle="collapse"
              data-bind="attr: { 'data-target': '#' + id }" href="javascript:void();">
-            <i class="fa fa-check-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
-            <i class="fa fa-times-circle text-danger faded" title="Failed" data-bind="visible: lastRunResult() === -1"></i>
-            <i class="fa fa-question-circle text-muted faded" title="Skipped" data-bind="visible: lastRunResult() === 0"></i>
+            <i class="fa fa-check-circle-o text-success faded" title="Passed"
+               data-bind="visible: lastRunResult() === 1"></i>
+            <i class="fa fa-times-circle text-danger faded" title="Failed"
+               data-bind="visible: lastRunResult() === -1"></i>
+            <i class="fa fa-question-circle text-muted faded" title="Skipped"
+               data-bind="visible: lastRunResult() === 0"></i>
             <i class="fa fa-adjust text-warning text-muted faded" title="Canceled"
                data-bind="visible: lastRunResult() === 2"></i>
           </a>
@@ -516,20 +541,24 @@
         </div>
       </div>
       <div class="name">
-        <a class="accordion-toggle collapsed" data-toggle="collapse"
+        <a class="collapsed" data-toggle="collapse"
            data-bind="attr: { 'data-target': '#' + id }" href="javascript:void();">
           <code class="preserve-space example-arg-value"
                 data-bind="visible: exampleArgDisplay, text: exampleArgDisplay"></code>
           <strong>
-            <div class="inline scenario-name"
-                 data-bind="visible: !exampleArgDisplay, text: type.substring(0,1).toUpperCase() + type.substring(1) + ': ' + name, css: { 'text-danger': missingChildMethods || runResult() == -1 }"></div>
+            <div>
+              <span class="inline scenario-name text-muted"
+                    data-bind="text: type.substring(0,1).toUpperCase() + type.substring(1) + ': '"></span>
+              <span class="inline scenario-name"
+                    data-bind="visible: !exampleArgDisplay, text: name, css: { 'text-danger': missingChildMethods || runResult() == -1, 'text-success': runResult() === 1 }"></span>
+            </div>
           </strong>
         </a>
       </div>
     </div>
-    <div class="body collapse"
+    <div class="body collapse collapsible"
          data-bind="attr: { id: id }">
-      <div data-bind="template: { name: 'stepTemplate', foreach: steps }">
+      <div data-bind="template: { name: 'stepTemplate', foreach: steps }" class="steps-list">
       </div>
       <!-- ko if: scenarios !== undefined && scenarios().length > 0 -->
       <div class="section-title">Examples</div>
@@ -562,7 +591,8 @@
           </a>
         </div>
         <div class="icon-column run-result">
-          <i class="fa fa-check-circle-o text-success faded" title="Passed" data-bind="visible: lastRunResult() === 1"></i>
+          <i class="fa fa-check-circle-o text-success faded" title="Passed"
+             data-bind="visible: lastRunResult() === 1"></i>
           <a class="accordion-toggle collapsed" data-toggle="collapse" href="javascript:void();"
              data-bind="attr: { 'data-target': '#' + id + '_error' }, visible: lastRunResult() === -1">
             <i class="fa fa-times-circle text-danger faded" title="Failed"></i>
@@ -595,16 +625,16 @@
         <!-- ko if: $data.subSteps().length > 0 -->
         <a class="collapsed" data-toggle="collapse" href="javascript:void();"
            data-bind="attr: { 'data-target': '#' + id }">
-          <div data-bind="css: { 'text-danger': missingChildMethods || missingMethod }">
+          <div data-bind="css: { 'text-danger': missingChildMethods || missingMethod, 'text-success': runResult() === 1 }">
             <span data-bind="text: name" class="step-group"></span><span
-              data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
+            data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
           </div>
         </a>
         <!-- /ko -->
         <!-- ko if: $data.subSteps().length === 0-->
-        <div data-bind="css: { 'text-danger': missingChildMethods || missingMethod }">
+        <div data-bind="css: { 'text-danger': missingChildMethods || missingMethod, 'text-success': runResult() === 1 }">
           <span data-bind="text: name, css: {'step-group': methodName === 'Step Group'}"></span><span
-            data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
+          data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
         </div>
         <!-- /ko -->
       </div>
@@ -620,7 +650,8 @@
               <span>Method Name: </span><code data-bind="text: libraryMethodName"></code>
             </div>
             <div>
-              <span>Method: </span><pre><code data-bind="text: method ? method.toString() : ''"></code></pre>
+              <span>Method: </span>
+              <pre><code data-bind="text: method ? method.toString() : ''"></code></pre>
             </div>
           </small>
         </div>
@@ -643,7 +674,7 @@
         </div>
       </div>
       <!-- ko if: $data.subSteps().length > 0 -->
-      <div class="subSteps collapse"
+      <div class="subSteps collapse collapsible"
            data-bind="attr: { id: id }, template: { name: 'stepTemplate', foreach: subSteps }">
       </div>
       <!-- /ko -->
@@ -694,7 +725,7 @@
         </a>
       </div>
     </div>
-    <div class="body collapse"
+    <div class="body collapse collapsible"
          data-bind="attr: { id: id }">
       <div class="steps" data-bind="template: { name: 'stepTemplate', foreach: steps }">
       </div>
@@ -710,7 +741,7 @@
 <script type="text/javascript">
   $(document).ready(function () {
     requirejs.onError = function (err) {
-      var errorMsg = "error: "+err+"\n"+err.stack;
+      var errorMsg = "error: " + err + "\n" + err.stack;
       console.log(err);
       console.log(errorMsg);
       alert(errorMsg);
