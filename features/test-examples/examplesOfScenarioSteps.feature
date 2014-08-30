@@ -136,6 +136,60 @@ Feature: Examples of Scenario Steps
       }
       """
 
+  Scenario: This is a scenario with a multi-line parameter step that has text before the first triple quote
+    Given I am a step with a multi-line parameter that has text before the first triple quote like
+      # the actual text in the feature file looks like this:
+      #   ###
+      # This is my
+      # multi-line parameter value
+      #   ###
+      """
+    This is my
+    multi-line parameter value
+      """
+    When I am run
+    Then argument 1 to the matching method should be
+      """
+      [
+        "is is my",
+        "lti-line parameter value"
+      ]
+      """
+    Then argument 2 to the matching method should be the callback function
+    And inside the method this.$context should be
+    """
+      {
+        "step": {
+          "id": "gr2058978154",
+          "name": "Given I am a step with a multi-line parameter of",
+          "type": "step",
+          "libraryName": "/features/step_definitions/test-examples.js",
+          "libraryMethodName": "/^I am a step with a multi-line parameter of$/",
+          "originalName": "Given I am a step with a multi-line parameter of",
+          "runCondition": null,
+          "scenario": {
+            "id": "gr1116990778",
+            "name": "This is a scenario with a multi-line parameter step",
+            "type": "scenario",
+            "config": {},
+            "feature": {
+              "id": "gr-1383391462",
+              "name": "Examples of Scenario Steps",
+              "type": "feature"
+            }
+          }
+        },
+        "inlineArgs": [],
+        "multiLineArg": [
+          "is is my",
+          "lti-line parameter value"
+        ],
+        "tableArgArray": [],
+        "tableArg": [],
+        "exampleArg": null
+      }
+      """
+
   Scenario: This is a scenario with a table parameter step
     Given I am a step with a table parameter of
       | Column 1  | Column 2  |
@@ -222,9 +276,42 @@ Feature: Examples of Scenario Steps
     Then I should pass
 
   Scenario: This is a scenario with an inline expression
-    Given I am a step with an inline expression of "{{ 'Hello ' + 'World' }}" that verifies my inline parameter value is Hello World
+    Given I am a step with an inline expression of "{{ 'Hello my name is: \'' + this.$context.step.scenario.name + '\'' }}"
     When I am run
-    Then I should pass
+    Then argument 1 to the matching method should be "Hello my name is: 'This is a scenario with an inline expression'"
+    Then argument 2 to the matching method should be the callback function
+    And inside the method this.$context should be
+      """
+      {
+        "step": {
+          "id": "gr-280297052",
+          "name": "Given I am a step with an inline expression of \"\{\{ 'Hello my name is: \\'' + this.$context.step.scenario.name + '\\'' }}\"",
+          "type": "step",
+          "libraryName": "/features/step_definitions/test-examples.js",
+          "libraryMethodName": "/^I am a step with an inline expression of \"([^\"]*)\"$/",
+          "originalName": "Given I am a step with an inline expression of \"\{\{ 'Hello my name is: \\'' + this.$context.step.scenario.name + '\\'' }}\"",
+          "runCondition": null,
+          "scenario": {
+            "id": "gr-1147512114",
+            "name": "This is a scenario with an inline expression",
+            "type": "scenario",
+            "config": {},
+            "feature": {
+              "id": "gr-1383391462",
+              "name": "Examples of Scenario Steps",
+              "type": "feature"
+            }
+          }
+        },
+        "inlineArgs": [
+          "Hello my name is: 'This is a scenario with an inline expression'"
+        ],
+        "multiLineArg": [],
+        "tableArgArray": [],
+        "tableArg": [],
+        "exampleArg": null
+      }
+      """
 
   Scenario: This is a scenario with an inline expression that fails to compile
     Given I am a step with an inline expression of "{{ Hello.NotExist() }}" that verifies my inline parameter value is Hello World

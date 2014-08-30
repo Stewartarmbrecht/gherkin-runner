@@ -19,8 +19,9 @@ module.exports = function () {
     else
       callback(new Error('Argument ' + argOrdinal + ' was not a function.'));
   });
-  this.Then(/^inside the method this\.\$context should be$/, function(objectString, callback){
-    var errorMessage = utilities.compareObjectToMultiLineString(this.context, objectString);
+  this.Then(/^inside the method this\.\$context should be$/, function(expectedObjectString, callback){
+    expectedObjectString.forEach(function(line, index) { expectedObjectString[index] = line.replace('\\{\\{', '{{'); });
+    var errorMessage = utilities.compareObjectToMultiLineString(this.context, expectedObjectString);
     if(errorMessage)
       callback(new Error(errorMessage));
     else
@@ -36,6 +37,7 @@ module.exports = function () {
   this.Then(/^argument ([\d]*) to the matching method should be$/, function(argOrdinal, expectedValue, callback) {
     var index = argOrdinal - 1,
         actualValue = this.stepArguments[index];
+    expectedValue.forEach(function(line, index) { expectedValue[index] = line.replace('\\{\\{', '{{'); });
     var errorMessage = utilities.compareObjectToMultiLineString(actualValue, expectedValue);
     if(errorMessage)
       callback(new Error(errorMessage));
@@ -70,7 +72,17 @@ module.exports = function () {
     this.context = this.$context;
     callback();
   });
+  this.Given(/^I am a step with a multi-line parameter that has text before the first triple quote like$/, function(multiLineArg, callback) {
+    this.stepArguments = arguments;
+    this.context = this.$context;
+    callback();
+  });
   this.Given(/^I am a step with a table parameter of$/, function(tableArg, callback) {
+    this.stepArguments = arguments;
+    this.context = this.$context;
+    callback();
+  });
+  this.Given(/^I am a step with an inline expression of "([^"]*)"$/, function(inlineArg, callback) {
     this.stepArguments = arguments;
     this.context = this.$context;
     callback();

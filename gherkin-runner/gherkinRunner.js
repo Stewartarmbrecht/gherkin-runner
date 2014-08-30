@@ -769,19 +769,25 @@
     });
   };
   _this.replaceExpression = function replaceExpression(value) {
+    var context = this;
     if (value && value.indexOf('{{') >= 0) {
       var expressions = value.match(/{{([^{{][^}}]+)}}/g);
       if (!expressions)
         throw new Error('Javascript function could not be parsed: ' + value);
 
-      $.each(expressions, function (i, lookup) {
-        var lookupExp = lookup.substring(2, lookup.length - 2);
-        try {
-          var lookupValue = eval(lookupExp);
-        } catch (error) {
-          throw new Error('Could not evaluate the expression: ' + lookupExp + ' Got error: ' + error.message);
-        }
-        value = value.replace(lookup, lookupValue);
+      expressions.forEach(function (lookup) {
+        var func = function () {
+          var lookupExp = lookup.substring(2, lookup.length - 2);
+
+          try {
+            var lookupValue = eval(lookupExp);
+          } catch (error) {
+            throw new Error('Could not evaluate the expression: ' + lookupExp + ' Got error: ' + error.message);
+          }
+          value = value.replace(lookup, lookupValue);
+        };
+
+        func.call(context);
       });
     }
     return value;
@@ -1621,6 +1627,7 @@
         tableArg: step.tableArg,
         exampleArg: stepOwner.exampleArg
       };
+      _this.replaceExpressions(stepOwner.state, step.inlineArgs, step.multiLineArg, step.tableArgArray);
       var argsArray = [];
       if (step.inlineArgs && step.inlineArgs.length > 0)
         argsArray = argsArray.concat(step.inlineArgs);
@@ -1629,7 +1636,6 @@
       if (step.tableArgArray && step.tableArgArray.length > 0)
         argsArray.push(step.tableArgArray);
       argsArray.push(callback);
-      _this.replaceExpressions(stepOwner.state, step.inlineArgs, step.multiLineArg, step.tableArgArray);
       step.method.apply(stepOwner.state, argsArray);
     } else {
       stepDeferred.resolve();

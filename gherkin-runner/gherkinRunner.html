@@ -1,6 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gherkin Runner</title>
 
   <!--    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
@@ -11,11 +14,6 @@
   <link href="gherkinRunner.css" rel="stylesheet">
 
   <!-- include source files here... -->
-  <script type="text/javascript" src="vendor/jquery/dist/jquery.js"></script>
-  <script type="text/javascript" src="vendor/knockout/dist/knockout.js"></script>
-  <script type="text/javascript" src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="scripts/jquery.address-1.6.js"></script>
-  <script type="text/javascript" src="vendor/cajon/cajon.js"></script>
 </head>
 
 <body>
@@ -485,7 +483,7 @@
         <div class="feature-description" data-bind="text: line"></div>
       </div>
       <div class="collapse collapsible feature-comments" data-bind="attr: { id: 'feature_comments_' + id }">
-        <pre><code data-bind="foreach: comments"><span data-bind="text: $data"></span></code></pre>
+        <pre><code data-bind="text: comments"></code></pre>
       </div>
       <div class="body collapse collapsible in" data-bind="attr: { id: 'feature_' + id }">
         <div data-bind="template: { name: 'scenarioTemplate', foreach: backgrounds }">
@@ -572,7 +570,7 @@
       </div>
     </div>
     <div class="collapse collapsible scenario-comments" data-bind="attr: { id: 'scenario_comments_' + id }">
-      <pre><code data-bind="foreach: comments"><span data-bind="text: $data"></span></code></pre>
+      <pre><code data-bind="text: comments"></code></pre>
     </div>
     <div class="body collapse collapsible"
          data-bind="attr: { id: id }">
@@ -667,7 +665,7 @@
     </div>
     <div class="body">
       <div class="collapse collapsible step-comments" data-bind="attr: { id: 'step_comments_' + id }">
-        <pre><code data-bind="foreach: comments"><span data-bind="text: $data"></span></code></pre>
+        <pre><code data-bind="text: comments"></code></pre>
       </div>
       <div class="details info collapse" data-bind="attr: { id: id + '_info' }">
         <div class="well well-small indented">
@@ -767,6 +765,11 @@
   </div>
 </script>
 
+<script type="text/javascript" src="vendor/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="vendor/knockout/dist/knockout.js"></script>
+<script type="text/javascript" src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.address-1.6.js"></script>
+<script type="text/javascript" src="vendor/cajon/cajon.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
     requirejs.onError = function (err) {
