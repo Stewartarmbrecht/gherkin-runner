@@ -202,7 +202,6 @@ module.exports = function () {
     callback();
   });
   this.Given(/^I am a step with an inline expression of "([^"]*)" that verifies my inline parameter value is Hello World (.*)$/, function(expressionValue, expectedValue, callback) {
-    debugger;
     callback();
   });
   this.Given(/^X$/, function(callback) {

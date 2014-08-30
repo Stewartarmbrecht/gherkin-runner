@@ -1026,7 +1026,6 @@
           feature.stepGroups = ko.observableArray();
           feature.comments = ko.observableArray();
           feature.extraLines = ko.observableArray();
-          feature.lineComments = ko.observableArray();
           feature.runResult = ko.observable();
           feature.lastRunResult = ko.observable();
           feature.breakpoint = ko.observable(false);

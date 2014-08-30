@@ -157,19 +157,19 @@ Feature: Examples of Scenario Steps
       """
     Then argument 2 to the matching method should be the callback function
     And inside the method this.$context should be
-    """
+      """
       {
         "step": {
-          "id": "gr2058978154",
-          "name": "Given I am a step with a multi-line parameter of",
+          "id": "gr1504232945",
+          "name": "Given I am a step with a multi-line parameter that has text before the first triple quote like",
           "type": "step",
           "libraryName": "/features/step_definitions/test-examples.js",
-          "libraryMethodName": "/^I am a step with a multi-line parameter of$/",
-          "originalName": "Given I am a step with a multi-line parameter of",
+          "libraryMethodName": "/^I am a step with a multi-line parameter that has text before the first triple quote like$/",
+          "originalName": "Given I am a step with a multi-line parameter that has text before the first triple quote like",
           "runCondition": null,
           "scenario": {
-            "id": "gr1116990778",
-            "name": "This is a scenario with a multi-line parameter step",
+            "id": "gr458751936",
+            "name": "This is a scenario with a multi-line parameter step that has text before the first triple quote",
             "type": "scenario",
             "config": {},
             "feature": {
