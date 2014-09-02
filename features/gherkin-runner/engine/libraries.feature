@@ -5,7 +5,7 @@ Feature: Libraries
 
   Scenario: Standard Library Definition
     Given this scenario
-    When I define a library at "features/step_definitions/librariesFeatureTestLibrary.js"
+    When I define a library at "features/step_definitions/gherkinRunnerTestLibrary.js"
     Then I can cover all steps with this definition
     """
     module.exports = function () {

@@ -204,13 +204,4 @@ module.exports = function () {
   this.Given(/^I am a step with an inline expression of "([^"]*)" that verifies my inline parameter value is Hello World (.*)$/, function(expressionValue, expectedValue, callback) {
     callback();
   });
-  this.Given(/^X$/, function(callback) {
-    callback();
-  });
-  this.Given(/^Y$/, function(callback) {
-    callback();
-  });
-  this.Given(/^Z$/, function(callback) {
-    callback();
-  });
 };

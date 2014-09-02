@@ -12,29 +12,29 @@ Feature: Examples of Scenario Steps
       """
       {
         "step": {
-          "id": "gr-231939697",
+          "id": "gr[-^"|\d^"]+",
           "name": "Given I am a standard step",
           "type": "step",
-          "libraryName": "/features/step_definitions/test-examples.js",
-          "libraryMethodName": "/^I am a standard step$/",
+          "libraryName": "/features/step_definitions/gherkinRunnerLibrary\.js",
+          "libraryMethodName": "/\^I am a standard step\$/",
           "originalName": "Given I am a standard step",
           "runCondition": null,
           "scenario": {
-            "id": "gr-441182706",
+            "id": "gr[-^"|\d^"]+",
             "name": "This is a scenario with a standard step",
             "type": "scenario",
-            "config": {},
-            "feature": {
-              "id": "gr-1383391462",
+            "config": \{},
+            "feature": \{
+              "id": "gr[-^"|\d^"]+",
               "name": "Examples of Scenario Steps",
               "type": "feature"
             }
           }
         },
-        "inlineArgs": [],
-        "multiLineArg": [],
-        "tableArgArray": [],
-        "tableArg": [],
+        "inlineArgs": \[],
+        "multiLineArg": \[],
+        "tableArgArray": \[],
+        "tableArg": \[],
         "exampleArg": null
       }
       """
@@ -58,31 +58,31 @@ Feature: Examples of Scenario Steps
       """
       {
         "step": {
-          "id": "gr-2126680208",
-          "name": "Given I am a step with an inline parameter of \"A\"",
+          "id": "gr[-^"|\d^"]+",
+          "name": "Given I am a step with an inline parameter of \\"A\\"",
           "type": "step",
-          "libraryName": "/features/step_definitions/test-examples.js",
-          "libraryMethodName": "/^I am a step with an inline parameter of \"([^\"]*)\"$/",
-          "originalName": "Given I am a step with an inline parameter of \"A\"",
+          "libraryName": "/features/step_definitions/gherkinRunnerLibrary\.js",
+          "libraryMethodName": "/\^I am a step with an inline parameter of \\"\(\[\^\\"]\*\)\\"\$/",
+          "originalName": "Given I am a step with an inline parameter of \\"A\\"",
           "runCondition": null,
           "scenario": {
-            "id": "gr-318184935",
+            "id": "gr[-^"|\d^"]+",
             "name": "This is a scenario with an inline parameter step",
             "type": "scenario",
             "config": {},
             "feature": {
-              "id": "gr-1383391462",
+              "id": "gr[-^"|\d^"]+",
               "name": "Examples of Scenario Steps",
               "type": "feature"
             }
           }
         },
-        "inlineArgs": [
+        "inlineArgs": \[
           "A"
         ],
-        "multiLineArg": [],
-        "tableArgArray": [],
-        "tableArg": [],
+        "multiLineArg": \[],
+        "tableArgArray": \[],
+        "tableArg": \[],
         "exampleArg": null
       }
       """
@@ -106,32 +106,32 @@ Feature: Examples of Scenario Steps
       """
       {
         "step": {
-          "id": "gr2058978154",
+          "id": "gr[-^"|\d^"]*",
           "name": "Given I am a step with a multi-line parameter of",
           "type": "step",
-          "libraryName": "/features/step_definitions/test-examples.js",
-          "libraryMethodName": "/^I am a step with a multi-line parameter of$/",
+          "libraryName": "/features/step_definitions/gherkinRunnerLibrary\.js",
+          "libraryMethodName": "/\^I am a step with a multi-line parameter of\$/",
           "originalName": "Given I am a step with a multi-line parameter of",
           "runCondition": null,
           "scenario": {
-            "id": "gr1116990778",
+            "id": "gr[-^"|\d^"]+",
             "name": "This is a scenario with a multi-line parameter step",
             "type": "scenario",
             "config": {},
             "feature": {
-              "id": "gr-1383391462",
+              "id": "gr[-^"|\d^"]+",
               "name": "Examples of Scenario Steps",
               "type": "feature"
             }
           }
         },
-        "inlineArgs": [],
-        "multiLineArg": [
+        "inlineArgs": \[],
+        "multiLineArg": \[
           "This is my",
           "multi-line parameter value"
         ],
-        "tableArgArray": [],
-        "tableArg": [],
+        "tableArgArray": \[],
+        "tableArg": \[],
         "exampleArg": null
       }
       """
@@ -160,32 +160,32 @@ Feature: Examples of Scenario Steps
       """
       {
         "step": {
-          "id": "gr1504232945",
+          "id": "gr[-^"|\d^"]+",
           "name": "Given I am a step with a multi-line parameter that has text before the first triple quote like",
           "type": "step",
-          "libraryName": "/features/step_definitions/test-examples.js",
-          "libraryMethodName": "/^I am a step with a multi-line parameter that has text before the first triple quote like$/",
+          "libraryName": "/features/step_definitions/gherkinRunnerLibrary\.js",
+          "libraryMethodName": "/\^I am a step with a multi-line parameter that has text before the first triple quote like\$/",
           "originalName": "Given I am a step with a multi-line parameter that has text before the first triple quote like",
           "runCondition": null,
           "scenario": {
-            "id": "gr458751936",
+            "id": "gr[-^"|\d^"]+",
             "name": "This is a scenario with a multi-line parameter step that has text before the first triple quote",
             "type": "scenario",
             "config": {},
             "feature": {
-              "id": "gr-1383391462",
+              "id": "gr[-^"|\d^"]+",
               "name": "Examples of Scenario Steps",
               "type": "feature"
             }
           }
         },
-        "inlineArgs": [],
-        "multiLineArg": [
+        "inlineArgs": \[],
+        "multiLineArg": \[
           "is is my",
           "lti-line parameter value"
         ],
-        "tableArgArray": [],
-        "tableArg": [],
+        "tableArgArray": \[],
+        "tableArg": \[],
         "exampleArg": null
       }
       """
@@ -214,49 +214,49 @@ Feature: Examples of Scenario Steps
       """
       {
         "step": {
-          "id": "gr-1912800397",
+          "id": "gr[-^"|\d^"]+",
           "name": "Given I am a step with a table parameter of",
           "type": "step",
-          "libraryName": "/features/step_definitions/test-examples.js",
-          "libraryMethodName": "/^I am a step with a table parameter of$/",
+          "libraryName": "/features/step_definitions/gherkinRunnerLibrary\.js",
+          "libraryMethodName": "/\^I am a step with a table parameter of\$/",
           "originalName": "Given I am a step with a table parameter of",
           "runCondition": null,
           "scenario": {
-            "id": "gr-327850282",
+            "id": "gr[-^"|\d^"]+",
             "name": "This is a scenario with a table parameter step",
             "type": "scenario",
             "config": {},
             "feature": {
-              "id": "gr-1383391462",
+              "id": "gr[-^"|\d^"]+",
               "name": "Examples of Scenario Steps",
               "type": "feature"
             }
           }
         },
-        "inlineArgs": [],
-        "multiLineArg": [],
-        "tableArgArray": [
-          [
-            "Value 1.1",
-            "Value 2.1"
+        "inlineArgs": \[],
+        "multiLineArg": \[],
+        "tableArgArray": \[
+          \[
+            "Value 1\.1",
+            "Value 2\.1"
           ],
-          [
-            "Value 1.2",
-            "Value 2.2"
+          \[
+            "Value 1\.2",
+            "Value 2\.2"
           ]
         ],
-        "tableArg": [
+        "tableArg": \[
           {
-            "Column 1": "Value 1.1",
-            "Column 1_Display": " Value 1.1 ",
-            "Column 2": "Value 2.1",
-            "Column 2_Display": " Value 2.1 "
+            "Column 1": "Value 1\.1",
+            "Column 1_Display": " Value 1\.1 ",
+            "Column 2": "Value 2\.1",
+            "Column 2_Display": " Value 2\.1 "
           },
           {
-            "Column 1": "Value 1.2",
-            "Column 1_Display": " Value 1.2 ",
-            "Column 2": "Value 2.2",
-            "Column 2_Display": " Value 2.2 "
+            "Column 1": "Value 1\.2",
+            "Column 1_Display": " Value 1\.2 ",
+            "Column 2": "Value 2\.2",
+            "Column 2_Display": " Value 2\.2 "
           }
         ],
         "exampleArg": null
@@ -284,31 +284,31 @@ Feature: Examples of Scenario Steps
       """
       {
         "step": {
-          "id": "gr-280297052",
-          "name": "Given I am a step with an inline expression of \"\{\{ 'Hello my name is: \\'' + this.$context.step.scenario.name + '\\'' }}\"",
+          "id": "gr[-^"|\d^"]+",
+          "name": "Given I am a step with an inline expression of \\"\{\{ 'Hello my name is: \\\\'' \+ this\.\$context\.step\.scenario\.name \+ '\\\\'' }}\\"",
           "type": "step",
-          "libraryName": "/features/step_definitions/test-examples.js",
-          "libraryMethodName": "/^I am a step with an inline expression of \"([^\"]*)\"$/",
-          "originalName": "Given I am a step with an inline expression of \"\{\{ 'Hello my name is: \\'' + this.$context.step.scenario.name + '\\'' }}\"",
+          "libraryName": "/features/step_definitions/gherkinRunnerLibrary\.js",
+          "libraryMethodName": "/\^I am a step with an inline expression of \\"\(\[\^\\"]\*\)\\"\$/",
+          "originalName": "Given I am a step with an inline expression of \\"\{\{ 'Hello my name is: \\\\'' \+ this\.\$context\.step\.scenario\.name \+ '\\\\'' }}\\"",
           "runCondition": null,
           "scenario": {
-            "id": "gr-1147512114",
+            "id": "gr[-^"|\d^"]+",
             "name": "This is a scenario with an inline expression",
             "type": "scenario",
             "config": {},
             "feature": {
-              "id": "gr-1383391462",
+              "id": "gr[-^"|\d^"]+",
               "name": "Examples of Scenario Steps",
               "type": "feature"
             }
           }
         },
-        "inlineArgs": [
+        "inlineArgs": \[
           "Hello my name is: 'This is a scenario with an inline expression'"
         ],
-        "multiLineArg": [],
-        "tableArgArray": [],
-        "tableArg": [],
+        "multiLineArg": \[],
+        "tableArgArray": \[],
+        "tableArg": \[],
         "exampleArg": null
       }
       """

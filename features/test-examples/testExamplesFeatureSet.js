@@ -1,17 +1,15 @@
 ﻿module.exports = {
   name: "Test Examples - Used to Test the Gherkin Runner",
   featureSetPaths: [
-    "features/test-examples/featureSetX/featureSetX",
-    "features/test-examples/featureSetY/featureSetY"
+    "features/test-examples/featureSetX/featureSetX.js",
+    "features/test-examples/featureSetY/featureSetY.js"
   ],
   featurePaths: [
-    "features/test-examples/examplesOfScenarioSteps",
-    "features/test-examples/examplesOfScenarioOutlineSteps",
-    "features/test-examples/examplesOfBackgrounds",
-    "features/test-examples/examplesOfFeatureBackgrounds",
-    "features/test-examples/examplesOfStepGroups"
+    "features/test-examples/featureA.feature",
+    "features/test-examples/featureB.feature",
+    "features/test-examples/featureC.feature"
   ],
   libraryPaths: [
-    '/features/step_definitions/test-examples'
+    '/features/step_definitions/testExamplesLibrary.js'
   ]
 };

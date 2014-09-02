@@ -387,7 +387,7 @@
     {
       featureSet.libraryPaths.forEach(function (libraryName) {
         dfd = dfd.then(function () {
-          return _this.loadLibraryFile(_this.libraries, libraryName + '.js');
+          return _this.loadLibraryFile(_this.libraries, libraryName);
         });
       });
     }
@@ -421,7 +421,7 @@
     var dfd = $.when();
     _this.libraryPaths().forEach(function (libraryName) {
       dfd = dfd.then(function () {
-        return _this.loadLibraryFile(_this.libraries, libraryName + '.js');
+        return _this.loadLibraryFile(_this.libraries, libraryName);
       });
     });
     return dfd.promise();
@@ -463,8 +463,8 @@
   };
   _this.loadFeatureFile = function loadFeatureFile(features, featureName) {
     var dfd = new $.Deferred();
-    require.undef("gherkin-runner/scripts/text!" + featureName + ".feature");
-    require(["gherkin-runner/scripts/text!" + featureName + ".feature"], function (featureText) {
+    require.undef("gherkin-runner/scripts/text!" + featureName);
+    require(["gherkin-runner/scripts/text!" + featureName], function (featureText) {
       _this.loadImports(featureText)
         .then(function (importedFeatureText) {
           features.push(_this.loadFeature(importedFeatureText, featureName));
@@ -1710,7 +1710,7 @@
   _this.walk = function walk(startFeatureSetPath) {
     startFeatureSetPath = _this.getURLParameter('walkFeatureSet');
     if (startFeatureSetPath == "null")
-      startFeatureSetPath = 'features/featureSet';
+      startFeatureSetPath = '/features/featureSet.js';
     require.undef(startFeatureSetPath);
     require([startFeatureSetPath], function (rootFeatureSet) {
       _this.initializeFeatureSet(rootFeatureSet, startFeatureSetPath, 0);
@@ -1765,25 +1765,25 @@
         require([featureSetPath], function (childFeatureSet) {
           _this.initializeFeatureSet(childFeatureSet, featureSetPath, parseInt(featureSet.level) + 2);
           featureSet.featureSets.push(childFeatureSet);
-          featureSet.featureSets.sort(function (a, b) {
-            if (a.name == b.name)
-              return 0
-            else if (a.name > b.name)
-              return 1
-            else return -1;
-          });
+//          featureSet.featureSets.sort(function (a, b) {
+//            if (a.name == b.name)
+//              return 0
+//            else if (a.name > b.name)
+//              return 1
+//            else return -1;
+//          });
         });
       });
       $.each(featureSet.featurePaths, function (index, featurePath) {
         var feature = _this.initializeFeature(featurePath, featureSet.level + 2);
         featureSet.features.push(feature);
-        featureSet.features.sort(function (a, b) {
-          if (a.name == b.name)
-            return 0
-          else if (a.name > b.name)
-            return 1
-          else return -1;
-        });
+//        featureSet.features.sort(function (a, b) {
+//          if (a.name == b.name)
+//            return 0
+//          else if (a.name > b.name)
+//            return 1
+//          else return -1;
+//        });
       });
     }
     featureSet.expanded(true);

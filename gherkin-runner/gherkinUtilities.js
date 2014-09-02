@@ -100,10 +100,13 @@
         '\nActual Count: \n' + actualArray.length + '\n';
     } else if (diff(expectedArray, actualArray)) {
       for(var i = 0; i < expectedArray.length; i++) {
-        if (actualArray[i] != expectedArray[i])
-          errorMsg = (errorMsg?errorMsg:'') + 'Line ' + i + ' did not match.\n' +
-            '\nExpected Line: \n' + expectedArray[i] +
+        var expectedRegEx = new RegExp(expectedArray[i]);
+        if (!actualArray[i].match(expectedRegEx)) {
+          debugger;
+          errorMsg = (errorMsg?errorMsg:'') + '\nLine ' + i + ' did not match.\n' +
+            'Expected Line: \n' + expectedArray[i] +
             '\nActual Line: \n' + actualArray[i] + '\n';
+        }
       }
     }
     if(errorMsg)
