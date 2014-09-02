@@ -91,7 +91,7 @@
     }, 100, _this, intv, count, selector, text, dfd)
     return dfd.promise();
   };
-  _this.compareStringArrays = function (expectedArray, actualArray) {
+  _this.compareStringArrays = function (expectedArray, actualArray, useRegex) {
     var errorMsg = null;
     if(expectedArray.length != actualArray.length)
     {
@@ -101,7 +101,7 @@
     } else if (diff(expectedArray, actualArray)) {
       for(var i = 0; i < expectedArray.length; i++) {
         var expectedRegEx = new RegExp(expectedArray[i]);
-        if (!actualArray[i].match(expectedRegEx)) {
+        if ((useRegex && !actualArray[i].match(expectedRegEx)) || (!useRegex && expectedArray[i] !== actualArray[i])) {
           debugger;
           errorMsg = (errorMsg?errorMsg:'') + '\nLine ' + i + ' did not match.\n' +
             'Expected Line: \n' + expectedArray[i] +
@@ -116,10 +116,10 @@
 
     return errorMsg;
   };
-  _this.compareMultiLineStrings = function (expectedString, actualString) {
+  _this.compareMultiLineStrings = function (expectedString, actualString, useRegex) {
     var expectedArray = this.convertMultlineStringToLineArray(expectedString),
         actualArray = this.convertMultlineStringToLineArray(actualString);
-    return _this.compareStringArrays(expectedArray, actualArray);
+    return _this.compareStringArrays(expectedArray, actualArray, useRegex);
   };
   _this.convertObjectToLineArray = function (objectToConvert){
     var objectString = JSON.stringify(objectToConvert, null, 2);
@@ -138,9 +138,9 @@
       multiLineArray = multiLineString.split('\n');
     return multiLineArray;
   }
-  _this.compareObjectToMultiLineString = function(object, multiLineString){
+  _this.compareObjectToMultiLineString = function(object, multiLineString, useRegex){
     var expectedLineArray = _this.convertMultlineStringToLineArray(multiLineString),
         actualLineArray = _this.convertObjectToLineArray(object);
-    return _this.compareStringArrays(expectedLineArray, actualLineArray);
+    return _this.compareStringArrays(expectedLineArray, actualLineArray, useRegex);
   };
 module.exports = _this;

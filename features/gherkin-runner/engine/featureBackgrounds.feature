@@ -1,10 +1,5 @@
-Feature: examplesOfFeatureBackgrounds
-  In order to X
-  As a Y
-  I would like to Z
+Feature: Feature Backgrounds
+  In order to understand how to leverage backgrounds that run once per feature
+  As a user
+  I would like to see examples of every type of scenario where a feature background could be used
 
-  Scenario: examplesOfFeatureBackgrounds 1
-    Given X
-    When Y
-    Then Z
-  

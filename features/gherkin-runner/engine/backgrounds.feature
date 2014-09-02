@@ -1,10 +1,5 @@
-Feature: examplesOfBackgounds
-  In order to X
-  As a Y
-  I would like to Z
+Feature: Scenario Backgrounds
+  In order to understand how to leverage scenario backgrounds
+  As a user
+  I would like to see examples of every type of scenario where a background could be used
 
-  Scenario: examplesOfBackgounds 1
-    Given X
-    When Y
-    Then Z
-  

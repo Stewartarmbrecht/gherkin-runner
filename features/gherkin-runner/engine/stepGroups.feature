@@ -1,10 +1,4 @@
-Feature: examplesOfStepGroups
-  In order to X
-  As a Y
-  I would like to Z
-
-  Scenario: examplesOfStepGroups 1
-    Given X
-    When Y
-    Then Z
-  
+Feature: Step Groups
+  In order to understand how the gherkin runner can use step groups to implement steps
+  As a user
+  I would like to see examples of all ways in which a step group can be used

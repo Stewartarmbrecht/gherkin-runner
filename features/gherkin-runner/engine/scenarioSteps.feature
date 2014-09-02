@@ -1,4 +1,4 @@
-Feature: Examples of Scenario Steps
+Feature: Scenario Steps
   In order to understand the types of steps that can be added to a scenario
   As a user
   I would like to see examples of all the types of steps a scenario can have
@@ -26,7 +26,7 @@ Feature: Examples of Scenario Steps
             "config": \{},
             "feature": \{
               "id": "gr[-^"|\d^"]+",
-              "name": "Examples of Scenario Steps",
+              "name": "Scenario Steps",
               "type": "feature"
             }
           }
@@ -72,7 +72,7 @@ Feature: Examples of Scenario Steps
             "config": {},
             "feature": {
               "id": "gr[-^"|\d^"]+",
-              "name": "Examples of Scenario Steps",
+              "name": "Scenario Steps",
               "type": "feature"
             }
           }
@@ -120,7 +120,7 @@ Feature: Examples of Scenario Steps
             "config": {},
             "feature": {
               "id": "gr[-^"|\d^"]+",
-              "name": "Examples of Scenario Steps",
+              "name": "Scenario Steps",
               "type": "feature"
             }
           }
@@ -174,7 +174,7 @@ Feature: Examples of Scenario Steps
             "config": {},
             "feature": {
               "id": "gr[-^"|\d^"]+",
-              "name": "Examples of Scenario Steps",
+              "name": "Scenario Steps",
               "type": "feature"
             }
           }
@@ -228,7 +228,7 @@ Feature: Examples of Scenario Steps
             "config": {},
             "feature": {
               "id": "gr[-^"|\d^"]+",
-              "name": "Examples of Scenario Steps",
+              "name": "Scenario Steps",
               "type": "feature"
             }
           }
@@ -298,7 +298,7 @@ Feature: Examples of Scenario Steps
             "config": {},
             "feature": {
               "id": "gr[-^"|\d^"]+",
-              "name": "Examples of Scenario Steps",
+              "name": "Scenario Steps",
               "type": "feature"
             }
           }
@@ -314,28 +314,57 @@ Feature: Examples of Scenario Steps
       """
 
   Scenario: This is a scenario with an inline expression that fails to compile
-    Given I am a step with an inline expression of "{{ Hello.NotExist() }}" that verifies my inline parameter value is Hello World
+    Given I am a step with an inline expression of "{{ Hello.NotExist() }}"
     When I am run
     Then I should pass
 
   Scenario: This is a scenario with a true conditional step that passes
-    Given I am a step with a true conditional that succeeds if(true == true)
-    When I am run
-    Then I should pass
+    Given I am a step with a true conditional that passes if(true == true)
+    Then argument 1 to the matching method should be the callback function
+    And inside the method this.$context should be
+      """
+      {
+        "step": {
+          "id": "gr[-|\d]+",
+          "name": "Given I am a step with a true conditional that passes ",
+          "type": "step",
+          "libraryName": "/features/step_definitions/gherkinRunnerLibrary\.js",
+          "libraryMethodName": "/\^I am a step with a true conditional that passes\$/",
+          "originalName": "Given I am a step with a true conditional that passes if\(true == true\)",
+          "runCondition": "true",
+          "scenario": {
+            "id": "gr[-|\d]+",
+            "name": "This is a scenario with a true conditional step that passes",
+            "type": "scenario",
+            "config": {},
+            "feature": {
+              "id": "gr[-|\d]+",
+              "name": "Scenario Steps",
+              "type": "feature"
+            }
+          }
+        },
+        "inlineArgs": \[],
+        "multiLineArg": \[],
+        "tableArgArray": \[],
+        "tableArg": \[],
+        "exampleArg": null
+      }
+      """
 
   Scenario: This is a scenario with a true conditional step that fails
-    Given I am a step with a true conditional that fails if(true == false)
+    Given I am a step with a true conditional that fails if(true == true)
     When I am run
     Then I should fail
 
   Scenario: This is a scenario with a false conditional step that fails
     Given I am a step with a false conditional that fails if(true == false)
     When I am run
-    Then I should pass
+    Then I should be skipped
 
   Scenario: This is a scenario with a conditional step that fails to compile
     Given I am a step with a false conditional that fails if(I.Fail.To.Compile)
     When I am run
-    Then I should pass
+    Then I should fail
 
 # This is an example of a comment added to a feature by placing it at the end of the file.
