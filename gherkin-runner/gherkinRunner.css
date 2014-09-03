@@ -148,6 +148,14 @@ span.step-group {
     margin-left: 8em;
 }
 
+.feature-set-description {
+  margin-left: 8em;
+}
+
+.feature-set-path {
+  margin-left: 8em;
+}
+
 .scenario .section-title {
     margin-left: 8.5em;
     font-weight: bold;
@@ -278,6 +286,10 @@ span.step-group {
 }
 
 .feature-description-section {
+  margin-bottom: .75em;
+}
+
+.feature-set-description-section {
   margin-bottom: .75em;
 }
 
