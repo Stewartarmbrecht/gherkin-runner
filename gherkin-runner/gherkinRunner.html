@@ -328,7 +328,7 @@
         </div>
         <div class="icon-column">
           <i class="fa fa-ban text-danger" title="Missing Child Methods"
-             data-bind="visible: missingChildMethods() > 0"></i>
+             data-bind="visible: childMissingMethod() > 0"></i>
         </div>
         <div class="icon-column info">
           <a class="hover-visible can-click" data-toggle="collapse"
@@ -389,7 +389,7 @@
         </div>
         <div class="icon-column">
           <i class="fa fa-ban text-danger" title="Missing Child Methods"
-             data-bind="visible: missingChildMethods() > 0"></i>
+             data-bind="visible: childMissingMethod() > 0"></i>
         </div>
         <div class="icon-column info">
           <a class="hover-visible can-click" data-toggle="collapse"
@@ -408,7 +408,7 @@
         <a class="can-click" data-toggle="collapse"
            data-bind="attr: { href: '#feature_' + id,'data-parent': 'feature_set_features_' + $parent.id }">
           <span><strong class="feature-label text-muted">Feature: </strong><strong
-            data-bind="text: name, css: { 'text-danger': missingChildMethods() > 0 || runResult() === -1, 'text-success': runResult() === 1 }"></strong>
+            data-bind="text: name, css: { 'text-danger': childMissingMethod() > 0 || runResult() === -1, 'text-success': runResult() === 1 }"></strong>
           </span>
         </a>
       </div>
@@ -468,7 +468,7 @@
           <a class="can-click" data-toggle="collapse"
              data-bind="attr: { 'href': '#' + id }">
             <i class="fa fa-ban text-danger" title="Missing Child Methods"
-               data-bind="visible: missingChildMethods() > 0"></i>
+               data-bind="visible: childMissingMethod() > 0"></i>
           </a>
         </div>
         <div class="icon-column">
@@ -498,7 +498,7 @@
               <span class="inline scenario-name text-muted"
                     data-bind="visible: !exampleArgDisplay, text: type.substring(0,1).toUpperCase() + type.substring(1) + ': '"></span>
               <span class="inline scenario-name"
-                    data-bind="visible: !exampleArgDisplay, text: name, css: { 'text-danger': missingChildMethods() > 0 || runResult() == -1, 'text-success': runResult() === 1 }"></span>
+                    data-bind="visible: !exampleArgDisplay, text: name, css: { 'text-danger': childMissingMethod() > 0 || runResult() == -1, 'text-success': runResult() === 1 }"></span>
             </div>
           </strong>
         </a>
@@ -563,7 +563,7 @@
         <div class="icon-column missing-method">
           <i class="fa fa-ban text-danger" title="Missing Method" data-bind="visible: missingMethod"></i>
           <i class="fa fa-ban text-danger" title="Missing Child Methods"
-             data-bind="visible: missingChildMethods() > 0"></i>
+             data-bind="visible: childMissingMethod() > 0"></i>
         </div>
         <div class="icon-column info">
           <a class="hover-visible can-click" data-toggle="collapse"
@@ -584,14 +584,14 @@
         <!-- ko if: $data.subSteps().length > 0 -->
         <a class="can-click" data-toggle="collapse"
            data-bind="attr: { 'href': '#' + id }">
-          <div data-bind="css: { 'text-danger': missingChildMethods() > 0 || missingMethod, 'text-success': runResult() === 1 }">
+          <div data-bind="css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
             <span data-bind="text: name" class="step-group"></span><span
             data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
           </div>
         </a>
         <!-- /ko -->
         <!-- ko if: $data.subSteps().length === 0-->
-        <div data-bind="css: { 'text-danger': missingChildMethods() > 0 || missingMethod, 'text-success': runResult() === 1 }">
+        <div data-bind="css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
           <span data-bind="text: name, css: {'step-group': methodName === 'Step Group'}"></span><span
           data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
         </div>
@@ -676,13 +676,13 @@
     <div class="title hover hover-highlighted">
       <div class="icons">
         <div class="icon-column">
-          <i class="fa fa-ban text-danger" data-bind="visible: missingChildMethods() > 0 "></i>
+          <i class="fa fa-ban text-danger" data-bind="visible: childMissingMethod() > 0 "></i>
         </div>
       </div>
       <div class="name">
         <a class="can-click" data-toggle="collapse"
            data-bind="attr: { 'href': '#' + id }">
-          <span data-bind="text: 'Step Group: ' + name, css: { 'text-danger': missingChildMethods() > 0 }"></span>
+          <span data-bind="text: 'Step Group: ' + name, css: { 'text-danger': childMissingMethod() > 0 }"></span>
           (<span data-bind="text: used, attr: {title: 'Used ' + used + ' times'}"></span>)
         </a>
       </div>

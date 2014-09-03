@@ -23,7 +23,7 @@ function Scenario(line, lineNumber, feature) {
   this.scenarios = ko.observableArray();
   this.comments = ko.observableArray();
   this.feature = feature;
-  this.missingChildMethods = ko.observable(0);
+  this.childMissingMethod = ko.observable(0);
   this.childBreakpoints = ko.observable(0);
   this.childSkipped = ko.observable(0);
   this.childPassed = ko.observable(0);
@@ -111,9 +111,9 @@ Scenario.prototype.addChildRunResult = function addChildRunResult(result) {
   this.feature.addChildRunResult(this.runResult());
 };
 
-Scenario.prototype.addMissingChildMethods = function addMissingChildMethods() {
-  this.missingChildMethods(this.missingChildMethods() + 1);
-  this.feature.addMissingChildMethods();
+Scenario.prototype.addChildMissingMethod = function addChildMissingMethod() {
+  this.childMissingMethod(this.childMissingMethod() + 1);
+  this.feature.addChildMissingMethod();
 };
 
 Scenario.prototype.addChildBreakpoint = function addChildBreakpoint() {

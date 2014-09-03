@@ -14,7 +14,7 @@ function FeatureSet(featureSet, featureSetPath, parentFeatureSet) {
   this.loaded = ko.observable(-1);
   this.runResult = ko.observable();
   this.lastRunResult = ko.observable();
-  this.missingChildMethods = ko.observable(0);
+  this.childMissingMethod = ko.observable(0);
   this.childBreakpoints = ko.observable(0);
   this.childSkipped = ko.observable();
   this.childPassed = ko.observable();
@@ -63,10 +63,10 @@ FeatureSet.prototype.addChildRunResult = function addChildRunResult(result) {
     this.parentFeatureSet.addChildRunResult(this.runResult());
 };
 
-FeatureSet.prototype.addMissingChildMethods = function addMissingChildMethods() {
-  this.missingChildMethods(this.missingChildMethods() + 1);
+FeatureSet.prototype.addChildMissingMethod = function addChildMissingMethod() {
+  this.childMissingMethod(this.childMissingMethod() + 1);
   if(this.parentFeatureSet)
-    this.parentFeatureSet.addMissingChildMethods();
+    this.parentFeatureSet.addChildMissingMethod();
 };
 
 FeatureSet.prototype.addChildBreakpoint = function addChildBreakpoint() {

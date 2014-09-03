@@ -17,7 +17,7 @@ function StepGroup(line, lineNumber, feature) {
   }
   this.runResult = ko.observable();
   this.lastRunResult = ko.observable();
-  this.missingChildMethods = ko.observable(0);
+  this.childMissingMethod = ko.observable(0);
   this.childBreakpoints = ko.observable(0);
   this.childSkipped = ko.observable();
   this.childPassed = ko.observable();
@@ -51,8 +51,8 @@ StepGroup.prototype.addChildRunResult = function addChildRunResult(result) {
 
 };
 
-StepGroup.prototype.addMissingChildMethods = function addMissingChildMethods() {
-  this.missingChildMethods(this.missingChildMethods + 1);
+StepGroup.prototype.addChildMissingMethod = function addChildMissingMethod() {
+  this.childMissingMethod(this.childMissingMethod + 1);
 };
 
 StepGroup.prototype.addChildBreakpoint = function addChildBreakpoint() {

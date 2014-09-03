@@ -27,8 +27,10 @@ function Step(line, lineNumber, feature, stepOwner) {
   this.breakpoint = ko.observable(false);
   this.childBreakpoints = ko.observable(0);
   this.missingMethod = ko.observable(false);
-  this.missingChildMethods = ko.observable(0);
+  this.childMissingMethod = ko.observable(0);
   this.runResult = ko.observable();
+  this.childLoaded = ko.observable();
+  this.childRun = ko.observable();
   this.childSkipped = ko.observable();
   this.childPassed = ko.observable();
   this.childFailed = ko.observable();
@@ -76,12 +78,12 @@ Step.prototype.addChildRunResult = function addChildRunResult(result) {
 
 Step.prototype.setMissingMethod = function setMissingMethod() {
   this.missingMethod(true);
-  this.stepOwner.addMissingChildMethods();
+  this.stepOwner.addChildMissingMethod();
 };
 
-Step.prototype.addMissingChildMethods = function addMissingChildMethods() {
-  this.missingChildMethods(this.missingChildMethods() + 1);
-  this.stepOwner.addMissingChildMethods();
+Step.prototype.addChildMissingMethod = function addChildMissingMethod() {
+  this.childMissingMethod(this.childMissingMethod() + 1);
+  this.stepOwner.addChildMissingMethod();
 };
 
 Step.prototype.setBreakpoint = function setBreakpoint() {
