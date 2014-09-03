@@ -34,7 +34,7 @@ FeatureSet.prototype.resetState = function resetState() {
 };
 
 FeatureSet.prototype.resetResults = function resetResults() {
-  this.lastRunResult(this.runResult);
+  this.lastRunResult(this.runResult());
   this.runResult(null);
   this.childSkipped(0);
   this.childPassed(0);
@@ -57,15 +57,10 @@ FeatureSet.prototype.addChildRunResult = function addChildRunResult(result) {
   else if(result === 1)
     this.childPassed(this.childPassed() + 1);
 
-  if(!this.runResult())
-    this.runResult(result);
-  else if(result === -1)
-    this.runResult(-1);
-  else if(result === 0 && this.runResult() !== -1)
-    this.runResult(0);
+  this.runResult(utilities.aggregateRunResult(result, this.runResult()));
 
   if(this.parentFeatureSet)
-    this.parentFeatureSet.addChildRunResult(result);
+    this.parentFeatureSet.addChildRunResult(this.runResult());
 };
 
 FeatureSet.prototype.addMissingChildMethods = function addMissingChildMethods() {

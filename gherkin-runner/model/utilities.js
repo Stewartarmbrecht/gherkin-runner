@@ -69,5 +69,18 @@ _this.replaceStepGroupOutlineParameters = function replaceStepGroupOutlineParame
     }
     return value;
   };
-
+_this.aggregateRunResult = function aggregateRunResult(childResult, parentResult) {
+  var result = 0;
+  if(parentResult === null)
+    result = childResult;
+  else if(childResult === -1)
+    result = -1;
+  else if(childResult === 0 && parentResult !== -1)
+    result = 0;
+  else if(childResult === 1 && parentResult === 1)
+    result = 1;
+  else
+    result = parentResult;
+  return result;
+};
 module.exports = _this;

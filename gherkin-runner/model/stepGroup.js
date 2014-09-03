@@ -27,7 +27,7 @@ function StepGroup(line, lineNumber, feature) {
 };
 
 StepGroup.prototype.resetResults = function resetResults() {
-  this.lastRunResult(this.runResult);
+  this.lastRunResult(this.runResult());
   this.runResult(null);
   this.childSkipped(0);
   this.childPassed(0);
@@ -47,12 +47,8 @@ StepGroup.prototype.addChildRunResult = function addChildRunResult(result) {
   else if(result === 1)
     this.childPassed(this.childPassed() + 1);
 
-  if(!this.runResult())
-    this.runResult(result);
-  else if(result === -1)
-    this.runResult(-1);
-  else if(result === 0 && this.runResult() !== -1)
-    this.runResult(0);
+  this.runResult(utilities.aggregateRunResult(result, this.runResult()));
+
 };
 
 StepGroup.prototype.addMissingChildMethods = function addMissingChildMethods() {

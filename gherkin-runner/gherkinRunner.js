@@ -675,8 +675,7 @@
       _this.resetState();
     _this.log('Running scenario...')
     _this.runScenario(scenario.feature, scenario, isBackground)
-      .then(function (runResult) {
-        _this.runResult(runResult);
+      .then(function () {
         if (_this.uiWindowVisible())
           _this.toggleUI();
         _this.status('Idle');
@@ -810,19 +809,19 @@
           _this.runningStep(step);
         if (stepOwner.aborted || _this.canceled) {
           step.setRunResult(0);
-          dfd.resolve(0);
+          dfd.resolve();
         } else {
           if (!step.method) {
-            step.setRunResult(-1);
+            step.setRunResult(0);
             stepOwner.aborted = true;
-            dfd.resolve(-1)
+            dfd.resolve()
           } else {
             try {
               stepOwner.config = _this.config;
               var stepDeferred = new $.Deferred();
               stepDeferred.then(function () {
                 step.setRunResult(1);
-                dfd.resolve(1);
+                dfd.resolve();
               });
               stepDeferred.fail(function (error) {
                 if (_this.breakOnException())
@@ -834,7 +833,7 @@
                 if (!stepOwner.error() && error)
                   stepOwner.error(error);
                 step.setRunResult(-1);
-                dfd.resolve(-1);
+                dfd.resolve();
               });
               _this.runStepMethod(step, stepOwner, stepDeferred);
             }
@@ -845,7 +844,7 @@
               stepOwner.error(error);
               step.error(error);
               step.setRunResult(-1);
-              dfd.resolve(-1);
+              dfd.resolve();
             }
           }
         }
