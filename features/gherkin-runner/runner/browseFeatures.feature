@@ -3,27 +3,19 @@ Feature: Browse Features
   As a user
   I would like to be able to browse the tree of feature sets and features
 
-  Scenario: Load gherkin walker with default feature set
-    Given I am a new user
+  Scenario: Load gherkin runner with default feature set
     When I navigate to the site
-    Then the gherkin walker should display
-    And it should load the "features/featureSet" feature set
-    And it should show the following tree
-    """
-    All Features
-      Gherkin Runner Features
-      Gherkin Runner Test Samples
-      Todo Sample Application
-    """
+        Then navigate to URL "/"
+    Then the gherkin runner should display
+
+    And it should load the "/features/featureSet.js" feature set
+    And it should display that feature set expanded
 
   Scenario: Load gherkin walker with specific features set
-    Given I am a new user
-    When I navigate to the site with the following URL parameters
-    | parameter      | value                                          |
-    | walkFeatureSet | /features/test-examples/testExamplesFeatureSet |
-    And I specify a feature set in the URL
-    Then the gherkin walker should load
-    And it should load the feature set at "/features/featureSet.js"
+    When I navigate to the site with a feature set path specified in the url
+    Then the gherkin runner should display
+    And it should load the specified feature set
+    And it should display that feature set expanded
 
   Scenario: View feature set title, counts, and description
     Given I navigate to the site
