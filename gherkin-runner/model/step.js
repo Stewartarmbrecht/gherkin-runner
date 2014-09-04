@@ -12,7 +12,7 @@ function Step(line, lineNumber, feature, stepOwner) {
   this.originalName = line;
   this.lineNumber = lineNumber;
   this.outline = false;
-  this.subSteps = ko.observableArray();
+  this.steps = ko.observableArray();
   this.tableArg = [];
   this.tableArgArray = [];
   this.tableArgColumns = [];
@@ -51,7 +51,7 @@ Step.prototype.addChildLoaded = function addChildLoaded(count) {
 
 Step.prototype.resetResults = function resetResults() {
   utilities.resetStandardCounts(this);
-  this.subSteps().forEach(function(subStep) {
+  this.steps().forEach(function(subStep) {
     subStep.resetResults();
   });
 };
@@ -99,7 +99,7 @@ Step.prototype.removeChildBreakpoint = function removeChildBreakpoint() {
 };
 
 Step.prototype.clone = function(exampleArg) {
-  var subSteps = ko.observableArray();
+  var steps = ko.observableArray();
   var clone = new Step(this.line, this.lineNumber, this.feature, this.stepOwner);
   clone.id = this.id + '_' + this.clones.length + 1,
   clone.type = this.type,
@@ -113,7 +113,7 @@ Step.prototype.clone = function(exampleArg) {
   clone.error = ko.observable(),
   clone.lastError = ko.observable(),
   clone.outline = false,
-  clone.subSteps = subSteps,
+  clone.steps = steps,
   clone.tableArg = [],
   clone.tableArgArray = [],
   clone.tableArgColumns = this.tableArgColumns.slice(0),
@@ -133,10 +133,10 @@ Step.prototype.clone = function(exampleArg) {
       multiLineArg[index] = (lineArg ? utilities.replaceExampleParameters(lineArg, exampleArg) : null);
     });
   }
-  this.subSteps().forEach(function (subStep) {
+  this.steps().forEach(function (subStep) {
     var stepClone = subStep.clone();
     stepClone.stepOwner = clone;
-    clone.subSteps.push(stepClone);
+    clone.steps.push(stepClone);
   });
 
   this.tableArgArray.forEach(function (rowArg, index) {

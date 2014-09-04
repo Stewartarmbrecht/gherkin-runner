@@ -24,25 +24,6 @@
   _this.runningStep = ko.observable();
   _this.runningSubStep = ko.observable();
   _this.id = utilities.encodeId('gherkin-runner');
-  _this.counts = {
-    featureSets: { total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
-    features: { total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
-    backgrounds: { defined: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
-    scenarios: { defined: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
-    stepGroups: { defined: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
-    steps: { defined: ko.observable(0), missingMethods: ko.observable(0), background: ko.observable(0), scenario: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) },
-    subSteps: { defined: ko.observable(0), missingMethods: ko.observable(0), background: ko.observable(0), scenario: ko.observable(0), total: ko.observable(0), run: ko.observable(0), pass: ko.observable(0), fail: ko.observable(0), skip: ko.observable(0) }
-  };
-  _this.countsPosition = ko.observable('left');
-  _this.countsMove = function countsMove() {
-    if (_this.countsPosition() == 'left') {
-      _this.countsPosition('right');
-      $('#gherkin-counts').addClass('right');
-    } else {
-      _this.countsPosition('left');
-      $('#gherkin-counts').removeClass('right');
-    }
-  };
   _this.toggleUIButtonPosition = ko.observable('right');
   _this.toggleUIButtonMove = function toggleUIButtonMove() {
     if (_this.toggleUIButtonPosition() == 'left') {
@@ -79,57 +60,6 @@
     }
     return dfd.promise();
   }
-
-  _this.resetCounts = function resetCounts() {
-    _this.resetRunCounts();
-    _this.counts.featureSets.total(0);
-    _this.counts.featureSets.run(0);
-    _this.counts.featureSets.pass(0);
-    _this.counts.featureSets.fail(0);
-    _this.counts.features.total(0);
-    _this.counts.backgrounds.defined(0);
-    _this.counts.backgrounds.total(0);
-    _this.counts.scenarios.defined(0);
-    _this.counts.scenarios.total(0);
-    _this.counts.stepGroups.defined(0);
-    _this.counts.stepGroups.total(0);
-    _this.counts.steps.defined(0);
-    _this.counts.steps.missingMethods(0);
-    _this.counts.steps.background(0);
-    _this.counts.steps.scenario(0);
-    _this.counts.steps.total(0);
-    _this.counts.subSteps.defined(0);
-    _this.counts.subSteps.missingMethods(0);
-    _this.counts.subSteps.background(0);
-    _this.counts.subSteps.scenario(0);
-    _this.counts.subSteps.total(0);
-  };
-  _this.resetRunCounts = function resetRunCounts() {
-    _this.counts.features.run(0);
-    _this.counts.features.pass(0);
-    _this.counts.features.fail(0);
-    _this.counts.features.skip(0);
-    _this.counts.backgrounds.run(0);
-    _this.counts.backgrounds.pass(0);
-    _this.counts.backgrounds.fail(0);
-    _this.counts.backgrounds.skip(0);
-    _this.counts.scenarios.run(0);
-    _this.counts.scenarios.pass(0);
-    _this.counts.scenarios.fail(0);
-    _this.counts.scenarios.skip(0);
-    _this.counts.stepGroups.run(0);
-    _this.counts.stepGroups.pass(0);
-    _this.counts.stepGroups.fail(0);
-    _this.counts.stepGroups.skip(0);
-    _this.counts.steps.run(0);
-    _this.counts.steps.pass(0);
-    _this.counts.steps.fail(0);
-    _this.counts.steps.skip(0);
-    _this.counts.subSteps.run(0);
-    _this.counts.subSteps.pass(0);
-    _this.counts.subSteps.fail(0);
-    _this.counts.subSteps.skip(0);
-  };
   _this.resetRunResults = function resetRunResults() {
     _this.featureSet().resetResults();
   };
@@ -160,7 +90,6 @@
     _this.start = new Date().getTime();
     _this.status('Loading...');
     _this.log('Resetting counts...');
-    _this.resetCounts();
     _this.resetDefinitions();
     _this.log('Removing feature sets...');
     _this.showDashboard();
@@ -354,11 +283,11 @@
         step.method = function method() {
         };
       } else {
-        if (step.subSteps().length > 0) {
+        if (step.steps().length > 0) {
           step.methodName = 'Step Group';
           step.method = function method() {
           };
-          $.each(step.subSteps(), function (index, subStep) {
+          $.each(step.steps(), function (index, subStep) {
             _this.loadStepMethod(subStep, feature, true);
             subStep.name = utilities.replaceExampleParameters(subStep.name, scenarioOrStepGroup.exampleArg);
           });
@@ -465,8 +394,8 @@
     }
 
     stepCopy.stepOwner = step;
-    step.subSteps.push(stepCopy);
-  }
+    step.steps.push(stepCopy);
+  };
   _this.loadStepMethod = function loadStepMethod(step, feature, isSubStep) {
     _this.loadStepMethodName(step);
     $.each(_this.libraries(), function (index, library) {
@@ -534,6 +463,7 @@
     var feature = {};
     var stepOwner = {};
     var lastObject = null;
+    var lastIndentation = -1;
     $.each(lines, function (index, line) {
       var untrimmedLine = line;
       if (untrimmedLine.indexOf('\r') > 0)
@@ -541,6 +471,9 @@
       var lineNumber = index + 1;
       line = line.trim();
       if (line.length > 0) {
+        var indentation = untrimmedLine.indexOf(line);
+        if(lastIndentation == -1)
+          lastIndentation = indentation;
         if (lastRead === 'multi-line-argument') {
           if (line.toLowerCase().trim().indexOf('"""') === 0)
             lastRead = '';
@@ -581,7 +514,10 @@
           line.toLowerCase().indexOf("then ") === 0 ||
           line.toLowerCase().indexOf("and ") === 0 ||
           line.toLowerCase().indexOf("but ") === 0) {
-          var step = new Step(line, lineNumber, feature, stepOwner);
+          if(lastRead === 'step' && lastIndentation - indentation > 4) {
+            var step = new Step(line, lineNumber, feature, lastObject);
+          } else
+            var step = new Step(line, lineNumber, feature, stepOwner);
           lastObject = step;
           lastRead = 'step';
         } else if (line.toLowerCase().indexOf("|") === 0) {
@@ -774,7 +710,7 @@
   _this.runSteps = function runSteps(stepOwner) {
     var dfd = new $.when();
     $.each(stepOwner.steps(), function (index, step) {
-      if (step.subSteps().length > 0) {
+      if (step.steps().length > 0) {
         _this.setShouldRun(step, step.inlineArgs, stepOwner, stepOwner.state);
         dfd = dfd.then(function () {
           return _this.runSubSteps(step, stepOwner);
@@ -789,7 +725,7 @@
   };
   _this.runSubSteps = function runSubSteps(step, stepOwner) {
     var dfd = $.when();
-    $.each(step.subSteps(), function (index, subStep) {
+    $.each(step.steps(), function (index, subStep) {
       if (!step.shouldRun)
         subStep.runCondition = 'false';
       dfd = dfd.then(function () {

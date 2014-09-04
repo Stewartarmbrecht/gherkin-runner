@@ -1,4 +1,6 @@
-﻿module.exports = {
+﻿/*jslint node: true */
+"use strict";
+module.exports = {
   name: "Feature Set X",
   featurePaths: [
     "/features/test-examples/featureSetX/featureX1.feature",

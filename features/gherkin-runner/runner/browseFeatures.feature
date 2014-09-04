@@ -5,9 +5,9 @@ Feature: Browse Features
 
   Scenario: Load gherkin runner with default feature set
     When I navigate to the site
-        Then navigate to URL "/"
+        Then start a new browser session to relative path "/"
     Then the gherkin runner should display
-
+        Then wait for "" to be visible
     And it should load the "/features/featureSet.js" feature set
     And it should display that feature set expanded
 
