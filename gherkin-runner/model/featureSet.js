@@ -14,14 +14,25 @@ function FeatureSet(featureSet, featureSetPath, parentFeatureSet) {
   this.loaded = ko.observable(-1);
   this.runResult = ko.observable();
   this.lastRunResult = ko.observable();
-  this.childMissingMethod = ko.observable(0);
   this.childBreakpoints = ko.observable(0);
-  this.childSkipped = ko.observable();
-  this.childPassed = ko.observable();
-  this.childFailed = ko.observable();
+  this.childLoaded = ko.observable(0);
+  this.childMissingMethod = ko.observable(0);
+  this.childRun = ko.observable(0);
+  this.childSkipped = ko.observable(0);
+  this.childPassed = ko.observable(0);
+  this.childFailed = ko.observable(0);
   this.parentFeatureSet = parentFeatureSet;
-  if(parentFeatureSet)
+  if(parentFeatureSet){
     parentFeatureSet.featureSets.push(this);
+  }
+
+};
+
+FeatureSet.prototype.addChildLoaded = function addChildLoaded(count) {
+  if(this.parentFeatureSet){
+    this.parentFeatureSet.addChildLoaded(1);
+  }
+  this.childLoaded(this.childLoaded() + count);
 };
 
 FeatureSet.prototype.resetState = function resetState() {
@@ -34,11 +45,7 @@ FeatureSet.prototype.resetState = function resetState() {
 };
 
 FeatureSet.prototype.resetResults = function resetResults() {
-  this.lastRunResult(this.runResult());
-  this.runResult(null);
-  this.childSkipped(0);
-  this.childPassed(0);
-  this.childFailed(0);
+  utilities.resetStandardCounts(this);
   this.features().forEach(function(feature) {
     feature.resetResults();
   });
@@ -48,19 +55,9 @@ FeatureSet.prototype.resetResults = function resetResults() {
 };
 
 FeatureSet.prototype.addChildRunResult = function addChildRunResult(result) {
-  if(result !== -1 && result !== 0 && result !== 1)
-    throw new Error('The value passed to setRunResult must be -1 (Failed), 0 (Skipped), or 1 (Passed)');
-  if(result === -1)
-    this.childFailed(this.childFailed() + 1);
-  else if(result === 0)
-    this.childSkipped(this.childSkipped() + 1);
-  else if(result === 1)
-    this.childPassed(this.childPassed() + 1);
-
-  this.runResult(utilities.aggregateRunResult(result, this.runResult()));
-
+  utilities.addChildRunResult(this, result);
   if(this.parentFeatureSet)
-    this.parentFeatureSet.addChildRunResult(this.runResult());
+    this.parentFeatureSet.addChildRunResult(result);
 };
 
 FeatureSet.prototype.addChildMissingMethod = function addChildMissingMethod() {

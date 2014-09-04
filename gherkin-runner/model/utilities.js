@@ -83,4 +83,26 @@ _this.aggregateRunResult = function aggregateRunResult(childResult, parentResult
     result = parentResult;
   return result;
 };
+_this.resetStandardCounts = function resetStandardCounts(entity) {
+  entity.lastRunResult(entity.runResult());
+  entity.runResult(null);
+  if(entity.error)
+    entity.lastError(entity.error());
+  entity.childRun(0);
+  entity.childSkipped(0);
+  entity.childPassed(0);
+  entity.childFailed(0);
+};
+_this.addChildRunResult = function addChildRunResult(entity, result) {
+  if(result !== -1 && result !== 0 && result !== 1)
+    throw new Error('The value passed to setRunResult must be -1 (Failed), 0 (Skipped), or 1 (Passed)');
+  if(result === -1)
+    entity.childFailed(entity.childFailed() + 1);
+  else if(result === 0)
+    entity.childSkipped(entity.childSkipped() + 1);
+  else if(result === 1)
+    entity.childPassed(entity.childPassed() + 1);
+  entity.childRun(entity.childRun() + 1);
+  entity.runResult(_this.aggregateRunResult(result, entity.runResult()));
+};
 module.exports = _this;

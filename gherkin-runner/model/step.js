@@ -25,15 +25,15 @@ function Step(line, lineNumber, feature, stepOwner) {
   this.libraryMethodFullName = null;
   this.clones = [];
   this.breakpoint = ko.observable(false);
-  this.childBreakpoints = ko.observable(0);
   this.missingMethod = ko.observable(false);
+  this.childBreakpoints = ko.observable(0);
+  this.childLoaded = ko.observable(0);
   this.childMissingMethod = ko.observable(0);
+  this.childRun = ko.observable(0);
+  this.childSkipped = ko.observable(0);
+  this.childPassed = ko.observable(0);
+  this.childFailed = ko.observable(0);
   this.runResult = ko.observable();
-  this.childLoaded = ko.observable();
-  this.childRun = ko.observable();
-  this.childSkipped = ko.observable();
-  this.childPassed = ko.observable();
-  this.childFailed = ko.observable();
   this.lastRunResult = ko.observable();
   this.error = ko.observable();
   this.lastError = ko.observable();
@@ -41,14 +41,16 @@ function Step(line, lineNumber, feature, stepOwner) {
 
   this.stepOwner = stepOwner;
   stepOwner.steps.push(this);
+  stepOwner.addChildLoaded(1);
+};
+
+Step.prototype.addChildLoaded = function addChildLoaded(count) {
+  this.childLoaded(this.childLoaded() + count);
+  this.stepOwner.addChildLoaded(count);
 };
 
 Step.prototype.resetResults = function resetResults() {
-  this.lastRunResult(this.runResult());
-  this.runResult(null);
-  this.childSkipped(0);
-  this.childPassed(0);
-  this.childFailed(0);
+  utilities.resetStandardCounts(this);
   this.subSteps().forEach(function(subStep) {
     subStep.resetResults();
   });
@@ -62,18 +64,8 @@ Step.prototype.setRunResult = function setRunResult(result) {
 };
 
 Step.prototype.addChildRunResult = function addChildRunResult(result) {
-  if(result !== -1 && result !== 0 && result !== 1)
-    throw new Error('The value passed to setRunResult must be -1 (Failed), 0 (Skipped), or 1 (Passed)');
-  if(result === -1)
-    this.childFailed(this.childFailed() + 1);
-  else if(result === 0)
-    this.childSkipped(this.childSkipped() + 1);
-  else if(result === 1)
-    this.childPassed(this.childPassed() + 1);
-
-  this.runResult(utilities.aggregateRunResult(result, this.runResult()));
-
-  this.stepOwner.addChildRunResult(this.runResult());
+  utilities.addChildRunResult(this, result);
+  this.stepOwner.addChildRunResult(result);
 };
 
 Step.prototype.setMissingMethod = function setMissingMethod() {
@@ -166,6 +158,7 @@ Step.prototype.clone = function(exampleArg) {
     clone.tableArg[index] = cloneTableRow;
   });
   this.clones[this.clones.length] = clone;
+  this.addChildLoaded(clone.childLoaded());
   return clone;
 };
 

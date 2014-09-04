@@ -17,38 +17,30 @@ function StepGroup(line, lineNumber, feature) {
   }
   this.runResult = ko.observable();
   this.lastRunResult = ko.observable();
-  this.childMissingMethod = ko.observable(0);
   this.childBreakpoints = ko.observable(0);
-  this.childSkipped = ko.observable();
-  this.childPassed = ko.observable();
-  this.childFailed = ko.observable();
+  this.childLoaded = ko.observable(0);
+  this.childMissingMethod = ko.observable(0);
+  this.childRun = ko.observable(0);
+  this.childSkipped = ko.observable(0);
+  this.childPassed = ko.observable(0);
+  this.childFailed = ko.observable(0);
   this.feature = feature;
   feature.stepGroups.push(this);
 };
 
+StepGroup.prototype.addChildLoaded = function addChildLoaded(count) {
+  this.childLoaded(this.childLoaded() + count);
+};
+
 StepGroup.prototype.resetResults = function resetResults() {
-  this.lastRunResult(this.runResult());
-  this.runResult(null);
-  this.childSkipped(0);
-  this.childPassed(0);
-  this.childFailed(0);
+  utilities.resetStandardCounts(this);
   this.steps().forEach(function(step) {
     step.resetResults();
   });
 };
 
 StepGroup.prototype.addChildRunResult = function addChildRunResult(result) {
-  if(result !== -1 && result !== 0 && result !== 1)
-    throw new Error('The value passed to setRunResult must be -1 (Failed), 0 (Skipped), or 1 (Passed)');
-  if(result === -1)
-    this.childFailed(this.childFailed() + 1);
-  else if(result === 0)
-    this.childSkipped(this.childSkipped() + 1);
-  else if(result === 1)
-    this.childPassed(this.childPassed() + 1);
-
-  this.runResult(utilities.aggregateRunResult(result, this.runResult()));
-
+  utilities.addChildRunResult(this, result);
 };
 
 StepGroup.prototype.addChildMissingMethod = function addChildMissingMethod() {

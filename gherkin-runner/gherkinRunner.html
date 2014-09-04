@@ -22,14 +22,6 @@
 
 <div id="gherkin-ui" class="container-fluid hidden" data-bind="css: { hidden: view() != 'Running'}">
   <div class="row">
-    <div id="gherkin-counts" class="counts"
-         data-bind="template: { name: 'countsTemplate', data: counts }, css: { faded: uiWindowVisible }"></div>
-    <div class="runOverview col-md-offset-4 col-md-5"
-         data-bind="template: { name: 'runOverviewTemplate', data: $data }"></div>
-    <div class="action-buttons pull-right">
-      <button class="btn btn-primary" data-bind="click: run"><i class="fa fa-play"></i>&nbsp;Run</button>
-      <button class="btn btn-default" data-bind="click: load"><i class="fa fa-refresh"></i>&nbsp;Reload</button>
-    </div>
     <div id="gherkin-toggle-ui-button" data-bind="css: { faded: uiWindowVisible }">
       <div class="btn-group">
         <button class="btn btn-sm" data-bind="click: toggleUI">Toggle UI</button>
@@ -47,7 +39,7 @@
       </button>
     </div>
   </div>
-  <div id="break-on-exception">
+  <div>
     <button class="btn btn-default" title="Currently NOT breaking on exceptions"
             data-bind="visible: !breakOnException(), click: toggleOnException">
       <i class="fa fa-bug fa-large faded"></i>
@@ -64,6 +56,9 @@
             data-bind="visible: !allCollapsed(), click: toggleRunnerCollapse">
       <i class="fa fa-compress fa-large"></i>
     </button>
+    <button class="btn btn-default pull-left" data-bind="click: $root.linkToPage">Link It</button>
+    <button class="btn btn-primary" data-bind="click: run"><i class="fa fa-play"></i>&nbsp;Run</button>
+    <button class="btn btn-default" data-bind="click: load"><i class="fa fa-refresh"></i>&nbsp;Reload</button>
   </div>
   <!-- ko if: loaded -->
   <div id="details">
@@ -80,189 +75,6 @@
   <!-- /ko -->
 </div>
 
-<script type="text/html" id="countsTemplate">
-  <table class="table table-bordered table-striped table-condensed table-very-condensed">
-    <tbody>
-    <tr>
-      <td>
-        <button class="btn btn-sm" data-bind="click: $root.countsMove">
-          <i class="fa fa-angle-double-right" data-bind="visible: $root.countsPosition() === 'left'"></i>
-          <i class="fa fa-angle-double-left" data-bind="visible: $root.countsPosition() === 'right'"></i></button>
-      </td>
-      <td>
-        <small><strong>Defined</strong></small>
-      </td>
-      <td>
-        <small><strong>Missing</strong></small>
-      </td>
-      <td>
-        <small><strong>Total</strong></small>
-      </td>
-      <td>
-        <small><strong>Run</strong></small>
-      </td>
-      <td>
-        <small><strong>Pass</strong></small>
-      </td>
-      <td>
-        <small><strong>Fail</strong></small>
-      </td>
-      <td>
-        <small><strong>Skipped</strong></small>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <small><strong>Feature Sets</strong></small>
-      </td>
-      <td>
-        <small data-bind="text: featureSets.defined"></small>
-      </td>
-      <td></td>
-      <td>
-        <small data-bind="text: featureSets.total"></small>
-      </td>
-      <td>
-        <small data-bind="text: featureSets.run"></small>
-      </td>
-      <td>
-        <small data-bind="text: featureSets.pass"></small>
-      </td>
-      <td>
-        <small data-bind="text: featureSets.fail"></small>
-      </td>
-      <td>
-        <small data-bind="text: featureSets.skip"></small>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <small><strong>Features</strong></small>
-      </td>
-      <td>
-        <small data-bind="text: features.defined"></small>
-      </td>
-      <td></td>
-      <td>
-        <small data-bind="text: features.total"></small>
-      </td>
-      <td>
-        <small data-bind="text: features.run"></small>
-      </td>
-      <td>
-        <small data-bind="text: features.pass"></small>
-      </td>
-      <td>
-        <small data-bind="text: features.fail"></small>
-      </td>
-      <td>
-        <small data-bind="text: features.skip"></small>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <small><strong>Backgrounds</strong></small>
-      </td>
-      <td>
-        <small data-bind="text: backgrounds.defined"></small>
-      </td>
-      <td></td>
-      <td>
-        <small data-bind="text: backgrounds.total"></small>
-      </td>
-      <td>
-        <small data-bind="text: backgrounds.run"></small>
-      </td>
-      <td>
-        <small data-bind="text: backgrounds.pass"></small>
-      </td>
-      <td>
-        <small data-bind="text: backgrounds.fail"></small>
-      </td>
-      <td>
-        <small data-bind="text: backgrounds.skip"></small>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <small><strong>Scenarios</strong></small>
-      </td>
-      <td>
-        <small data-bind="text: scenarios.defined"></small>
-      </td>
-      <td></td>
-      <td>
-        <small data-bind="text: scenarios.total"></small>
-      </td>
-      <td>
-        <small data-bind="text: scenarios.run"></small>
-      </td>
-      <td>
-        <small data-bind="text: scenarios.pass"></small>
-      </td>
-      <td>
-        <small data-bind="text: scenarios.fail"></small>
-      </td>
-      <td>
-        <small data-bind="text: scenarios.skip"></small>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <small><strong>Steps</strong></small>
-      </td>
-      <td>
-        <small data-bind="text: steps.defined"></small>
-      </td>
-      <td>
-        <small data-bind="text: steps.missingMethods"></small>
-      </td>
-      <td>
-        <small data-bind="text: steps.total"></small>
-      </td>
-      <td>
-        <small data-bind="text: steps.run"></small>
-      </td>
-      <td>
-        <small data-bind="text: steps.pass"></small>
-      </td>
-      <td>
-        <small data-bind="text: steps.fail"></small>
-      </td>
-      <td>
-        <small data-bind="text: steps.skip"></small>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <small><strong>Sub Steps</strong></small>
-      </td>
-      <td>
-        <small data-bind="text: subSteps.defined"></small>
-      </td>
-      <td>
-        <small data-bind="text: subSteps.missingMethods"></small>
-      </td>
-      <td>
-        <small data-bind="text: subSteps.total"></small>
-      </td>
-      <td>
-        <small data-bind="text: subSteps.run"></small>
-      </td>
-      <td>
-        <small data-bind="text: subSteps.pass"></small>
-      </td>
-      <td>
-        <small data-bind="text: subSteps.fail"></small>
-      </td>
-      <td>
-        <small data-bind="text: subSteps.skip"></small>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</script>
-
 <script type="text/html" id="runOverviewTemplate">
   <div class="well" data-bind="css: { 'alert-success': featureSet().runResult() === 1, 'alert-danger': featureSet().runResult() === -1 }">
     <div class="row">
@@ -271,7 +83,6 @@
       <span class="col-md-7 clip" data-bind="text: status"></span>
     </div>
     <div class="row">
-      <button class="col-md-3 btn btn-default pull-left" data-bind="click: $root.linkToPage">Link It</button>
       <span class="col-md-2 text-right" data-bind="visible: statusMessage && statusMessage.length > 0">Message: </span>
       <span class="col-md-7 clip" data-bind="text: statusMessage"></span>
     </div>
@@ -338,13 +149,14 @@
         </div>
       </div>
       <div class="name">
-        <h4>
+        <h5>
           <a class="can-click" data-bind="click: $root.walkFeatureSet">
             <div class="inline feature-set-label text-muted">Feature Set:</div>
             <div class="inline" data-bind="text: name, css: { 'text-success': runResult() === 1 }"></div>
           </a>
-        </h4>
+        </h5>
       </div>
+      <div class="pull-right run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
     </div>
     <div class="body collapse" data-bind="css: { in: expanded }">
       <div class="collapse collapsible feature-set-description-section" data-bind="attr: { id: 'feature_set_description_' + id }">
@@ -412,6 +224,7 @@
           </span>
         </a>
       </div>
+      <div class="pull-right run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
     </div>
     <div>
       <div class="collapse collapsible feature-description-section" data-bind="attr: { id: 'feature_description_' + id }, foreach: description">
@@ -503,6 +316,7 @@
           </strong>
         </a>
       </div>
+      <div class="pull-right run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
     </div>
     <div class="collapse collapsible scenario-comments" data-bind="attr: { id: 'scenario_comments_' + id }">
       <pre><code data-bind="text: comments().join('\n')"></code></pre>
@@ -583,20 +397,19 @@
       <div class="name">
         <!-- ko if: $data.subSteps().length > 0 -->
         <a class="can-click" data-toggle="collapse"
-           data-bind="attr: { 'href': '#' + id }">
-          <div data-bind="css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
+           data-bind="attr: { 'href': '#' + id }, css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
             <span data-bind="text: name" class="step-group"></span><span
             data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
-          </div>
         </a>
         <!-- /ko -->
         <!-- ko if: $data.subSteps().length === 0-->
-        <div data-bind="css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
+        <div class="inline" data-bind="css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
           <span data-bind="text: name, css: {'step-group': methodName === 'Step Group'}"></span><span
           data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
         </div>
         <!-- /ko -->
       </div>
+      <div class="pull-right run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
     </div>
     <div class="body">
       <div class="collapse collapsible step-comments" data-bind="attr: { id: 'step_comments_' + id }">
@@ -686,6 +499,7 @@
           (<span data-bind="text: used, attr: {title: 'Used ' + used + ' times'}"></span>)
         </a>
       </div>
+      <div class="pull-right run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
     </div>
     <div class="body collapse collapsible"
          data-bind="attr: { id: id }">
@@ -698,6 +512,17 @@
 <script type="text/html" id="recommendedMethod">
   <div class="recommended-method">
   </div>
+</script>
+
+<script type="text/html" id="counts">
+  <table class="count-table" data-bind="attr: {title: 'Loaded: ' + childLoaded() + '\nMissing Methods: ' + childMissingMethod() + '\nRun: ' + childRun() + '\nPassed: ' + childPassed() + '\nFailed: ' + childFailed() + '\nSkipped: ' + childSkipped()}">
+    <tr>
+      <td data-bind="style: { width: Math.floor((((childLoaded()!==0?childLoaded():1) - childRun()) / (childLoaded()!==0?childLoaded():1)) * 100) + '%' }"></td>
+      <td class="bg-success" data-bind="style: { width: Math.floor((childPassed() / childLoaded()) * 100) + '%' }"></td>
+      <td class="bg-warning" data-bind="style: { width: Math.floor((childSkipped() / childLoaded()) * 100) + '%' }"></td>
+      <td class="bg-danger" data-bind="style: { width: Math.floor((childFailed() / childLoaded()) * 100) + '%' }"></td>
+    </tr>
+  </table>
 </script>
 
 <script type="text/javascript" src="vendor/jquery/dist/jquery.js"></script>
