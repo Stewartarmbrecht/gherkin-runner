@@ -24,22 +24,6 @@ a:hover {
     height: 100%;
 }
 
-#gherkin-counts {
-    display: block;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    background-color: white;
-    z-index: 1000;
-    margin: 1em;
-}
-
-    #gherkin-counts.right {
-        top: 0px;
-        left: auto;
-        right: 0px;
-    }
-
 #gherkin-toggle-ui-button {
     position: absolute;
     right: 1em;
@@ -75,24 +59,6 @@ a:hover {
     .faded:hover {
         opacity: 1;
     }
-
-.action-buttons {
-    margin-top: 4em;
-}
-
-.table-very-condensed, table.table-very-condensed>tbody>tr>td {
-    line-height: 8px; !important
-    width: auto;
-    margin: 0;
-}
-
-.table-very-condensed th {
-  line-height: 10px;
-}
-
-.table-very-condensed td {
-  line-height: 10px;
-}
 
 .hover-highlighted {
     border-radius: 3px;
@@ -269,8 +235,12 @@ span.step-group {
 }
 
 .panel-group .panel {
-  margin: .5em 1em .5em 1em;
-}
+  margin: .5em 0 .5em 1em;
+  border: black 0;
+  border-radius: 0px;
+  box-shadow: 0 0 0 transparent;
+  border-left: 1px solid #ddd;
+  -webkit-box-shadow: 0 0 0 transparent;}
 
 .gherkin-ui .feature-set > div.title > div.name {
   margin-left: 1em;

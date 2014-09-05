@@ -2,7 +2,7 @@
   name: "Gherkin Runner Features",
   description: "Contains all features related to running and debugging scenarios.",
   featurePaths: [
-    "/features/gherkin-runner/runner/browseFeature.feature"
+    "/features/gherkin-runner/runner/browseFeatures.feature"
   ],
   featureSetPaths: [
   ],

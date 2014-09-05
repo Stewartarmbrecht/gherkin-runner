@@ -120,7 +120,7 @@
   };
 
   _this.setRootFeatureSetPath = function setRootFeatureSetPath() {
-    var startFeatureSetPath = _this.getURLParameter('walkFeatureSet');
+    var startFeatureSetPath = _this.getURLParameter('featureSetPath');
     if (startFeatureSetPath == "null")
       startFeatureSetPath = '/features/featureSet.js';
     _this.featureSetPath(startFeatureSetPath);
@@ -472,7 +472,7 @@
       line = line.trim();
       if (line.length > 0) {
         var indentation = untrimmedLine.indexOf(line);
-        if(lastIndentation == -1)
+        if(lastIndentation == -1 || lastRead !== 'step')
           lastIndentation = indentation;
         if (lastRead === 'multi-line-argument') {
           if (line.toLowerCase().trim().indexOf('"""') === 0)
@@ -514,7 +514,7 @@
           line.toLowerCase().indexOf("then ") === 0 ||
           line.toLowerCase().indexOf("and ") === 0 ||
           line.toLowerCase().indexOf("but ") === 0) {
-          if(lastRead === 'step' && lastIndentation - indentation > 4) {
+          if(lastRead === 'step' && indentation - lastIndentation >= 4) {
             var step = new Step(line, lineNumber, feature, lastObject);
           } else
             var step = new Step(line, lineNumber, feature, stepOwner);
@@ -571,7 +571,6 @@
   _this.run = function run() {
     _this.status('Running!');
     _this.log('Resetting run counts...');
-    _this.resetRunCounts();
     _this.log('Resetting run results...');
     _this.resetRunResults();
     _this.log('Running feature sets...');
@@ -603,8 +602,6 @@
   _this.runSingleScenario = function runSingleScenario(scenario, event, resetState) {
     _this.status('Running!');
     var isBackground = scenario.type.indexOf('background') > -1;
-    _this.log('Reseting run counts...');
-    _this.resetRunCounts();
     _this.log('Reseting run results...');
     _this.resetRunResults();
     if (resetState)

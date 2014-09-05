@@ -152,7 +152,7 @@
         <h5>
           <a class="can-click" data-bind="click: $root.walkFeatureSet">
             <div class="inline feature-set-label text-muted">Feature Set:</div>
-            <div class="inline" data-bind="text: name, css: { 'text-success': runResult() === 1 }"></div>
+            <div class="inline feature-set-name" data-bind="text: name, css: { 'text-success': runResult() === 1 }"></div>
           </a>
         </h5>
       </div>
@@ -368,7 +368,7 @@
         <div class="icon-column last-run-result">
           <i class="fa fa-check-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
           <a class="can-click" data-toggle="collapse"
-             data-bind="attr: { 'href': '#' + id + (subSteps().length > 0 ? '' : '_error') }, visible: runResult() === -1">
+             data-bind="attr: { 'href': '#' + id + (steps().length > 0 ? '' : '_error') }, visible: runResult() === -1">
             <i class="fa fa-times-circle text-danger" title="Failed"></i>
           </a>
           <i class="fa fa-question-circle" title="Skipped" data-bind="visible: runResult() === 0"></i>
@@ -395,14 +395,14 @@
         </div>
       </div>
       <div class="name">
-        <!-- ko if: $data.subSteps().length > 0 -->
+        <!-- ko if: $data.steps().length > 0 -->
         <a class="can-click" data-toggle="collapse"
            data-bind="attr: { 'href': '#' + id }, css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
             <span data-bind="text: name" class="step-group"></span><span
             data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
         </a>
         <!-- /ko -->
-        <!-- ko if: $data.subSteps().length === 0-->
+        <!-- ko if: $data.steps().length === 0-->
         <div class="inline" data-bind="css: { 'text-danger': childMissingMethod() > 0 || missingMethod, 'text-success': runResult() === 1 }">
           <span data-bind="text: name, css: {'step-group': methodName === 'Step Group'}"></span><span
           data-bind="visible: runCondition, text: ' if(' + runCondition + ')'"></span>
@@ -448,9 +448,9 @@
           <!-- /ko -->
         </div>
       </div>
-      <!-- ko if: $data.subSteps().length > 0 -->
-      <div class="subSteps collapse collapsible"
-           data-bind="attr: { id: id }, template: { name: 'stepTemplate', foreach: subSteps }">
+      <!-- ko if: $data.steps().length > 0 -->
+      <div class="steps collapse collapsible"
+           data-bind="attr: { id: id }, template: { name: 'stepTemplate', foreach: steps }">
       </div>
       <!-- /ko -->
       <!-- ko if: $data.multiLineArg !== undefined && $data.multiLineArg.length > 0 -->

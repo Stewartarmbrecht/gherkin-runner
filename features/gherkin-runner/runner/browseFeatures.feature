@@ -7,9 +7,11 @@ Feature: Browse Features
     When I navigate to the site
         Then start a new browser session to relative path "/"
     Then the gherkin runner should display
-        Then wait for "" to be visible
+        Then wait for ".feature-sets" to be visible
     And it should load the "/features/featureSet.js" feature set
+        Then ok
     And it should display that feature set expanded
+        Then wait for ".feature-set-name:first" text to be "All Features"
 
   Scenario: Load gherkin walker with specific features set
     When I navigate to the site with a feature set path specified in the url

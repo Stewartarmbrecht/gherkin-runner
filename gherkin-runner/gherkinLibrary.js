@@ -1,35 +1,33 @@
 /*jslint node: true */
 "use strict";
 module.exports = function () {
-  var gherkinRunner = require('/gherkin-runner/gherkinRunner.js');
-  var errorChecker = null;
   var helpers = this.helpers = {};
   helpers.$ = null;
-  helpers.cycleCheck = function (checkFunc, failMessage, quitOnError, interval, checkCount) {
+  helpers.cycleCheck = function (checkFunc, failMessage, interval, checkCount) {
     interval = interval || 100;
     checkCount = checkCount || 50;
     var dfd = new $.Deferred();
     var count = 0;
     var intv = setInterval(function () {
-      if (quitOnError && errorChecker && typeof errorChecker === 'function') {
-        var error = errorChecker();
+      try {
+        if (checkFunc()) {
+          clearInterval(intv);
+          dfd.resolve();
+        }
+      } catch(error) {
         clearInterval(intv);
         dfd.reject(error);
       }
-      if (checkFunc()) {
-        clearInterval(intv);
-        dfd.resolve();
-      }
       if (count > checkCount) {
         clearInterval(intv);
-        dfd.reject(failMessage);
+        dfd.reject(new Error(failMessage));
       }
       count = count + 1;
-    }, interval, _this, intv, count, checkFunc, dfd, checkCount, quitOnError, failMessage);
+    }, interval, intv, count, checkFunc, dfd, checkCount, failMessage);
     return dfd.promise();
   };
-  helpers.waitTillVisible = function (visibleSelector, quitOnError, inverted, interval, checkCount) {
-    var message = 'Had to wait for 5 seconds for the element with selector "' + visibleSelector + '" to ' + (inverted ? ' not ' : '') + 'be visible.';
+  helpers.waitTillVisible = function (visibleSelector, inverted, interval, checkCount) {
+    var failMessage = 'Had to wait for 5 seconds for the element with selector "' + visibleSelector + '" to ' + (inverted ? ' not ' : '') + 'be visible.';
     var checkFunc = null;
     if (inverted)
       checkFunc = function () {
@@ -39,10 +37,10 @@ module.exports = function () {
       checkFunc = function () {
         return helpers.$(visibleSelector).is(':visible');
       };
-    return helpers.cycleCheck(checkFunc, message, quitOnError, interval, checkCount);
+    return helpers.cycleCheck(checkFunc, failMessage, interval, checkCount);
   };
-  helpers.waitTillExists = function (selector, quitOnError, inverted, interval, checkCount) {
-    var message = 'Had to wait for 5 seconds for the element with selector "' + visibleSelector + '" to ' + (inverted ? ' not ' : '') + 'exist.';
+  helpers.waitTillExists = function (selector, inverted, interval, checkCount) {
+    var message = 'Had to wait for 5 seconds for the element with selector "' + selector + '" to ' + (inverted ? ' not ' : '') + 'exist.';
     var checkFunc = null;
     if (inverted)
       checkFunc = function () {
@@ -52,7 +50,7 @@ module.exports = function () {
       checkFunc = function () {
         return helpers.$(selector).length > 0;
       };
-    return helpers.cycleCheck(checkFunc, message, quitOnError, interval, checkCount);
+    return helpers.cycleCheck(checkFunc, message, interval, checkCount);
   };
   helpers.click = function (selector) {
     if (!helpers.$(selector)[0])
@@ -83,10 +81,14 @@ module.exports = function () {
     var dfd = new $.Deferred();
     var count = 0;
     var intv = setInterval(function () {
-      var element = helpers.$(selector);
-      if (element.is(':visible')) {
-        dfd.resolve(element);
-        clearInterval(intv);
+      try {
+        var element = helpers.$(selector);
+        if (element.is(':visible')) {
+          dfd.resolve(element);
+          clearInterval(intv);
+        }
+      } catch (error) {
+        dfd.reject(error);
       }
       if (count > 50) {
         clearInterval(intv);
@@ -110,12 +112,16 @@ module.exports = function () {
     var dfd = new $.Deferred();
     var count = 0;
     var intv = setInterval(function () {
-      if (trueFunc()) {
-        dfd.resolve();
-        clearInterval(intv);
+      try {
+        if (trueFunc()) {
+          dfd.resolve();
+          clearInterval(intv);
+        }
+      } catch(error) {
+        dfd.reject(error);
       }
       if (count > 50) {
-        var error = new Error('Had to wait for 5 seconds for the toaster with a message of ' + toast + ' after clicking a element.')
+        var error = new Error('Had to wait for 5 seconds for the function to return true.')
         dfd.reject(error);
         clearInterval(intv);
       }
@@ -156,7 +162,7 @@ module.exports = function () {
     }, 100, intv, count, trueFunc, dfd)
     return dfd.promise();
   };
-  this.Then('start a new browser session to relative path "[^"]+"', function (pathname, callback) {
+  this.Then(/^start a new browser session to relative path "([^"]+)"$/, function (pathname, callback) {
     var uiTestWindow = $('#uitestwindow');
     uiTestWindow.empty();
     helpers.$ = null;
@@ -167,49 +173,46 @@ module.exports = function () {
       var url = location.href.replace(location.pathname, '') + pathname;
       uiTestWindow.attr('src', url);
       helpers.waitTillTrue(function () {
+        console.log('Waiting till jquery exists in the child window.');
         return uiTestWindow[0].contentWindow.$;
       }).then(function () {
+        console.log('Setting the helper jQuery.')
         helpers.$ = uiTestWindow[0].contentWindow.$;
-        gherkinRunner.showUIWindow();
         callback();
       });
     });
   });
-  this.Then(/click ".*"/, function (cssSelector, callback) {
+  this.Then(/^click "([^"]*)"$/, function (cssSelector, callback) {
     helpers.click(cssSelector);
     callback();
   });
-  this.Then(/wait for ".*" to be visible/, function (cssSelector, callback) {
+  this.Then(/^ok$/, function (callback) {
+    callback();
+  });
+  this.Then(/^wait for "([^"]*)" to be visible$/, function (cssSelector, callback) {
     helpers.waitTillVisible(cssSelector)
       .then(callback)
       .fail(callback);
   });
-  this.Then(/wait for ".*" to not be visible/, function (cssSelector, callback) {
+  this.Then(/^wait for "([^"]*)" to not be visible$/, function (cssSelector, callback) {
     helpers.waitTillVisible(cssSelector)
       .then(callback)
       .fail(callback);
   });
-  this.Then(/update ".*" value to ".*"/, function (cssSelector, value, callback) {
-    helpers.get(cssSelector)
-      .then(function (input) {
-        helpers.$(input).val(value).change();
-        helpers.$(input).keydown();
-        callback();
+  this.Then(/^wait for "([^"]*)" text to be "([^"]*)"$/, function (cssSelector, value, callback) {
+    var textTest = function (element) {
+      var text = helpers.$(element).text();
+      return text === value;
+    };
+    helpers.getWhenVisible(cssSelector)
+      .then(function(element) {
+        helpers.waitTillTrue(function() { return textTest(element); })
+          .then(callback)
+          .fail(callback);
       })
       .fail(callback);
   });
-  this.Then(/verify ".*" text is ".*"/, function (cssSelector, value, callback) {
-    helpers.get(cssSelector)
-      .then(function (element) {
-        var text = helpers.$(element).text();
-        if (text === value)
-          callback();
-        else
-          callback(new Error('The "' + cssSelector + '" elements text is not "' + value + '" it is "' + text));
-      })
-      .fail(callback);
-  });
-  this.Then(/verify ".*" text is not ".*"/, function (cssSelector, value, callback) {
+  this.Then(/^wait for "([^"]*)" text to not be "([^"]*)"$/, function (cssSelector, value, callback) {
     helpers.get(cssSelector)
       .then(function (element) {
         var text = helpers.$(element).text();
@@ -220,7 +223,38 @@ module.exports = function () {
       })
       .fail(callback);
   });
-  this.Then(/verify ".*" is visible/, function (cssSelector, callback) {
+  this.Then(/^update "([^"]*)" value to "([^"]*)"$/, function (cssSelector, value, callback) {
+    helpers.get(cssSelector)
+      .then(function (input) {
+        helpers.$(input).val(value).change();
+        helpers.$(input).keydown();
+        callback();
+      })
+      .fail(callback);
+  });
+  this.Then(/^verify "([^"]*)" text is "([^"]*)"$/, function (cssSelector, value, callback) {
+    helpers.get(cssSelector)
+      .then(function (element) {
+        var text = helpers.$(element).text();
+        if (text === value)
+          callback();
+        else
+          callback(new Error('The "' + cssSelector + '" elements text is not "' + value + '" it is "' + text));
+      })
+      .fail(callback);
+  });
+  this.Then(/^verify "([^"]*)" text is not "([^"]*)"$/, function (cssSelector, value, callback) {
+    helpers.get(cssSelector)
+      .then(function (element) {
+        var text = helpers.$(element).text();
+        if (text !== value)
+          callback();
+        else
+          callback(new Error('The "' + cssSelector + '" elements text was not "' + value + '" it was "' + text));
+      })
+      .fail(callback);
+  });
+  this.Then(/^verify "([^"]*)" is visible$/, function (cssSelector, callback) {
     helpers.get(cssSelector)
       .then(function (element) {
         if (helpers.$(element).is(':visible'))
@@ -230,7 +264,7 @@ module.exports = function () {
       })
       .fail(callback);
   });
-  this.Then(/verify ".*" is not visible/, function (cssSelector, callback) {
+  this.Then(/^verify "([^"]*)" is not visible$/, function (cssSelector, callback) {
     helpers.get(cssSelector)
       .then(function (element) {
         if (!helpers.$(element).is(':visible'))
@@ -240,33 +274,33 @@ module.exports = function () {
       })
       .fail(callback);
   });
-  this.Then(/verify ".*" does exist/, function (cssSelector, callback) {
+  this.Then(/^verify "([^"]*)" does exist$/, function (cssSelector, callback) {
     if (helpers.$(cssSelector).length > 0)
       callback();
     else
       callback(new Error('The "' + cssSelector + '" element does not exist.'));
   });
-  this.Then(/verify ".*" does not exist/, function (cssSelector, callback) {
+  this.Then(/^verify "([^"]*)" does not exist$/, function (cssSelector, callback) {
     if (helpers.$(cssSelector).length === 0)
       callback();
     else
       callback(new Error('The "' + cssSelector + '" element does exist.'));
   });
-  this.Then(/verify ".*" does exist after waiting/, function (cssSelector, callback) {
+  this.Then(/^verify "([^"]*)" does exist after waiting$/, function (cssSelector, callback) {
     helpers.get(cssSelector)
       .then(function () {
         callback();
       })
       .fail(callback);
   });
-  this.Then(/verify ".*" does not exist after waiting/, function (cssSelector, callback) {
+  this.Then(/^verify "([^"]*)" does not exist after waiting$/, function (cssSelector, callback) {
     helpers.waitTillGone(cssSelector)
       .then(function () {
         callback();
       })
       .fail(callback);
   });
-  this.Then(/verify ".*" has class ".*"/, function (cssSelector, className, callback) {
+  this.Then(/^verify "([^"]*)" has class "([^"]*)"$/, function (cssSelector, className, callback) {
     helpers.get(cssSelector)
       .then(function (element) {
         if (helpers.$(element).hasClass(className))
@@ -276,7 +310,7 @@ module.exports = function () {
       })
       .fail(callback);
   });
-  this.Then(/verify ".*" does not have class ".*"/, function (cssSelector, className, callback) {
+  this.Then(/^verify "([^"]*)" does not have class "([^"]*)"$/, function (cssSelector, className, callback) {
     helpers.get(cssSelector)
       .then(function (element) {
         if (!helpers.$(element).hasClass(className))
