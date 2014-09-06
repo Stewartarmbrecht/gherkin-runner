@@ -2,8 +2,9 @@
 "use strict";
 module.exports = function () {
   var helpers = this.helpers = {};
+  var cycleCheckError = 'Check function did not return true after the time specified by the interval and check count.';
   helpers.$ = null;
-  helpers.cycleCheck = function (checkFunc, failMessage, interval, checkCount) {
+  helpers.cycleCheck = function (checkFunc, interval, checkCount) {
     interval = interval || 100;
     checkCount = checkCount || 50;
     var dfd = new $.Deferred();
@@ -20,13 +21,14 @@ module.exports = function () {
       }
       if (count > checkCount) {
         clearInterval(intv);
-        dfd.reject(new Error(failMessage));
+        dfd.reject(new Error(cycleCheckError));
       }
       count = count + 1;
-    }, interval, intv, count, checkFunc, dfd, checkCount, failMessage);
+    }, interval, intv, count, checkFunc, dfd, checkCount);
     return dfd.promise();
   };
   helpers.waitTillVisible = function (visibleSelector, inverted, interval, checkCount) {
+    var dfd = new $.Deferred();
     var failMessage = 'Had to wait for 5 seconds for the element with selector "' + visibleSelector + '" to ' + (inverted ? ' not ' : '') + 'be visible.';
     var checkFunc = null;
     if (inverted)
@@ -37,10 +39,19 @@ module.exports = function () {
       checkFunc = function () {
         return helpers.$(visibleSelector).is(':visible');
       };
-    return helpers.cycleCheck(checkFunc, failMessage, interval, checkCount);
+    helpers.cycleCheck(checkFunc, interval, checkCount)
+      .then(function() { dfd.resolve(); })
+      .fail(function(error) {
+        if(error.message === cycleCheckError)
+          dfd.fail(new Error(failMessage));
+        else
+          dfd.fail(error);
+      });
+    return dfd.promise();
   };
   helpers.waitTillExists = function (selector, inverted, interval, checkCount) {
-    var message = 'Had to wait for 5 seconds for the element with selector "' + selector + '" to ' + (inverted ? ' not ' : '') + 'exist.';
+    var dfd = new $.Deferred();
+    var failMessage = 'Had to wait for 5 seconds for the element with selector "' + selector + '" to ' + (inverted ? ' not ' : '') + 'exist.';
     var checkFunc = null;
     if (inverted)
       checkFunc = function () {
@@ -50,57 +61,81 @@ module.exports = function () {
       checkFunc = function () {
         return helpers.$(selector).length > 0;
       };
-    return helpers.cycleCheck(checkFunc, message, interval, checkCount);
+    helpers.cycleCheck(checkFunc, interval, checkCount)
+      .then(function() { dfd.resolve(); })
+      .fail(function(error) {
+        if(error.message === cycleCheckError)
+          dfd.fail(new Error(failMessage));
+        else
+          dfd.fail(error);
+      });
+    return dfd.promise();
   };
   helpers.click = function (selector) {
+    var dfd = new $.Deferred();
     if (!helpers.$(selector)[0])
-      throw new Error('The ' + selector + ' element could not be found.');
-    helpers.$(selector).click();
+      dfd.reject(new Error('The ' + selector + ' element could not be found.'));
+    try {
+      helpers.$(selector).click();
+      dfd.resolve();
+    } catch(error) {
+      dfd.reject(error);
+    }
+    return dfd.promise();
   };
   helpers.getInnerText = function (selector) {
-    if (!helpers.$(selector)[0])
-      throw new Error('The ' + selector + ' element could not be found.');
-    return helpers.$(selector)[0].innerText;
-  };
-  helpers.navigatePageAndResolveWhenVisible = function (path, visibleSelector, promise) {
-    $.address.value(path);
-    var count = 0;
-    var intv = setInterval(function () {
-      if (helpers.$(visibleSelector).is(':visible')) {
-        promise.resolve();
-        clearInterval(intv);
-      }
-      if (count > 50) {
-        clearInterval(intv);
-        promise.reject(new Error('Had to wait for 5 seconds for the element with selector ' + visibleSelector + ' to be visible.'));
-      }
-      count = count + 1;
-    }, 100, intv, count, visibleSelector, promise)
-  };
-  helpers.getWhenVisible = function (selector) {
     var dfd = new $.Deferred();
-    var count = 0;
-    var intv = setInterval(function () {
-      try {
-        var element = helpers.$(selector);
-        if (element.is(':visible')) {
-          dfd.resolve(element);
-          clearInterval(intv);
-        }
-      } catch (error) {
-        dfd.reject(error);
-      }
-      if (count > 50) {
-        clearInterval(intv);
-        dfd.reject(new Error('Had to wait for 5 seconds for the element "' + selector + '" to be visible.'));
-      }
-      count = count + 1;
-    }, 100, intv, count, selector, dfd)
+    if (!helpers.$(selector)[0])
+      dfd.reject(new Error('The ' + selector + ' element could not be found.'));
+    try {
+      helpers.$(selector)[0].innerText;
+      dfd.resolve();
+    } catch(error) {
+      dfd.reject(error);
+    }
+    return dfd.promise();
+  };
+  helpers.navigatePageAndResolveWhenVisible = function (path, visibleSelector, interval, checkCount) {
+    var dfd = new $.Deferred();
+    var failMessage = 'Had to wait for 5 seconds for the element with selector ' + visibleSelector + ' to be visible.';
+    var checkFunc = function() {
+      return helpers.$(visibleSelector).is(':visible');
+    };
+    helpers.cycleCheck(checkFunc, interval, checkCount)
+      .then(function() { dfd.resolve(); })
+      .fail(function(error) {
+        if(error.message === cycleCheckError)
+          dfd.fail(new Error(failMessage));
+        else
+          dfd.fail(error);
+      });
+    return dfd.promise();
+  };
+  helpers.getWhenVisible = function (selector, interval, checkCount) {
+    var dfd = new $.Deferred();
+    var failMessage = 'Had to wait for 5 seconds for the element "' + selector + '" to be visible.';
+    var element = null;
+    var checkFunc = function() {
+      element = helpers.$(selector);
+      return !!element.is(':visible');
+    };
+    helpers.cycleCheck(checkFunc, interval, checkCount)
+      .then(function() { dfd.resolve(element); })
+      .fail(function(error) {
+        if(error.message === cycleCheckError)
+          dfd.reject(new Error(failMessage));
+        else
+          dfd.reject(error);
+      });
     return dfd.promise();
   };
   helpers.get = function (selector) {
     var dfd = new $.Deferred();
-    var element = helpers.$(selector);
+    try {
+      var element = helpers.$(selector);
+    } catch(error) {
+      dfd.reject(error);
+    }
     if (element) {
       dfd.resolve(element);
     } else {
@@ -108,79 +143,25 @@ module.exports = function () {
     }
     return dfd.promise();
   };
-  helpers.waitTillTrue = function (trueFunc) {
-    var dfd = new $.Deferred();
-    var count = 0;
-    var intv = setInterval(function () {
-      try {
-        if (trueFunc()) {
-          dfd.resolve();
-          clearInterval(intv);
-        }
-      } catch(error) {
-        dfd.reject(error);
-      }
-      if (count > 50) {
-        var error = new Error('Had to wait for 5 seconds for the function to return true.')
-        dfd.reject(error);
-        clearInterval(intv);
-      }
-      count = count + 1;
-    }, 100, intv, count, trueFunc);
-    return dfd.promise();
-  };
-  helpers.clickAndResolveWhenTrue = function (selector, promise, trueFunc) {
-    if (!helpers.$(selector)[0])
-      throw new Error('The ' + selector + ' element could not be found.');
-    helpers.$(selector).click();
-    var count = 0;
-    var intv = setInterval(function () {
-      if (trueFunc()) {
-        promise.resolve();
-        clearInterval(intv);
-      }
-      if (count > 50) {
-        clearInterval(intv);
-        promise.reject(new Error('Function for clickAndResolveWhenTrue never returned true.'));
-      }
-      count = count + 1;
-    }, 100, intv, count, promise)
-  };
-  helpers.whenTrue = function (trueFunc) {
-    var dfd = new $.Deferred();
-    var count = 0;
-    var intv = setInterval(function () {
-      if (trueFunc()) {
-        dfd.resolve();
-        clearInterval(intv);
-      }
-      if (count > 50) {
-        clearInterval(intv);
-        dfd.reject(new Error('Function for whenTrue never returned true.'));
-      }
-      count = count + 1;
-    }, 100, intv, count, trueFunc, dfd)
-    return dfd.promise();
-  };
   this.Then(/^start a new browser session to relative path "([^"]+)"$/, function (pathname, callback) {
     var uiTestWindow = $('#uitestwindow');
     uiTestWindow.empty();
     helpers.$ = null;
     uiTestWindow.attr('src', 'about:blank');
-    helpers.waitTillTrue(function () {
+    helpers.cycleCheck(function () {
       return uiTestWindow[0].contentWindow.$ == undefined;
     }).then(function () {
-      var url = location.href.replace(location.pathname, '') + pathname;
+      var url = location.href.substring(0, location.href.indexOf(location.pathname)) + pathname;
       uiTestWindow.attr('src', url);
-      helpers.waitTillTrue(function () {
+      helpers.cycleCheck(function () {
         console.log('Waiting till jquery exists in the child window.');
         return uiTestWindow[0].contentWindow.$;
       }).then(function () {
         console.log('Setting the helper jQuery.')
         helpers.$ = uiTestWindow[0].contentWindow.$;
         callback();
-      });
-    });
+      }).fail(callback);
+    }).fail(callback);
   });
   this.Then(/^click "([^"]*)"$/, function (cssSelector, callback) {
     helpers.click(cssSelector);
@@ -200,15 +181,22 @@ module.exports = function () {
       .fail(callback);
   });
   this.Then(/^wait for "([^"]*)" text to be "([^"]*)"$/, function (cssSelector, value, callback) {
-    var textTest = function (element) {
-      var text = helpers.$(element).text();
+    var text = null;
+    var textTest = function textTest(element) {
+      text = helpers.$(element).text();
       return text === value;
     };
     helpers.getWhenVisible(cssSelector)
       .then(function(element) {
-        helpers.waitTillTrue(function() { return textTest(element); })
-          .then(callback)
-          .fail(callback);
+        helpers.cycleCheck(function() { return textTest(element); })
+          .then(function() { debugger; callback(); })
+          .fail(function(error) {
+            if(error.message === cycleCheckError) {
+              callback(new Error('The element was found but did not have the text "' + value + '" after waiting for 5 seconds.  It had the value "' + text + '"'))
+            } else {
+              callback(error);
+            }
+          });
       })
       .fail(callback);
   });

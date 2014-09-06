@@ -15,9 +15,18 @@ Feature: Browse Features
 
   Scenario: Load gherkin walker with specific features set
     When I navigate to the site with a feature set path specified in the url
+        Then start a new browser session to relative path "/gherkin-runner/gherkinRunner.html?featureSetPath=/features/test-examples/testExamplesFeatureSet.js"
     Then the gherkin runner should display
+        Then wait for ".feature-sets" to be visible
     And it should load the specified feature set
-    And it should display that feature set expanded
+        Then ok
+    And it should display that feature set
+        Then wait for ".feature-set-name:first" text to be "Test Examples"
+        And wait for ".feature-sets .feature-set:first .feature:first .feature-name" text to be "Feature A"
+        And wait for ".feature-sets .feature-set:first .feature .feature-name" text to be "Feature B"
+        And wait for ".feature-sets .feature-set:first .feature:nth-child(3) .feature-name" text to be "Feature C"
+        And wait for ".feature-sets .feature-set:first .feature-set:first .feature-set-name" text to be "Feature Set X"
+        And wait for ".feature-sets .feature-set:first .feature-set:nth-child(2) .feature-set-name" text to be "Feature Set Y"
 
   Scenario: View feature set title, counts, and description
     Given I navigate to the site

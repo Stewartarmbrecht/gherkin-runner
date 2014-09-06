@@ -3,7 +3,7 @@ Feature: Feature C
   As a Y
   I would like to Z
 
-  Scenario: featureX1 1
+  Scenario: Feature C Scenario 1
     Given X
     When Y
     Then Z

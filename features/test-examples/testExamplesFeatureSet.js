@@ -1,5 +1,6 @@
 ﻿module.exports = {
-  name: "Test Examples - Used to Test the Gherkin Runner",
+  name: "Test Examples",
+  description: "This is a series of features and scenarios that are used for testing the gherkin runner.",
   featureSetPaths: [
     "/features/test-examples/featureSetX/featureSetX.js",
     "/features/test-examples/featureSetY/featureSetY.js"

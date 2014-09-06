@@ -1,9 +1,5 @@
 ﻿var FeatureSet = require('/gherkin-runner/model/featureSet.js'),
-    Feature = require('/gherkin-runner/model/feature.js'),
-    FeatureDescription = require('/gherkin-runner/model/featureDescription.js'),
-    Scenario = require('/gherkin-runner/model/scenario.js'),
-    Step = require('/gherkin-runner/model/step.js'),
-    StepGroup = require('/gherkin-runner/model/stepGroup.js'),
+    gherkinParser = require('/gherkin-runner/gherkinParser.js'),
     utilities = require('/gherkin-runner/model/utilities.js');
   var _this = {};
 
@@ -244,7 +240,7 @@
     return dfd.promise();
   };
   _this.loadFeature = function loadFeature(featureText, featurePath, featureSet) {
-    var feature = _this.parseFeature(featureText, featurePath, featureSet);
+    var feature = gherkinParser.parseFeature(featureText, featurePath, featureSet);
     _this.loadStepGroups(feature.stepGroups, feature);
     _this.loadScenarios(feature.backgrounds, feature);
     _this.loadScenarios(feature.scenarios, feature);
@@ -456,116 +452,6 @@
     else if (step.name.toLowerCase().indexOf("when ") == 0)
       methodName = methodName.substr(5, step.name.length - 5);
     return methodName;
-  };
-  _this.parseFeature = function parseFeature(featureText, featurePath, featureSet) {
-    var lines = featureText.split('\n');
-    var lastRead = null;
-    var feature = {};
-    var stepOwner = {};
-    var lastObject = null;
-    var lastIndentation = -1;
-    $.each(lines, function (index, line) {
-      var untrimmedLine = line;
-      if (untrimmedLine.indexOf('\r') > 0)
-        untrimmedLine = untrimmedLine.replace(/(\r\n|\n|\r)/gm, "");
-      var lineNumber = index + 1;
-      line = line.trim();
-      if (line.length > 0) {
-        var indentation = untrimmedLine.indexOf(line);
-        if(lastIndentation == -1 || lastRead !== 'step')
-          lastIndentation = indentation;
-        if (lastRead === 'multi-line-argument') {
-          if (line.toLowerCase().trim().indexOf('"""') === 0)
-            lastRead = '';
-          else {
-            var step = stepOwner.steps()[stepOwner.steps().length - 1];
-            step.multiLineArg.push(untrimmedLine.substring(multiLineArgumentIndent));
-          }
-        } else if (line.toLowerCase().trim().indexOf('"""') === 0 && lastRead !== 'multi-line-argument') {
-          lastRead = 'multi-line-argument';
-          multiLineArgumentIndent = untrimmedLine.indexOf('"""');
-        } else if (line.toLowerCase().trim().indexOf("##") === 0 || line.toLowerCase().trim().indexOf("#") === 0) {
-          if (lastObject)
-            lastObject.comments.push(line);
-        } else if (line.toLowerCase().indexOf("feature:") === 0) {
-          feature = new Feature(line, lineNumber, featurePath, featureSet);
-          lastRead = 'feature';
-          lastObject = feature;
-        } else if (line.toLowerCase().indexOf("scenario:") === 0
-          || line.toLowerCase().indexOf("scenario outline:") === 0
-          || line.toLowerCase().indexOf("feature background:") === 0
-          || line.toLowerCase().indexOf("feature background outline:") === 0) {
-          var scenario = new Scenario(line, lineNumber, feature);
-          lastObject = scenario;
-          lastRead = scenario.type;
-          stepOwner = scenario;
-        } else if (line.toLowerCase().indexOf("examples:") === 0) {
-          lastRead = 'example';
-        } else if (line.toLowerCase().indexOf("step group:") === 0 || line.toLowerCase().indexOf("step group outline:") === 0) {
-          var stepGroup = new StepGroup(line, lineNumber, feature);
-          lastObject = stepGroup;
-          stepOwner = stepGroup;
-          lastRead = 'step group';
-        } else if ((lastRead == 'feature' || lastRead == 'featureDescription') && line.indexOf('<div') !== 0) {
-          feature.description.push(new FeatureDescription(line, lineNumber, feature));
-          lastRead = 'featureDescription';
-        } else if (line.toLowerCase().indexOf("given ") === 0 ||
-          line.toLowerCase().indexOf("when ") === 0 ||
-          line.toLowerCase().indexOf("then ") === 0 ||
-          line.toLowerCase().indexOf("and ") === 0 ||
-          line.toLowerCase().indexOf("but ") === 0) {
-          if(lastRead === 'step' && indentation - lastIndentation >= 4) {
-            var step = new Step(line, lineNumber, feature, lastObject);
-          } else
-            var step = new Step(line, lineNumber, feature, stepOwner);
-          lastObject = step;
-          lastRead = 'step';
-        } else if (line.toLowerCase().indexOf("|") === 0) {
-          var args = line.substr(1, line.length - 2).split("|");
-          if (lastRead == 'example') {
-            if (stepOwner.exampleArgColumns.length == 0) {
-              $.each(args, function (index, arg) {
-                stepOwner.exampleArgColumns[stepOwner.exampleArgColumns.length] = arg;
-              });
-              stepOwner.exampleArgColumnsDisplay = line;
-            } else {
-              var argsObj = {};
-              var argsArray = [];
-              $.each(stepOwner.exampleArgColumns, function (i, argName) {
-                argsObj[argName.trim()] = args[i].trim();
-                argsObj[argName.trim() + '_Display'] = args[i];
-                argsArray[argsArray.length] = args[i].trim();
-              });
-              var arrayIndex = stepOwner.examples.length;
-              stepOwner.examples[arrayIndex] = argsObj;
-              stepOwner.examplesArrays[arrayIndex] = argsArray;
-              stepOwner.examplesDisplay[arrayIndex] = line;
-            }
-          } else {
-            if (stepOwner.steps()[stepOwner.steps().length - 1].tableArgColumns.length == 0) {
-              stepOwner.steps()[stepOwner.steps().length - 1].tableArgColumns = args;
-            } else {
-              var argsObj = {};
-              var argsArray = [];
-              $.each(stepOwner.steps()[stepOwner.steps().length - 1].tableArgColumns, function (i, argName) {
-                argsObj[argName.trim()] = args[i].trim();
-                argsObj[argName.trim() + '_Display'] = args[i];
-                argsArray.push(args[i].trim());
-              });
-              var arrayIndex = stepOwner.steps()[stepOwner.steps().length - 1].tableArg.length;
-              stepOwner.steps()[stepOwner.steps().length - 1].tableArg[arrayIndex] = argsObj;
-              stepOwner.steps()[stepOwner.steps().length - 1].tableArgArray[arrayIndex] = argsArray;
-            }
-          }
-        } else {
-          feature.extraLines.push({
-            lineNumber: lineNumber,
-            line: ko.observable(line)
-          });
-        }
-      }
-    });
-    return feature;
   };
 
   _this.run = function run() {

@@ -164,10 +164,10 @@
         <div class="feature-set-path" data-bind="text: path"></div>
       </div>
       <div>
-        <div class="panel-group"
+        <div class="panel-group features"
              data-bind="attr: { id: 'feature_set_features_' + id }, template: { name: 'featureTemplate', foreach: features }">
         </div>
-        <div class="section sub-features"
+        <div class="section sub-feature-sets"
              data-bind="attr: { id: 'feature_set_feature_sets_' + id }, template: { name: 'featureSetTemplate', foreach: featureSets }">
         </div>
       </div>
@@ -220,7 +220,7 @@
         <a class="can-click" data-toggle="collapse"
            data-bind="attr: { href: '#feature_' + id,'data-parent': 'feature_set_features_' + $parent.id }">
           <span><strong class="feature-label text-muted">Feature: </strong><strong
-            data-bind="text: name, css: { 'text-danger': childMissingMethod() > 0 || runResult() === -1, 'text-success': runResult() === 1 }"></strong>
+            class="feature-name" data-bind="text: name, css: { 'text-danger': childMissingMethod() > 0 || runResult() === -1, 'text-success': runResult() === 1 }"></strong>
           </span>
         </a>
       </div>
