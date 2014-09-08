@@ -21,52 +21,55 @@
 <iframe id="apitestwindow" width="100%" height="100%" style="display: none"></iframe>
 
 <div id="gherkin-ui" class="container-fluid hidden" data-bind="css: { hidden: view() != 'Running'}">
-  <div class="row">
-    <div id="gherkin-toggle-ui-button" data-bind="css: { faded: uiWindowVisible }">
-      <div class="btn-group">
-        <button class="btn btn-sm" data-bind="click: toggleUI">Toggle UI</button>
-        <button class="btn btn-sm" data-bind="click: $root.toggleUIButtonMove">&nbsp;
+  <div class="controls row">
+    <div class="btn-group additional-controls col-md-6">
+      <button class="btn btn-sm btn-default exception-break" title="Currently NOT breaking on exceptions"
+              data-bind="visible: !breakOnException(), click: toggleOnException">
+        <i class="fa fa-bug fa-large faded"></i>
+      </button>
+      <button class="btn btn-sm btn-default exception-continue" title="Currently breaking on exceptions"
+              data-bind="visible: breakOnException(), click: toggleOnException">
+        <i class="fa fa-bug fa-large text-danger"></i>
+      </button>
+      <button class="btn btn-sm btn-default expand-all" title="Expand All Sections"
+              data-bind="visible: allCollapsed(), click: toggleRunnerCollapse">
+        <i class="fa fa-expand fa-large"></i>
+      </button>
+      <button class="btn btn-sm btn-default collapse-all" title="Collapse All Sections"
+              data-bind="visible: !allCollapsed(), click: toggleRunnerCollapse">
+        <i class="fa fa-compress fa-large"></i>
+      </button>
+      <button class="btn btn-sm btn-default link-to-page" data-bind="click: $root.linkToPage">Link It</button>
+      <button class="btn btn-sm btn-default reload" data-bind="click: load"><i class="fa fa-refresh"></i>&nbsp;Reload</button>
+    </div>
+    <div class="main-controls col-md-6">
+      <div class="btn-group main-controls pull-right" data-bind="css: { faded: uiWindowVisible }">
+        <button class="play btn btn-sm btn-primary" data-bind="click: run">
+          <i class="fa fa-play"></i>&nbsp;Run
+        </button>
+        <button class="stop btn btn-sm btn-warning" data-bind="click: cancel">
+          <i class="fa fa-stop"></i>&nbsp;Cancel</button>
+        <button class="pause btn btn-sm btn-warning" data-bind="click: pauseOrUnPause, visible: !paused()">
+          <i class="fa fa-pause"></i>&nbsp;Pause
+        </button>
+        <button class="continue btn btn-sm btn-warning" data-bind="click: pauseOrUnPause, visible: paused">
+          <i class="fa fa-play"></i>&nbsp;Continue
+        </button>
+        <button class="toggle-ui btn btn-sm" data-bind="click: toggleUI">Toggle UI</button>
+        <button class="move-main-controls btn btn-sm" data-bind="click: $root.toggleUIButtonMove">&nbsp;
           <i class="fa fa-angle-double-right" data-bind="visible: $root.toggleUIButtonPosition() === 'left'"></i>
           <i class="fa fa-angle-double-left" data-bind="visible: $root.toggleUIButtonPosition() === 'right'"></i>
         </button>
       </div>
-      <button class="btn btn-warning" data-bind="click: cancel"><i class="fa fa-stop"></i>&nbsp;Cancel</button>
-      <button class="btn btn-warning" data-bind="click: pauseOrUnPause, visible: paused">
-        <i class="fa fa-play"></i>&nbsp;Continue
-      </button>
-      <button class="btn btn-warning" data-bind="click: pauseOrUnPause, visible: !paused()">
-        <i class="fa fa-pause"></i>&nbsp;Pause
-      </button>
     </div>
   </div>
-  <div>
-    <button class="btn btn-default" title="Currently NOT breaking on exceptions"
-            data-bind="visible: !breakOnException(), click: toggleOnException">
-      <i class="fa fa-bug fa-large faded"></i>
-    </button>
-    <button class="btn btn-default" title="Currently breaking on exceptions"
-            data-bind="visible: breakOnException(), click: toggleOnException">
-      <i class="fa fa-bug fa-large text-danger"></i>
-    </button>
-    <button class="btn btn-default" title="Expand All Sections"
-            data-bind="visible: allCollapsed(), click: toggleRunnerCollapse">
-      <i class="fa fa-expand fa-large"></i>
-    </button>
-    <button class="btn btn-default" title="Collapse All Sections"
-            data-bind="visible: !allCollapsed(), click: toggleRunnerCollapse">
-      <i class="fa fa-compress fa-large"></i>
-    </button>
-    <button class="btn btn-default pull-left" data-bind="click: $root.linkToPage">Link It</button>
-    <button class="btn btn-primary" data-bind="click: run"><i class="fa fa-play"></i>&nbsp;Run</button>
-    <button class="btn btn-default" data-bind="click: load"><i class="fa fa-refresh"></i>&nbsp;Reload</button>
-  </div>
   <!-- ko if: loaded -->
-  <div id="details">
-    <div class="feature-sets panel-group"
+  <div id="details" class="row">
+    <div class="feature-sets panel-group col-md-12"
          data-bind="attr: { id: id }, template: { name: 'featureSetTemplate', data: featureSet }">
     </div>
     <!-- ko if: recommendedMethods().length > 0 -->
-    <div id="recommended-methods">
+    <div id="recommended-methods" class="col-md-12">
       <div>Recommended Library Methods:</div>
       <pre><code data-bind="foreach: recommendedMethods"><span data-bind="text: $data"></span></code></pre>
     </div>
@@ -75,88 +78,52 @@
   <!-- /ko -->
 </div>
 
-<script type="text/html" id="runOverviewTemplate">
-  <div class="well" data-bind="css: { 'alert-success': featureSet().runResult() === 1, 'alert-danger': featureSet().runResult() === -1 }">
-    <div class="row">
-      <button class="col-md-3 btn btn-default pull-left" data-bind="click: $root.toggleWalking">Walk It</button>
-      <span class="col-md-2 text-right">Status: </span>
-      <span class="col-md-7 clip" data-bind="text: status"></span>
-    </div>
-    <div class="row">
-      <span class="col-md-2 text-right" data-bind="visible: statusMessage && statusMessage.length > 0">Message: </span>
-      <span class="col-md-7 clip" data-bind="text: statusMessage"></span>
-    </div>
-    <div class="row">
-      <h5 class="col-md-7 col-md-offset-5" data-bind="visible: featureSet().runResult() === 1">Run Passed!!</h5>
-      <h5 class="col-md-7 col-md-offset-5" data-bind="visible: featureSet().runResult() === -1">Run Failed!!</h5>
-    </div>
-    <div class="row" data-bind="with: runningFeatureSet">
-      <span class="col-md-5 text-right">Running Feature Set: </span>
-      <span class="col-md-7 clip" data-bind="text: name"></span>
-    </div>
-    <div class="row" data-bind="with: runningFeature">
-      <span class="col-md-5 text-right">Running Feature: </span>
-      <span class="col-md-7 clip" data-bind="text: name"></span>
-    </div>
-    <div class="row" data-bind="with: runningScenario">
-      <span class="col-md-5 text-right">Running Scenario/Background: </span>
-      <span class="col-md-7 clip" data-bind="text: name"></span>
-    </div>
-    <div class="row" data-bind="with: runningStep">
-      <span class="col-md-5 text-right">Running Step: </span>
-      <span class="col-md-7 clip" data-bind="text: name"></span>
-    </div>
-    <div class="row" data-bind="with: runningSubStep">
-      <span class="col-md-5 text-right">Running Sub Step: </span>
-      <span class="col-md-7 clip one-line" data-bind="text: name"></span>
-    </div>
+<script type="text/html" id="icons">
+  <div class="col-md-1">
+    <a class="can-click"
+       data-bind="visible: childBreakpoints() > 0, click: $root.setBreakpoint">
+      <i class="fa fa-circle text-danger faded" title="Remove breakpoint"></i>
+    </a>
+  </div>
+  <div class="col-md-1">
+    <i class="fa fa-check-circle-o text-success faded" title="Passed"
+       data-bind="visible: lastRunResult() === 1"></i>
+    <i class="fa fa-times-circle text-danger faded" title="Failed"
+       data-bind="visible: lastRunResult() === -1"></i>
+    <i class="fa fa-question-circle faded" title="Skipped" data-bind="visible: lastRunResult() === 0"></i>
+    <i class="fa fa-adjust text-warning faded" title="Canceled" data-bind="visible: lastRunResult() === 2"></i>
+  </div>
+  <div class="col-md-1">
+    <i class="fa fa-check-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
+    <i class="fa fa-times-circle text-danger" title="Failed" data-bind="visible: runResult() === -1"></i>
+    <i class="fa fa-question-circle" title="Skipped" data-bind="visible: runResult() === 0"></i>
+    <i class="fa fa-adjust text-warning" title="Canceled" data-bind="visible: runResult() === 2"></i>
+  </div>
+  <div class="col-md-1">
+    <i class="fa fa-ban text-danger" title="Missing Child Methods"
+       data-bind="visible: childMissingMethod() > 0"></i>
+  </div>
+  <div class="col-md-1 info">
+    <a class="hover-visible can-click" data-toggle="collapse"
+       data-bind="attr: { 'href': '#feature_set_description_' + id }">
+      <i class="fa fa-info-circle" title="Feature Set Description"></i>
+    </a>
   </div>
 </script>
 
 <script type="text/html" id="featureSetTemplate">
-  <div class="feature-set panel panel-default">
-    <div class="title hover hover-highlighted">
-      <div class="icons">
-        <div class="icon-column">
-          <a class="can-click"
-             data-bind="visible: childBreakpoints() > 0, click: $root.setBreakpoint">
-            <i class="fa fa-circle text-danger faded" title="Remove breakpoint"></i>
-          </a>
-        </div>
-        <div class="icon-column">
-          <i class="fa fa-check-circle-o text-success faded" title="Passed"
-             data-bind="visible: lastRunResult() === 1"></i>
-          <i class="fa fa-times-circle text-danger faded" title="Failed"
-             data-bind="visible: lastRunResult() === -1"></i>
-          <i class="fa fa-question-circle faded" title="Skipped" data-bind="visible: lastRunResult() === 0"></i>
-          <i class="fa fa-adjust text-warning faded" title="Canceled" data-bind="visible: lastRunResult() === 2"></i>
-        </div>
-        <div class="icon-column">
-          <i class="fa fa-check-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
-          <i class="fa fa-times-circle text-danger" title="Failed" data-bind="visible: runResult() === -1"></i>
-          <i class="fa fa-question-circle" title="Skipped" data-bind="visible: runResult() === 0"></i>
-          <i class="fa fa-adjust text-warning" title="Canceled" data-bind="visible: runResult() === 2"></i>
-        </div>
-        <div class="icon-column">
-          <i class="fa fa-ban text-danger" title="Missing Child Methods"
-             data-bind="visible: childMissingMethod() > 0"></i>
-        </div>
-        <div class="icon-column info">
-          <a class="hover-visible can-click" data-toggle="collapse"
-             data-bind="attr: { 'href': '#feature_set_description_' + id }">
-            <i class="fa fa-info-circle" title="Feature Set Description"></i>
-          </a>
-        </div>
-      </div>
-      <div class="name">
+  <div class="feature-set panel panel-default container-fluid">
+    <div class="title-line hover hover-highlighted row">
+      <div class="icons col-md-3 container-fluid row" data-bind="template: {name: 'icons', data: $data }"></div>
+      <div class="title col-md-6">
         <h5>
           <a class="can-click" data-bind="click: $root.walkFeatureSet">
-            <div class="inline feature-set-label text-muted">Feature Set:</div>
-            <div class="inline feature-set-name" data-bind="text: name, css: { 'text-success': runResult() === 1 }"></div>
+            <span class="label text-muted">Feature Set:</div>
+            <span class="name" data-bind="text: name, css: { 'text-success': runResult() === 1 }"></div>
           </a>
         </h5>
       </div>
-      <div class="pull-right run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
+      <div class="run-result-bar col-md-3" data-bind="template: { name: 'counts', data: $data }"></div>
     </div>
     <div class="body collapse" data-bind="css: { in: expanded }">
       <div class="collapse collapsible feature-set-description-section" data-bind="attr: { id: 'feature_set_description_' + id }">
