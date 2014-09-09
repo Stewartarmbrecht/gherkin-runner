@@ -14,48 +14,83 @@
 <iframe id="uitestwindow" width="100%" height="100%" style="display: none"></iframe>
 <iframe id="apitestwindow" width="100%" height="100%" style="display: none"></iframe>
 <div id="gherkin-ui" class="hidden" data-bind="css: { hidden: view() != 'Running'}">
-  <div class="controls">
-    <div class="btn-group additional-controls">
-      <button class="btn btn-sm btn-default exception-break" title="Currently NOT breaking on exceptions"
-              data-bind="visible: !breakOnException(), click: toggleOnException">
-        <i class="fa fa-bug fa-large faded"></i>
-      </button>
-      <button class="btn btn-sm btn-default exception-continue" title="Currently breaking on exceptions"
-              data-bind="visible: breakOnException(), click: toggleOnException">
-        <i class="fa fa-bug fa-large text-danger"></i>
-      </button>
-      <button class="btn btn-sm btn-default expand-all" title="Expand All Sections"
-              data-bind="visible: allCollapsed(), click: toggleRunnerCollapse">
-        <i class="fa fa-expand fa-large"></i>
-      </button>
-      <button class="btn btn-sm btn-default collapse-all" title="Collapse All Sections"
-              data-bind="visible: !allCollapsed(), click: toggleRunnerCollapse">
-        <i class="fa fa-compress fa-large"></i>
-      </button>
-      <button class="btn btn-sm btn-default link-to-page" data-bind="click: $root.linkToPage">Link It</button>
-      <button class="btn btn-sm btn-default reload" data-bind="click: load"><i class="fa fa-refresh"></i>&nbsp;Reload</button>
-    </div>
-    <div class="main-controls pull-right">
-      <div class="btn-group main-controls pull-right" data-bind="css: { faded: uiWindowVisible }">
-        <button class="play btn btn-sm btn-primary" data-bind="click: run">
-          <i class="fa fa-play"></i>&nbsp;Run
+  <nav class="controls navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
         </button>
-        <button class="stop btn btn-sm btn-warning" data-bind="click: cancel">
-          <i class="fa fa-stop"></i>&nbsp;Cancel</button>
-        <button class="pause btn btn-sm btn-warning" data-bind="click: pauseOrUnPause, visible: !paused()">
-          <i class="fa fa-pause"></i>&nbsp;Pause
-        </button>
-        <button class="continue btn btn-sm btn-warning" data-bind="click: pauseOrUnPause, visible: paused">
-          <i class="fa fa-play"></i>&nbsp;Continue
-        </button>
-        <button class="toggle-ui btn btn-sm" data-bind="click: toggleUI">Toggle UI</button>
-        <button class="move-main-controls btn btn-sm" data-bind="click: $root.toggleUIButtonMove">&nbsp;
-          <i class="fa fa-angle-double-right" data-bind="visible: $root.toggleUIButtonPosition() === 'left'"></i>
-          <i class="fa fa-angle-double-left" data-bind="visible: $root.toggleUIButtonPosition() === 'right'"></i>
-        </button>
+        <a class="navbar-brand" href="#">Gherkin Runner</a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li title="Currently NOT breaking on exceptions"
+                data-bind="visible: !breakOnException(), click: toggleOnException">
+            <a href="#">
+              <i class="fa fa-bug fa-large faded"></i>
+            </a>
+          </li>
+          <li title="Currently breaking on exceptions"
+                data-bind="visible: breakOnException(), click: toggleOnException">
+            <a href="#">
+              <i class="fa fa-bug fa-large text-danger"></i>
+            </a>
+          </li>
+          <li title="Expand All Sections"
+                data-bind="visible: allCollapsed(), click: toggleRunnerCollapse">
+            <a href="#">
+            <i class="fa fa-expand fa-large"></i>
+            </a>
+          </li>
+          <li title="Collapse All Sections"
+                data-bind="visible: !allCollapsed(), click: toggleRunnerCollapse">
+            <a href="#">
+            <i class="fa fa-compress fa-large"></i>
+            </a>
+          </li>
+          <li data-bind="click: $root.linkToPage">
+            <a href="#">
+            <i class="fa fa-external-link"></i>
+            </a>
+          </li>
+          <li data-bind="click: load">
+            <a href="#">
+            <i class="fa fa-refresh"></i>
+            </a>
+          </li>
+          <li data-bind="click: run">
+            <a href="#">
+            <i class="fa fa-play"></i>
+            </a>
+          </li>
+          <li data-bind="click: cancel">
+            <a href="#">
+            <i class="fa fa-stop"></i>
+            </a>
+          </li>
+          <li data-bind="click: pauseOrUnPause, visible: !paused()">
+            <a href="#">
+            <i class="fa fa-pause"></i>
+            </a>
+          </li>
+          <li data-bind="click: pauseOrUnPause, visible: paused">
+            <a href="#">
+            <i class="fa fa-play"></i>
+            </a>
+          </li>
+          <li data-bind="click: toggleUI">
+            <a href="#">
+            <i class="fa fa-photo"></i>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
-  </div>
+  </nav>
   <!-- ko if: loaded -->
   <div class="feature-sets contain-fluid"
        data-bind="attr: { id: id }, template: { name: 'featureSetTemplate', data: featureSet }">
@@ -152,19 +187,76 @@
   </div>
 </script>
 
+<script type="text/html" id="actions">
+    <li class="breakpoint">
+      <!-- ko if: type === 'step' -->
+        <a class="hover-visible can-click"
+           data-bind="visible: !breakpoint() && childBreakpoints() < 1 && !outline, click: setBreakpoint">
+          Set Breakpoint
+          <i class="fa fa-circle-o text-muted" title="Add breakpoint"></i>
+        </a>
+        <a class="can-click"
+           data-bind="visible: (breakpoint() || childBreakpoints() > 0) && !outline, click: setBreakpoint">
+          Remove Breakpoint
+          <i class="fa fa-circle text-muted text-danger" title="Remove breakpoint"></i>
+        </a>
+      <!-- /ko -->
+    </li>
+    <li class="last-run-result">
+      <!-- ko if: type === 'step' -->
+        <a class="can-click" data-bind="click: toggleLastErrorExpanded, visible: lastRunResult() === -1">
+          View Last Run Error
+          <i class="fa fa-times-circle text-danger faded" title="Failed"></i>
+        </a>
+      <!-- /ko -->
+    </li>
+    <li class="run-result">
+      <!-- ko if: type === 'step' -->
+        <a class="can-click" data-bind="click: toggleErrorExpanded, visible: runResult() === -1">
+          View Error
+          <i class="fa fa-times-circle text-danger" title="Failed"></i>
+        </a>
+      <!-- /ko -->
+    </li>
+    <li class="details">
+      <a class="hover-visible can-click" data-bind="click: toggleDetailsExpanded">
+        View Details
+        <i class="fa fa-info-circle"></i>
+      </a>
+    </li>
+    <li class="comment">
+      <!-- ko if: comments && comments() && comments().length > 0 -->
+        <a class="can-click" data-bind="click: toggleCommentsExpanded">
+          View Comments
+          <i class="fa fa-comment-o"></i>
+        </a>
+      <!-- /ko -->
+    </li>
+    <li class="reset-state-and-run">
+      <a data-bind="click: $root.runSingleScenarioAndResetState">
+        Reset State and Run
+        <i class="fa fa-play-circle text-info"></i>
+      </a>
+    </li>
+    <li class="run">
+      <a data-bind="click: $root.runSingleScenario">
+        Run with Existing State
+        <i class="fa fa-play-circle-o"></i>
+      </a>
+    </li>
+</script>
+
 <script type="text/html" id="featureSetTemplate">
   <div class="feature-set row">
-    <div class="icons col-md-2" data-bind="template: {name: 'icons', data: $data }"></div>
-    <div class="title col-md-8">
-      <div data-bind="attr: { 'class': 'level-' + level }">
-        <span class="label label-default visible-sm-inline">FS:</span>
-        <span class="label label-default hidden-xs hidden-sm">Feature Set:</span>
-        <a class="name">
-          <h3 class="inline" data-bind="click: toggleExpanded, text: name, css: { 'text-success': runResult() === 1 }"></h3>
-        </a>
-      </div>
+    <div data-bind="attr: {'class':'btn-group col-xs-2 level-' + level }">
+      <button type="button" data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle visible-xs-inline visible-sm-inline">FS <span class="caret"></span></button>
+      <button type="button" data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle hidden-xs hidden-sm">Feature Set <span class="caret"></span></button>
+      <ul class="dropdown-menu" role="menu" data-bind="template: {name: 'actions', data: $data }"></ul>
     </div>
-    <div class="run-result-bar col-md-2" data-bind="template: { name: 'counts', data: $data }"></div>
+    <a class="name col-xs-9">
+      <h4 class="inline" data-bind="click: toggleExpanded, text: name, css: { 'text-success': runResult() === 1 }"></h4>
+    </a>
+    <div class="run-result-bar col-xs-1" data-bind="template: { name: 'counts', data: $data }"></div>
   </div>
   <!-- ko if: detailsExpanded -->
     <div class="description row">

@@ -7842,37 +7842,37 @@ button.close {
 /* Small devices (tablets, 768px and up) */
 @media (max-width: 991px) {
   .level-0 {
-    border-left: solid 4px #dddddd;
+    border-left: solid 4px transparent;
   }
   .level-1 {
-    border-left: solid 8px #dddddd;
+    border-left: solid 8px transparent;
   }
   .level-2 {
-    border-left: solid 16px #dddddd;
+    border-left: solid 16px transparent;
   }
   .level-3 {
-    border-left: solid 24px #dddddd;
+    border-left: solid 24px transparent;
   }
   .level-4 {
-    border-left: solid 32px #dddddd;
+    border-left: solid 32px transparent;
   }
   .level-5 {
-    border-left: solid 40px #dddddd;
+    border-left: solid 40px transparent;
   }
   .level-6 {
-    border-left: solid 48px #dddddd;
+    border-left: solid 48px transparent;
   }
   .level-7 {
-    border-left: solid 56px #dddddd;
+    border-left: solid 56px transparent;
   }
   .level-8 {
-    border-left: solid 64px #dddddd;
+    border-left: solid 64px transparent;
   }
   .level-9 {
-    border-left: solid 72px #dddddd;
+    border-left: solid 72px transparent;
   }
   .level-10 {
-    border-left: solid 72px #dddddd;
+    border-left: solid 72px transparent;
   }
 }
 /* Medium devices (desktops, 992px and up) */
@@ -7956,8 +7956,8 @@ span.icons {
   width: auto;
 }
 div.feature-sets {
+  margin-top: 5em;
   margin-bottom: 2em;
-  margin-top: 2em;
 }
 #gherkin-ui {
   margin: 1em;
