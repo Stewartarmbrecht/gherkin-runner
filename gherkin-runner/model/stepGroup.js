@@ -10,6 +10,7 @@ function StepGroup(line, lineNumber, feature) {
   this.name = (outline ? line.trim().substr(19, line.trim().length - 19).trim() : line.trim().substr(11, line.trim().length - 11).trim());
   this.id = utilities.encodeId(feature.path + '_' + this.name);
   this.runCondition = null;
+  this.type = 'step-group';
   this.comments = ko.observableArray();
   if (this.name.indexOf('if(') > -1) {
     this.runCondition = this.name.trim().substring(this.name.trim().indexOf('if(') + 3, this.name.trim().length - 1);
@@ -26,6 +27,23 @@ function StepGroup(line, lineNumber, feature) {
   this.childFailed = ko.observable(0);
   this.feature = feature;
   feature.stepGroups.push(this);
+  this.level = feature.level + 1;
+  this.expanded = ko.observable(false);
+  this.detailsExpanded = ko.observable(false);
+  this.commentsExpanded = ko.observable(false);
+
+};
+
+StepGroup.prototype.toggleExpanded = function toggleExpanded() {
+  this.expanded(!this.expanded());
+};
+
+StepGroup.prototype.toggleDetailsExpanded = function toggleDetailsExpanded() {
+  this.detailsExpanded(!this.detailsExpanded());
+};
+
+StepGroup.prototype.toggleCommentsExpanded = function toggleCommentsExpanded() {
+  this.commentsExpanded(!this.commentsExpanded());
 };
 
 StepGroup.prototype.addChildLoaded = function addChildLoaded(count) {

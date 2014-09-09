@@ -22,7 +22,23 @@ function Feature(line, lineNumber, featurePath, featureSet) {
   this.childSkipped = ko.observable(0);
   this.childPassed = ko.observable(0);
   this.childFailed = ko.observable(0);
+  this.expanded = ko.observable(false);
+  this.detailsExpanded = ko.observable(false);
+  this.commentsExpanded = ko.observable(false);
   this.featureSet = featureSet;
+  this.level = featureSet.level + 1;
+};
+
+Feature.prototype.toggleExpanded = function toggleExpanded() {
+  this.expanded(!this.expanded());
+};
+
+Feature.prototype.toggleDetailsExpanded = function toggleDetailsExpanded() {
+  this.detailsExpanded(!this.detailsExpanded());
+};
+
+Feature.prototype.toggleCommentsExpanded = function toggleCommentsExpanded() {
+  this.commentsExpanded(!this.commentsExpanded());
 };
 
 Feature.prototype.addChildLoaded = function addChildLoaded(count) {

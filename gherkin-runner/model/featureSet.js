@@ -1,6 +1,7 @@
 var utilities = require('/gherkin-runner/model/utilities.js');
 function FeatureSet(featureSet, featureSetPath, parentFeatureSet) {
   this.id = utilities.encodeId(featureSetPath);
+  this.type = 'feature-set';
   this.name = featureSet.name || 'Unnamed Feature Set';
   this.description = featureSet.description || null;
   this.featureSetPaths = featureSet.featureSetPaths || [];
@@ -21,11 +22,25 @@ function FeatureSet(featureSet, featureSetPath, parentFeatureSet) {
   this.childSkipped = ko.observable(0);
   this.childPassed = ko.observable(0);
   this.childFailed = ko.observable(0);
-  this.parentFeatureSet = parentFeatureSet;
+  this.parentFeatureSet = parentFeatureSet
+  this.comments = ko.observableArray();
+  this.expanded = ko.observable(false);
+  this.detailsExpanded = ko.observable(false);
   if(parentFeatureSet){
+    this.level = parentFeatureSet.level + 1;
     parentFeatureSet.featureSets.push(this);
+  } else {
+    this.level = 0;
   }
 
+};
+
+FeatureSet.prototype.toggleExpanded = function toggleExpanded() {
+  this.expanded(!this.expanded());
+};
+
+FeatureSet.prototype.toggleDetailsExpanded = function toggleDetailsExpanded() {
+  this.detailsExpanded(!this.detailsExpanded());
 };
 
 FeatureSet.prototype.addChildLoaded = function addChildLoaded(count) {

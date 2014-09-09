@@ -69,7 +69,7 @@ _this.setCurrentLine = function setCurrentLine(line, index, parsingContext) {
   parsingContext.lastIndentation = parsingContext.indentation;
   parsingContext.indentation = parsingContext.untrimmedLine.indexOf(parsingContext.line);
   if(_this.isTableLine(parsingContext))
-    parsingContext.tableLineArgs = line.substr(1, line.length - 2).split("|")
+    parsingContext.tableLineArgs = parsingContext.line.substr(1, parsingContext.line.length - 2).split("|");
 };
 _this.currentLineIsNotEmpty = function currentLineIsNotEmpty(parsingContext) {
   return parsingContext.line.length > 0;
@@ -113,7 +113,7 @@ _this.isStepLine = function isStepLine(parsingContext) {
 };
 _this.isSubStepLine = function isSubStepLine(parsingContext) {
   var indentationChange = parsingContext.indentation - parsingContext.lastIndentation;
-  return (parsingContext.lastRead === 'step' || parsingContext.lastRead === 'sub step' && indentationChange >= 4)
+  return ((parsingContext.lastRead === 'step' || parsingContext.lastRead === 'sub step') && indentationChange >= 4)
     || (parsingContext.lastRead === 'sub step' && indentationChange < 4 && indentationChange > -1);
 };
 _this.isTableLine = function isTableLine(parsingContext) {
@@ -165,7 +165,7 @@ _this.addStepGroup = function addStepGroup(parsingContext) {
   parsingContext.lastRead = 'step group';
 };
 _this.addFeatureDescription = function addFeatureDescription(parsingContext) {
-  parsingContext.feature.description.push(new FeatureDescription(parsingContext.line, parsingContext.lineNumber, parsingContext.feature));
+  parsingContext.feature.description.push(parsingContext.line);
   parsingContext.lastRead = 'feature description';
 };
 _this.addStep = function addStep(parsingContext) {

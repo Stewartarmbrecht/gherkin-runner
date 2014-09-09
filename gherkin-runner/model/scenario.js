@@ -30,6 +30,9 @@ function Scenario(line, lineNumber, feature) {
   this.childSkipped = ko.observable(0);
   this.childPassed = ko.observable(0);
   this.childFailed = ko.observable(0);
+  this.expanded = ko.observable(false);
+  this.detailsExpanded = ko.observable(false);
+  this.commentsExpanded = ko.observable(false);
   if (line.toLowerCase().indexOf("scenario:") === 0) {
     this.type = 'scenario';
     this.name = line.trim().substr(10, line.length - 10);
@@ -56,6 +59,19 @@ function Scenario(line, lineNumber, feature) {
     feature.backgrounds.push(this);
   }
   this.feature = feature;
+  this.level = feature.level + 1;
+};
+
+Scenario.prototype.toggleExpanded = function toggleExpanded() {
+  this.expanded(!this.expanded());
+};
+
+Scenario.prototype.toggleDetailsExpanded = function toggleDetailsExpanded() {
+  this.detailsExpanded(!this.detailsExpanded());
+};
+
+Scenario.prototype.toggleCommentsExpanded = function toggleCommentsExpanded() {
+  this.commentsExpanded(!this.commentsExpanded());
 };
 
 Scenario.prototype.addChildLoaded = function addChildLoaded(count) {

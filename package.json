@@ -23,5 +23,8 @@
   "dependencies": {
     "bower": "^1.3.9",
     "express": "^4.8.5"
+  },
+  "devDependencies": {
+    "less": "^1.7.5"
   }
 }

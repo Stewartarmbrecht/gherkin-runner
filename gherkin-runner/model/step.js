@@ -38,10 +38,35 @@ function Step(line, lineNumber, feature, stepOwner) {
   this.error = ko.observable();
   this.lastError = ko.observable();
   this.aborted = false;
-
+  this.expanded = ko.observable(false);
+  this.detailsExpanded = ko.observable(false);
+  this.commentsExpanded = ko.observable(false);
+  this.errorExpanded = ko.observable(false);
+  this.lastErrorExpanded = ko.observable(false);
   this.stepOwner = stepOwner;
   stepOwner.steps.push(this);
   stepOwner.addChildLoaded(1);
+  this.level = stepOwner.level + 1;
+};
+
+Step.prototype.toggleExpanded = function toggleExpanded() {
+  this.expanded(!this.expanded());
+};
+
+Step.prototype.toggleDetailsExpanded = function toggleDetailsExpanded() {
+  this.detailsExpanded(!this.detailsExpanded());
+};
+
+Step.prototype.toggleCommentsExpanded = function toggleCommentsExpanded() {
+  this.commentsExpanded(!this.commentsExpanded());
+};
+
+Step.prototype.toggleErrorExpanded = function toggleErrorExpanded() {
+  this.errorExpanded(!this.errorExpanded());
+};
+
+Step.prototype.toggleLastErrorExpanded = function toggleLastErrorExpanded() {
+  this.lastErrorExpanded(!this.lastErrorExpanded());
 };
 
 Step.prototype.addChildLoaded = function addChildLoaded(count) {
