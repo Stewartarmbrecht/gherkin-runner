@@ -3,6 +3,8 @@ function Feature(line, lineNumber, featurePath, featureSet) {
   this.id = utilities.encodeId(featurePath);
   this.path = featurePath;
   this.type = 'feature';
+  this.displayType = 'Feature';
+  this.displayTypeAbbreviation = 'F';
   this.name = line.substr(9, line.length - 9);
   this.lineNumber = lineNumber;
   this.description = ko.observableArray();

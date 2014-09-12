@@ -7842,41 +7842,59 @@ button.close {
 /* Small devices (tablets, 768px and up) */
 @media (max-width: 991px) {
   .level-0 {
-    border-left: solid 4px transparent;
+    margin-left: 2.5px;
   }
   .level-1 {
-    border-left: solid 8px transparent;
+    margin-left: 10px;
   }
   .level-2 {
-    border-left: solid 16px transparent;
+    margin-left: 20px;
   }
   .level-3 {
-    border-left: solid 24px transparent;
+    margin-left: 30px;
   }
   .level-4 {
-    border-left: solid 32px transparent;
+    margin-left: 40px;
   }
   .level-5 {
-    border-left: solid 40px transparent;
+    margin-left: 50px;
   }
   .level-6 {
-    border-left: solid 48px transparent;
+    margin-left: 60px;
   }
   .level-7 {
-    border-left: solid 56px transparent;
+    margin-left: 70px;
   }
   .level-8 {
-    border-left: solid 64px transparent;
+    margin-left: 80px;
   }
   .level-9 {
-    border-left: solid 72px transparent;
+    margin-left: 90px;
   }
   .level-10 {
-    border-left: solid 72px transparent;
+    margin-left: 90px;
+  }
+  .item-actions {
+    width: 4em;
+  }
+  #gherkin-ui {
+    margin: .5em;
+  }
+  div.title-line {
+    margin: .25em 1em;
+  }
+  table.title-line {
+    width: 100%;
+  }
+  td.count-table {
+    width: 50px;
   }
 }
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
+  .level-0 {
+    margin-left: 5px;
+  }
   .level-1 {
     margin-left: 20px;
   }
@@ -7907,47 +7925,69 @@ button.close {
   .level-10 {
     margin-left: 180px;
   }
+  .item-actions {
+    width: 8em;
+  }
+  #gherkin-ui {
+    margin: 1em;
+  }
+  div.title-line {
+    margin: .25em 2em;
+  }
+  table.title-line {
+    width: 100%;
+  }
+  td.count-table {
+    width: 100px;
+  }
 }
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
+  .level-0 {
+    margin-left: 6.25px;
+  }
   .level-1 {
-    margin-left: 40px;
+    margin-left: 25px;
   }
   .level-2 {
-    margin-left: 80px;
+    margin-left: 50px;
   }
   .level-3 {
-    margin-left: 120px;
+    margin-left: 75px;
   }
   .level-4 {
-    margin-left: 160px;
+    margin-left: 100px;
   }
   .level-5 {
-    margin-left: 200px;
+    margin-left: 125px;
   }
   .level-6 {
-    margin-left: 240px;
+    margin-left: 150px;
   }
   .level-7 {
-    margin-left: 280px;
+    margin-left: 175px;
   }
   .level-8 {
-    margin-left: 320px;
+    margin-left: 200px;
   }
   .level-9 {
-    margin-left: 360px;
+    margin-left: 225px;
   }
   .level-10 {
-    margin-left: 400px;
+    margin-left: 225px;
   }
-}
-.icons > span {
-  display: inline-block;
-  width: 1em;
-}
-span.icons {
-  display: inline-block;
-  width: 10em;
+  #gherkin-ui {
+    margin: 1em;
+  }
+  div.title-line {
+    margin: .25em 2em;
+  }
+  table.title-line {
+    width: 100%;
+  }
+  td.count-table {
+    width: 150px;
+  }
 }
 .inline {
   display: inline;
@@ -7959,6 +7999,6 @@ div.feature-sets {
   margin-top: 5em;
   margin-bottom: 2em;
 }
-#gherkin-ui {
-  margin: 1em;
+.count-table {
+  height: 1em;
 }

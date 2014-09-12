@@ -284,17 +284,17 @@ _this.loadSteps = function loadSteps(steps, feature, scenarioOrStepGroup) {
         step.method = function method() {
         };
         $.each(step.steps(), function (index, subStep) {
-          _this.loadStepMethod(subStep, feature, true);
+          _this.loadStepMethod(subStep);
           subStep.name = utilities.replaceExampleParameters(subStep.name, scenarioOrStepGroup.exampleArg);
         });
       } else {
-        _this.loadStepMethod(step, feature, false);
+        _this.loadStepMethod(step);
         step.name = utilities.replaceExampleParameters(step.name, step.stepOwner.exampleArg);
       }
     }
   });
 };
-_this.loadSubSteps = function loadSubSteps(stepGroups, step, scenario) {
+_this.loadSubSteps = function loadSubSteps(stepGroups, step) {
   var stepName = _this.getMethodName(step)
   var foundStepGroup = null;
   $.each(stepGroups(), function (index, stepGroup) {
@@ -315,84 +315,17 @@ _this.loadSubSteps = function loadSubSteps(stepGroups, step, scenario) {
     if (foundStepGroup.type == 'step group outline') {
       $.each(step.tableArg, function (index, tableArgRow) {
         $.each(foundStepGroup.steps(), function (index, subStep) {
-          _this.copyStepGroupStep(subStep, step, tableArgRow);
+          subStep.copyStepGroupStep(step, tableArgRow);
         });
       });
     } else {
       $.each(foundStepGroup.steps(), function (index, subStep) {
-        _this.copyStepGroupStep(subStep, step);
+        subStep.copyStepGroupStep(step);
       });
     }
   }
 };
-_this.copyStepGroupStep = function copyStepGroupStep(subStep, step, outlineParameters) {
-  var stepCopy = subStep.clone();
-
-  stepCopy.name = utilities.replaceParameters(stepCopy.name, step.inlineArgs);
-  if (stepCopy.runCondition)
-    stepCopy.runCondition = utilities.replaceParameters(stepCopy.runCondition, step.inlineArgs);
-  if (outlineParameters)
-    stepCopy.name = utilities.replaceStepGroupOutlineParameters(stepCopy.name, outlineParameters);
-
-  $.merge(stepCopy.inlineArgs, step.inlineArgs);
-  if (stepCopy.tableArgColumns.length > 0 && stepCopy.tableArgColumns[0].trim() == 'PARENT_TABLE_ARG') {
-    var copied = step.tableArg.slice(0);
-    $.each(copied, function (index, tableRow) {
-      copied[index] = $.extend(true, {}, tableRow);
-    });
-    stepCopy.tableArg = copied;
-
-    var copiedArray = step.tableArgArray.slice(0);
-    $.each(copiedArray, function (index, tableRow) {
-      copiedArray[index] = tableRow.slice(0);
-    });
-    stepCopy.tableArgArray = copiedArray;
-
-    stepCopy.tableArgColumns = $.extend(true, {}, step.tableArgColumns);
-  }
-  if (stepCopy.tableArgColumns.length > 0 && stepCopy.tableArgArray[0][0].trim() == 'MERGE_PARENT_TABLE') {
-    var parent = step.tableArg.slice(0);
-    var mergeIn = stepCopy.tableArg.slice(1);
-    var merged = $.merge(parent, mergeIn);
-    $.each(merged, function (index, tableRow) {
-      merged[index] = $.extend(true, {}, tableRow);
-    });
-    stepCopy.tableArg = merged;
-
-    var parentArray = step.tableArgArray.slice(0);
-    var mergeInArray = stepCopy.tableArgArray.slice(1);
-    var mergedArray = $.merge(parentArray, mergeInArray);
-    $.each(mergedArray, function (index, tableRow) {
-      mergedArray[index] = tableRow.slice(0);
-    });
-    stepCopy.tableArgArray = mergedArray;
-
-    stepCopy.tableArgColumns = step.tableArgColumns.slice(0);
-  }
-  $.each(stepCopy.tableArg, function (index, tableRow) {
-    for (var property in tableRow) {
-      tableRow[property] = utilities.replaceParameters(tableRow[property], stepCopy.inlineArgs);
-      if (outlineParameters)
-        tableRow[property] = utilities.replaceStepGroupOutlineParameters(tableRow[property], outlineParameters);
-    }
-  });
-  $.each(stepCopy.tableArgArray, function (index, tableRow) {
-    $.each(tableRow, function (index, tableField) {
-      tableRow[index] = utilities.replaceParameters(tableRow[index], stepCopy.inlineArgs);
-      if (outlineParameters)
-        tableRow[index] = utilities.replaceStepGroupOutlineParameters(tableRow[index], outlineParameters);
-    });
-  });
-  for (var property in stepCopy.exampleArg) {
-    stepCopy.exampleArg[property] = utilities.replaceParameters(stepCopy.exampleArg[property], stepCopy.inlineArgs);
-    if (outlineParameters)
-      stepCopy.exampleArg[property] = utilities.replaceStepGroupOutlineParameters(stepCopy.exampleArg[property], outlineParameters);
-  }
-
-  stepCopy.stepOwner = step;
-  step.steps.push(stepCopy);
-};
-_this.loadStepMethod = function loadStepMethod(step, feature, isSubStep) {
+_this.loadStepMethod = function loadStepMethod(step) {
   _this.loadStepMethodName(step);
   $.each(_this.libraries(), function (index, library) {
     if (!step.method)

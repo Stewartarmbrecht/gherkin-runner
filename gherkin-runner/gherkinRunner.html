@@ -104,89 +104,6 @@
   <!-- /ko -->
 </div>
 
-<script type="text/html" id="icons">
-  <div class="hidden-xs hidden-sm">
-    <span class="breakpoint">
-      <!-- ko if: type !== 'step' -->
-        <a class="can-click"
-           data-bind="visible: childBreakpoints() > 0, click: $root.setBreakpoint">
-          <i class="fa fa-circle text-danger faded" title="Remove breakpoint"></i>
-        </a>
-      <!-- /ko -->
-      <!-- ko if: type === 'step' -->
-        <a class="hover-visible can-click"
-           data-bind="visible: !breakpoint() && childBreakpoints() < 1 && !outline, click: setBreakpoint">
-          <i class="fa fa-circle-o text-muted" title="Add breakpoint"></i>
-        </a>
-        <a class="can-click"
-           data-bind="visible: (breakpoint() || childBreakpoints() > 0) && !outline, click: setBreakpoint">
-          <i class="fa fa-circle text-muted text-danger" title="Remove breakpoint"></i>
-        </a>
-      <!-- /ko -->
-    </span>
-    <span class="last-run-result">
-      <i class="fa fa-check-circle-o text-success faded" title="Passed"
-         data-bind="visible: lastRunResult() === 1"></i>
-      <!-- ko if: type !== 'step' -->
-        <i class="fa fa-times-circle text-danger faded" title="Failed"
-           data-bind="visible: lastRunResult() === -1"></i>
-      <!-- /ko -->
-      <!-- ko if: type === 'step' -->
-        <a class="can-click" data-bind="click: toggleLastErrorExpanded, visible: lastRunResult() === -1">
-          <i class="fa fa-times-circle text-danger faded" title="Failed"></i>
-        </a>
-      <!-- /ko -->
-      <i class="fa fa-question-circle faded" title="Skipped" data-bind="visible: lastRunResult() === 0"></i>
-      <i class="fa fa-adjust text-warning faded" title="Canceled" data-bind="visible: lastRunResult() === 2"></i>
-    </span>
-    <span class="run-result">
-      <i class="fa fa-check-circle-o text-success" title="Passed" data-bind="visible: runResult() === 1"></i>
-      <!-- ko if: type !== 'step' -->
-        <i class="fa fa-times-circle text-danger" title="Failed" data-bind="visible: runResult() === -1"></i>
-      <!-- /ko -->
-      <!-- ko if: type === 'step' -->
-        <a class="can-click" data-bind="click: toggleErrorExpanded, visible: runResult() === -1">
-          <i class="fa fa-times-circle text-danger" title="Failed"></i>
-        </a>
-      <!-- /ko -->
-      <i class="fa fa-question-circle" title="Skipped" data-bind="visible: runResult() === 0"></i>
-      <i class="fa fa-adjust text-warning" title="Canceled" data-bind="visible: runResult() === 2"></i>
-    </span>
-    <span class="missing-methods">
-      <!-- ko if: type === 'step' -->
-        <i class="fa fa-ban text-danger" title="Missing Method" data-bind="visible: missingMethod"></i>
-      <!-- /ko -->
-      <i class="fa fa-ban text-danger" title="Missing Child Methods"
-         data-bind="visible: childMissingMethod() > 0"></i>
-    </span>
-    <span class="details">
-      <a class="hover-visible can-click" data-bind="click: toggleDetailsExpanded">
-        <i class="fa fa-info-circle" title="Description"></i>
-      </a>
-    </span>
-    <span class="comment">
-      <!-- ko if: comments && comments() && comments().length > 0 -->
-        <a class="can-click" data-bind="click: toggleCommentsExpanded">
-          <i class="fa fa-comment-o" title="Comments"></i>
-        </a>
-      <!-- /ko -->
-      <!-- ko if: !comments || !comments() || comments().length <= 0 -->
-        <i class="fa fa-info-circle invisible" title="Description"></i>
-      <!-- /ko -->
-    </span>
-    <span class="reset-state-and-run">
-      <a class="hover-visible can-click" data-bind="click: $root.runSingleScenarioAndResetState">
-        <i class="fa fa-play-circle text-info" title="Reset State and Run"></i>
-      </a>
-    </span>
-    <span class="run">
-      <a class="hover-visible can-click" data-bind="click: $root.runSingleScenario">
-        <i class="fa fa-play-circle-o text-info" title="Run with Existing State"></i>
-      </a>
-    </span>
-  </div>
-</script>
-
 <script type="text/html" id="actions">
     <li class="breakpoint">
       <!-- ko if: type === 'step' -->
@@ -246,22 +163,72 @@
     </li>
 </script>
 
-<script type="text/html" id="featureSetTemplate">
-  <div class="feature-set row">
-    <div data-bind="attr: {'class':'btn-group col-xs-2 level-' + level }">
-      <button type="button" data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle visible-xs-inline visible-sm-inline">FS <span class="caret"></span></button>
-      <button type="button" data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle hidden-xs hidden-sm">Feature Set <span class="caret"></span></button>
-      <ul class="dropdown-menu" role="menu" data-bind="template: {name: 'actions', data: $data }"></ul>
-    </div>
-    <a class="name col-xs-9">
-      <h4 class="inline" data-bind="click: toggleExpanded, text: name, css: { 'text-success': runResult() === 1 }"></h4>
-    </a>
-    <div class="run-result-bar col-xs-1" data-bind="template: { name: 'counts', data: $data }"></div>
+<script type="text/html" id="titleLine">
+  <div class="title-line">
+  <table class="title-line">
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td>
+              <div class="btn-group">
+                <button type="button"
+                        data-toggle="dropdown"
+                        class="item-actions btn btn-xs dropdown-toggle visible-xs-inline visible-sm-inline"
+                        data-bind="css: {
+                      'btn-default': type === 'feature-set',
+                      'btn-primary': type === 'feature'
+                      }">
+                  <span data-bind="text: displayTypeAbbreviation"></span>
+                  <span class="caret"></span>
+                </button>
+                <button type="button"
+                        data-toggle="dropdown"
+                        class="item-actions btn btn-xs btn-default dropdown-toggle hidden-xs hidden-sm"
+                        data-bind="css: {
+                      'btn-default': type === 'feature-set',
+                      'btn-primary': type === 'feature'
+                      }">
+                  <span data-bind="text: displayType"></span>
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" data-bind="template: {name: 'actions', data: $data }"></ul>
+              </div>
+            </td>
+            <td>
+              <a data-bind="attr: {'class':'name btn-group level-' + level }">
+                <!-- ko if: type === 'scenario' && exampleArgDisplay -->
+                  <pre><code data-bind="text: exampleArgDisplay"></code></pre>
+                <!-- /ko -->
+                <!-- ko if: type !== 'scenario' || !exampleArgDisplay -->
+                  <span class="inline" data-bind="
+                    click: toggleExpanded,
+                    text: name,
+                    css: { 'text-success': runResult() === 1 }
+                    "></span>
+                <!-- /ko -->
+                <!-- ko if: type === 'step' && runCondition -->
+                  <span data-bind="text: ' if(' + runCondition + ')'"></span>
+                <!-- /ko -->
+              </a>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="count-table">
+        <div class="run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
+      </td>
+    </tr>
+  </table>
   </div>
+</script>
+
+<script type="text/html" id="featureSetTemplate">
+  <div class="feature-set row" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: detailsExpanded -->
     <div class="description row">
       <div class="col-md-10 col-md-offset-2">
-        <div data-bind="attr: { 'class': 'well well-sm level-' + (level + 2)}">
+        <div data-bind="attr: { 'class': 'well well-sm level-' + (level + 1)}">
           <div data-bind="text: description"></div>
           <div data-bind="text: 'Path: ' + path"></div>
         </div>
@@ -275,20 +242,11 @@
 </script>
 
 <script type="text/html" id="featureTemplate">
-  <div class="feature row">
-    <div class="icons col-md-2" data-bind="template: {name: 'icons', data: $data }"></div>
-    <div class="title col-md-8">
-      <a data-bind="click: toggleExpanded, attr: { 'class': 'can-click level-' + level }">
-        <span class="label label-primary">Feature:</span>
-        <span class="name" data-bind="text: name, css: { 'text-success': runResult() === 1 }"></span>
-      </a>
-    </div>
-    <div class="run-result-bar col-md-2" data-bind="template: { name: 'counts', data: $data }"></div>
-  </div>
+  <div class="feature row" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: detailsExpanded -->
     <div class="description row">
       <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 2) }"><code
+        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code
           data-bind="text: description().join('\n')"></code><code data-bind="text: '\n\nPath: ' + path"></code></pre>
       </div>
     </div>
@@ -296,7 +254,7 @@
   <!-- ko if: commentsExpanded -->
     <div class="comments row">
       <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 2) }"><code data-bind="text: comments().join('\n')"></code></pre>
+        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
       </div>
     </div>
   <!-- /ko -->
@@ -308,32 +266,11 @@
 </script>
 
 <script type="text/html" id="scenarioTemplate">
-  <div class="feature row">
-    <div class="icons col-md-2" data-bind="template: {name: 'icons', data: $data }"></div>
-    <div class="title col-md-8">
-      <a data-bind="click: toggleExpanded, attr: { 'class': 'can-click level-' + level }">
-        <!-- ko if: exampleArgDisplay -->
-          <pre><code data-bind="text: exampleArgDisplay"></code></pre>
-        <!-- /ko -->
-        <!-- ko ifnot: exampleArgDisplay -->
-          <span class="label label-info"
-                data-bind="text: type.substring(0,1).toUpperCase() + type.substring(1) + ': '"></span>
-          <span class="name"
-                data-bind="
-                  text: name,
-                  css: {
-                    'text-danger': childMissingMethod() > 0 || runResult() == -1,
-                    'text-success': runResult() === 1
-                  }"></span>
-        <!-- /ko -->
-      </a>
-    </div>
-    <div class="run-result-bar col-md-2" data-bind="template: { name: 'counts', data: $data }"></div>
-  </div>
+  <div class="scenario row" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: commentsExpanded -->
   <div class="comments row">
     <div class="col-md-10 col-md-offset-2">
-      <pre data-bind="attr: { 'class': 'level-' + (level + 2) }"><code data-bind="text: comments().join('\n')"></code></pre>
+      <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
     </div>
   </div>
   <!-- /ko -->
@@ -342,12 +279,12 @@
     <!-- ko if: scenarios !== undefined && scenarios().length > 0 -->
       <div class="examples row">
         <div class="col-md-10 col-md-offset-2">
-          <div data-bind="attr: { 'class': 'level-' + (level + 2) }">Examples</div>
+          <div data-bind="attr: { 'class': 'level-' + (level + 1) }">Examples</div>
         </div>
       </div>
       <div class="example-args row">
         <div class="col-md-10 col-md-offset-2">
-          <pre data-bind="attr: { 'class': 'level-' + (level + 2) }"><code class="preserve-space example-arg-columns"
+          <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code class="preserve-space example-arg-columns"
                         data-bind="text: exampleArgColumnsDisplay"></code></pre>
         </div>
       </div>
@@ -357,62 +294,31 @@
 </script>
 
 <script type="text/html" id="stepTemplate">
-  <div class="feature row">
-    <div class="icons col-md-2" data-bind="template: {name: 'icons', data: $data }"></div>
-    <div class="title col-md-8">
-      <!-- ko if: steps().length === 0-->
-        <span data-bind="
-                attr: {
-                  'class': 'can-click level-' + level +
-                    (childMissingMethod() > 0?' text-danger':'') +
-                    (runResult() === 1?' text-success':'')
-                }">
-          <span data-bind="
-            text: name"></span>
-          <!-- ko if: runCondition -->
-            <span data-bind="text: ' if(' + runCondition + ')'"></span>
-          <!-- /ko -->
-        </span>
-      <!-- /ko -->
-      <!-- ko if: steps().length > 0 -->
-        <a data-bind="
-              click: toggleExpanded,
-              attr: {
-                  'class': 'can-click level-' + level +
-                    (childMissingMethod() > 0?' text-danger':'') +
-                    (runResult() === 1?' text-success':'')
-                }">
-          <span data-bind="text: name"></span>
-          <!-- ko if: runCondition -->
-            <span data-bind="text: ' if(' + runCondition + ')'"></span>
-          <!-- /ko -->
-        </a>
-      <!-- /ko -->
-    </div>
-    <div class="run-result-bar col-md-2" data-bind="template: { name: 'counts', data: $data }"></div>
-  </div>
+  <div class="step row" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: detailsExpanded -->
     <div class="details row">
       <div class="col-md-10 col-md-offset-2">
-        <small data-bind="attr: { 'class': 'well well-sm level-' + level }">
-          <div>
-            <span>Library: </span><code data-bind="text: libraryName"></code>
+        <div data-bind="attr: { 'class': 'level-' + level }">
+          <div class="well well-sm">
+            <div>
+              <span>Library: </span><code data-bind="text: libraryName"></code>
+            </div>
+            <div>
+              <span>Method Name: </span><code data-bind="text: libraryMethodName"></code>
+            </div>
+            <div>
+              <span>Method</span>
+              <pre><code data-bind="text: method ? method.toString() : ''"></code></pre>
+            </div>
           </div>
-          <div>
-            <span>Method Name: </span><code data-bind="text: libraryMethodName"></code>
-          </div>
-          <div>
-            <span>Method: </span>
-            <pre><code data-bind="text: method ? method.toString() : ''"></code></pre>
-          </div>
-        </small>
+        </div>
       </div>
     </div>
   <!-- /ko -->
   <!-- ko if: commentsExpanded -->
     <div class="comments row">
       <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 2) }"><code data-bind="text: comments().join('\n')"></code></pre>
+        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
       </div>
     </div>
   <!-- /ko -->
@@ -425,14 +331,14 @@
   <!-- ko if: multiLineArg && multiLineArg.length > 0 -->
     <div class="multi-line-arg row">
       <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 2) }"><code data-bind="text: multiLineArg.join('\n')"></code></pre>
+        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: multiLineArg.join('\n')"></code></pre>
       </div>
     </div>
   <!-- /ko -->
   <!-- ko if: tableArg && tableArg.length > 0 -->
     <div class="table-arg row">
       <div class="col-md-10 col-md-offset-2">
-        <div data-bind="attr: { 'class': 'table-responsive level-' + (level + 2) }">
+        <div data-bind="attr: { 'class': 'table-responsive level-' + (level + 1) }">
           <table class="table table-bordered table-striped table-condensed table-nonfluid">
             <thead>
             <tr data-bind="foreach: tableArgColumns">
@@ -463,7 +369,7 @@
 <script type="text/html" id="errorTemplate">
   <div class="error row">
     <div class="col-md-10 col-md-offset-2">
-      <div data-bind="attr: { 'class': 'alert alert-danger level-' + (level + 2) }">
+      <div data-bind="attr: { 'class': 'alert alert-danger level-' + (level + 1) }">
         <!-- ko if: stack -->
         <small><pre data-bind="text: stack"></pre></small>
         <!-- /ko -->
@@ -481,28 +387,12 @@
 </script>
 
 <script type="text/html" id="stepGroupTemplate">
-  <div class="step-group">
-    <div class="title hover hover-highlighted">
-      <div class="icons">
-        <div class="icon-column">
-          <i class="fa fa-ban text-danger" data-bind="visible: childMissingMethod() > 0 "></i>
-        </div>
-      </div>
-      <div class="name">
-        <a class="can-click" data-toggle="collapse"
-           data-bind="attr: { 'href': '#' + id }">
-          <span data-bind="text: 'Step Group: ' + name, css: { 'text-danger': childMissingMethod() > 0 }"></span>
-          (<span data-bind="text: used, attr: {title: 'Used ' + used + ' times'}"></span>)
-        </a>
-      </div>
-      <div class="pull-right run-result-bar" data-bind="template: { name: 'counts', data: $data }"></div>
-    </div>
-    <div class="body collapse collapsible"
-         data-bind="attr: { id: id }">
-      <div class="steps" data-bind="template: { name: 'stepTemplate', foreach: steps }">
-      </div>
-    </div>
-  </div>
+  <div class="step-group row" data-bind="template: { name: 'titleLine', data: $data }"></div>
+  <!-- ko if: expanded -->
+    <!-- ko if: steps().length > 0 -->
+      <!-- ko template: { name: 'stepTemplate', foreach: steps } --><!-- /ko -->
+    <!-- /ko -->
+  <!-- /ko -->
 </script>
 
 <script type="text/html" id="recommendedMethods">
@@ -511,12 +401,32 @@
 </script>
 
 <script type="text/html" id="counts">
-  <table class="count-table" data-bind="attr: {title: 'Loaded: ' + childLoaded() + '\nMissing Methods: ' + childMissingMethod() + '\nRun: ' + childRun() + '\nPassed: ' + childPassed() + '\nFailed: ' + childFailed() + '\nSkipped: ' + childSkipped()}">
+  <table class="count-table" data-bind="attr: {
+      title: 'Loaded: ' + childLoaded() +
+      '\nMissing Methods: ' + childMissingMethod() +
+      '\nRun: ' + childRun() +
+      '\nPassed: ' + childPassed() +
+      '\nFailed: ' + childFailed() +
+      '\nSkipped: ' + childSkipped()}">
     <tr>
-      <td data-bind="style: { width: Math.floor((((childLoaded()!==0?childLoaded():1) - childRun()) / (childLoaded()!==0?childLoaded():1)) * 100) + '%' }"></td>
-      <td class="bg-success" data-bind="style: { width: Math.floor((childPassed() / childLoaded()) * 100) + '%' }"></td>
-      <td class="bg-warning" data-bind="style: { width: Math.floor((childSkipped() / childLoaded()) * 100) + '%' }"></td>
-      <td class="bg-danger" data-bind="style: { width: Math.floor((childFailed() / childLoaded()) * 100) + '%' }"></td>
+      <td data-bind="style: {
+        width: (((childLoaded()!==0?childLoaded():1) - childRun())
+        / (childLoaded()!==0?childLoaded():1)) * 100 + '%' }"></td>
+      <td class="label-success" data-bind="
+        style: {
+          width: (childPassed() / childLoaded()) * 100 + '%',
+          display: (childPassed() === 0)?'none':'table-cell'
+          }"></td>
+      <td class="label-warning" data-bind="
+        style: {
+          width: (childSkipped() / childLoaded()) * 100 + '%',
+          display: (childSkipped() === 0)?'none':'table-cell'
+          }"></td>
+      <td class="label-danger" data-bind="
+        style: {
+          width: (childFailed() / childLoaded()) * 100 + '%',
+          display: (childFailed() === 0)?'none':'table-cell'
+          }"></td>
     </tr>
   </table>
 </script>

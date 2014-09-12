@@ -6,123 +6,163 @@
 /* No media query since this is the default in Bootstrap */
 
 /* Small devices (tablets, 768px and up) */
-@indentation: 20px;
+@indent-sm: 10px;
+@indent-md: 20px;
+@indent-lg: 25px;
 @border-indent: 8px;
 
 @media (max-width: @screen-sm-max) {
   .level-0 {
-    border-left: solid .5*@border-indent transparent;
+    margin-left: .25*@indent-sm;
   }
   .level-1 {
-    border-left: solid 1*@border-indent transparent;
+    margin-left: 1*@indent-sm;
   }
   .level-2 {
-    border-left: solid 2*@border-indent transparent;
+    margin-left: 2*@indent-sm;
   }
   .level-3 {
-    border-left: solid 3*@border-indent transparent;
+    margin-left: 3*@indent-sm;
   }
   .level-4 {
-    border-left: solid 4*@border-indent transparent;
+    margin-left: 4*@indent-sm;
   }
   .level-5 {
-    border-left: solid 5*@border-indent transparent;
+    margin-left: 5*@indent-sm;
   }
   .level-6 {
-    border-left: solid 6*@border-indent transparent;
+    margin-left: 6*@indent-sm;
   }
   .level-7 {
-    border-left: solid 7*@border-indent transparent;
+    margin-left: 7*@indent-sm;
   }
   .level-8 {
-    border-left: solid 8*@border-indent transparent;
+    margin-left: 8*@indent-sm;
   }
   .level-9 {
-    border-left: solid 9*@border-indent transparent;
+    margin-left: 9*@indent-sm;
   }
   .level-10 {
-    border-left: solid 9*@border-indent transparent;
+    margin-left: 9*@indent-sm;
+  }
+  .item-actions {
+    width: 4em;
+  }
+  #gherkin-ui {
+    margin: .5em;
+  }
+  div.title-line {
+    margin: .25em 1em;
+  }
+  table.title-line {
+    width: 100%;
+  }
+  td.count-table {
+    width: 50px;
   }
 }
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: @screen-md-min) {
+  .level-0 {
+    margin-left: .25*@indent-md;
+  }
   .level-1 {
-    margin-left: 1*@indentation;
+    margin-left: 1*@indent-md;
   }
   .level-2 {
-    margin-left: 2*@indentation;
+    margin-left: 2*@indent-md;
   }
   .level-3 {
-    margin-left: 3*@indentation;
+    margin-left: 3*@indent-md;
   }
   .level-4 {
-    margin-left: 4*@indentation;
+    margin-left: 4*@indent-md;
   }
   .level-5 {
-    margin-left: 5*@indentation;
+    margin-left: 5*@indent-md;
   }
   .level-6 {
-    margin-left: 6*@indentation;
+    margin-left: 6*@indent-md;
   }
   .level-7 {
-    margin-left: 7*@indentation;
+    margin-left: 7*@indent-md;
   }
   .level-8 {
-    margin-left: 8*@indentation;
+    margin-left: 8*@indent-md;
   }
   .level-9 {
-    margin-left: 9*@indentation;
+    margin-left: 9*@indent-md;
   }
   .level-10 {
-    margin-left: 9*@indentation;
+    margin-left: 9*@indent-md;
+  }
+  .item-actions {
+    width: 8em;
+  }
+  #gherkin-ui {
+    margin: 1em;
+  }
+  div.title-line {
+    margin: .25em 2em;
+  }
+  table.title-line {
+    width: 100%;
+  }
+  td.count-table {
+    width: 100px;
   }
 }
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: @screen-lg-min) {
+  .level-0 {
+    margin-left: .25*@indent-lg;
+  }
   .level-1 {
-    margin-left: 2*@indentation;
+    margin-left: 1*@indent-lg;
   }
   .level-2 {
-    margin-left: 4*@indentation;
+    margin-left: 2*@indent-lg;
   }
   .level-3 {
-    margin-left: 6*@indentation;
+    margin-left: 3*@indent-lg;
   }
   .level-4 {
-    margin-left: 8*@indentation;
+    margin-left: 4*@indent-lg;
   }
   .level-5 {
-    margin-left: 10*@indentation;
+    margin-left: 5*@indent-lg;
   }
   .level-6 {
-    margin-left: 12*@indentation;
+    margin-left: 6*@indent-lg;
   }
   .level-7 {
-    margin-left: 14*@indentation;
+    margin-left: 7*@indent-lg;
   }
   .level-8 {
-    margin-left: 16*@indentation;
+    margin-left: 8*@indent-lg;
   }
   .level-9 {
-    margin-left: 18*@indentation;
+    margin-left: 9*@indent-lg;
   }
   .level-10 {
-    margin-left: 20*@indentation;
+    margin-left: 9*@indent-lg;
+  }
+  #gherkin-ui {
+    margin: 1em;
+  }
+  div.title-line {
+    margin: .25em 2em;
+  }
+  table.title-line {
+    width: 100%;
+  }
+  td.count-table {
+    width: 150px;
   }
 }
 
-
-.icons > span {
-  display: inline-block;
-  width: 1em;
-}
-
-span.icons {
-  display: inline-block;
-  width: 10em;
-}
 
 .inline {
   display: inline;
@@ -137,6 +177,6 @@ div.feature-sets {
   margin-bottom: 2em;
 }
 
-#gherkin-ui {
-  margin: 1em;
+.count-table {
+  height: 1em;
 }

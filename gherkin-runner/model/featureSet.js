@@ -2,6 +2,8 @@ var utilities = require('/gherkin-runner/model/utilities.js');
 function FeatureSet(featureSet, featureSetPath, parentFeatureSet) {
   this.id = utilities.encodeId(featureSetPath);
   this.type = 'feature-set';
+  this.displayType = 'Feature Set';
+  this.displayTypeAbbreviation = 'FS';
   this.name = featureSet.name || 'Unnamed Feature Set';
   this.description = featureSet.description || null;
   this.featureSetPaths = featureSet.featureSetPaths || [];

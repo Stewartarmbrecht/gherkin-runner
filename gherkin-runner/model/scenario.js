@@ -35,24 +35,32 @@ function Scenario(line, lineNumber, feature) {
   this.commentsExpanded = ko.observable(false);
   if (line.toLowerCase().indexOf("scenario:") === 0) {
     this.type = 'scenario';
+    this.displayType = 'Scenario';
+    this.displayTypeAbbreviation = 'S';
     this.name = line.trim().substr(10, line.length - 10);
     this.id = utilities.encodeId(feature.path + '_' + this.name);
     this.outline = false;
     feature.scenarios.push(this);
   } else if (line.toLowerCase().indexOf("scenario outline:") === 0) {
     this.type = 'scenario outline';
+    this.displayType = 'Scenario Outline';
+    this.displayTypeAbbreviation = 'SO';
     this.name = line.trim().substr(18, line.length - 18);
     this.id = utilities.encodeId(feature.path + '_' + this.name);
     this.outline = true;
     feature.scenarios.push(this);
   } else if (line.toLowerCase().indexOf("feature background:") === 0) {
     this.type = 'feature background';
+    this.displayType = 'Feature Background';
+    this.displayTypeAbbreviation = 'FB';
     this.name = line.trim().substr(19, line.length - 19);
     this.id = utilities.encodeId(feature.path + '_' + this.name);
     this.outline = false;
     feature.backgrounds.push(this);
   } else if (line.toLowerCase().indexOf("feature background outline:") === 0) {
     this.type = 'feature background outline';
+    this.displayType = 'Feature Background Outline';
+    this.displayTypeAbbreviation = 'FBO';
     this.name = line.trim().substr(27, line.length - 27);
     this.id = utilities.encodeId(feature.path + '_' + this.name);
     this.outline = true;
