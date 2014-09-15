@@ -19,6 +19,7 @@ _this.runningFeature = ko.observable();
 _this.runningScenario = ko.observable();
 _this.runningStep = ko.observable();
 _this.runningSubStep = ko.observable();
+_this.isRunning = ko.observable();
 _this.id = utilities.encodeId('gherkin-runner');
 _this.toggleUIButtonPosition = ko.observable('right');
 _this.toggleUIButtonMove = function toggleUIButtonMove() {
@@ -388,6 +389,7 @@ _this.getMethodName = function getMethodName(step) {
 };
 
 _this.run = function run() {
+  _this.isRunning(true);
   _this.status('Running!');
   _this.log('Resetting run counts...');
   _this.log('Resetting run results...');
@@ -397,6 +399,7 @@ _this.run = function run() {
     .then(function () {
       if (_this.uiWindowVisible())
         _this.toggleUI();
+      _this.isRunning(false);
       _this.status('Idle');
       _this.log('Run completed!');
       _this.runningFeature(null);
