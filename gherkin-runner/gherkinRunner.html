@@ -19,7 +19,7 @@
     <div class="container">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-controlsr">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-controls">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -71,32 +71,32 @@
                 data-bind="visible: allCollapsed(), click: toggleRunnerCollapse">
             <a href="#">
               <i class="fa fa-expand fa-large"></i>
-              <span class="hidden-sm">Expand All</span>
+              <span class="hidden-sm hidden-md">Expand All</span>
             </a>
           </li>
           <li title="Collapse All Sections"
                 data-bind="visible: !allCollapsed(), click: toggleRunnerCollapse">
             <a href="#">
               <i class="fa fa-compress fa-large"></i>
-              <span class="hidden-sm">Collapse All</span>
+              <span class="hidden-sm hidden-md">Collapse All</span>
             </a>
           </li>
           <li data-bind="click: $root.linkToPage">
             <a href="#">
               <i class="fa fa-external-link"></i>
-              <span class="hidden-sm">Link To Page</span>
+              <span class="hidden-sm hidden-md">Link To Page</span>
             </a>
           </li>
           <li data-bind="click: load">
             <a href="#">
               <i class="fa fa-refresh"></i>
-              <span class="hidden-sm">Refresh</span>
+              <span class="hidden-sm hidden-md">Refresh</span>
             </a>
           </li>
           <li data-bind="click: toggleUI">
             <a href="#">
               <i class="fa fa-photo"></i>
-              <span class="hidden-sm">Toggle UI</span>
+              <span class="hidden-sm hidden-md">Toggle UI</span>
             </a>
           </li>
         </ul>
@@ -241,14 +241,12 @@
 </script>
 
 <script type="text/html" id="featureSetTemplate">
-  <div class="feature-set row" data-bind="template: { name: 'titleLine', data: $data }"></div>
+  <div class="feature-set" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: detailsExpanded -->
-    <div class="description row">
-      <div class="col-md-10 col-md-offset-2">
-        <div data-bind="attr: { 'class': 'well well-sm level-' + (level + 1)}">
-          <div data-bind="text: description"></div>
-          <div data-bind="text: 'Path: ' + path"></div>
-        </div>
+    <div class="description">
+      <div data-bind="attr: { 'class': 'well well-sm level-' + (level + 1)}">
+        <div data-bind="text: description"></div>
+        <div data-bind="text: 'Path: ' + path"></div>
       </div>
     </div>
   <!-- /ko -->
@@ -259,20 +257,16 @@
 </script>
 
 <script type="text/html" id="featureTemplate">
-  <div class="feature row" data-bind="template: { name: 'titleLine', data: $data }"></div>
+  <div class="feature" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: detailsExpanded -->
-    <div class="description row">
-      <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code
-          data-bind="text: description().join('\n')"></code><code data-bind="text: '\n\nPath: ' + path"></code></pre>
-      </div>
+    <div class="description">
+      <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code
+        data-bind="text: description().join('\n')"></code><code data-bind="text: '\n\nPath: ' + path"></code></pre>
     </div>
   <!-- /ko -->
   <!-- ko if: commentsExpanded -->
-    <div class="comments row">
-      <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
-      </div>
+    <div class="comments">
+      <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
     </div>
   <!-- /ko -->
   <!-- ko if: expanded -->
@@ -283,27 +277,21 @@
 </script>
 
 <script type="text/html" id="scenarioTemplate">
-  <div class="scenario row" data-bind="template: { name: 'titleLine', data: $data }"></div>
+  <div class="scenario" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: commentsExpanded -->
-  <div class="comments row">
-    <div class="col-md-10 col-md-offset-2">
-      <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
-    </div>
+  <div class="comments">
+    <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
   </div>
   <!-- /ko -->
   <!-- ko if: expanded -->
     <!-- ko template: { name: 'stepTemplate', foreach: steps } --><!-- /ko -->
     <!-- ko if: scenarios !== undefined && scenarios().length > 0 -->
-      <div class="examples row">
-        <div class="col-md-10 col-md-offset-2">
-          <div data-bind="attr: { 'class': 'level-' + (level + 1) }">Examples</div>
-        </div>
+      <div class="examples">
+        <div data-bind="attr: { 'class': 'level-' + (level + 1) }">Examples</div>
       </div>
-      <div class="example-args row">
-        <div class="col-md-10 col-md-offset-2">
-          <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code class="preserve-space example-arg-columns"
-                        data-bind="text: exampleArgColumnsDisplay"></code></pre>
-        </div>
+      <div class="example-args">
+        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code class="preserve-space example-arg-columns"
+                      data-bind="text: exampleArgColumnsDisplay"></code></pre>
       </div>
       <!-- ko template: { name: 'scenarioTemplate', foreach: scenarios } --><!-- /ko -->
     <!-- /ko -->
@@ -311,32 +299,28 @@
 </script>
 
 <script type="text/html" id="stepTemplate">
-  <div class="step row" data-bind="template: { name: 'titleLine', data: $data }"></div>
+  <div class="step" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: detailsExpanded -->
-    <div class="details row">
-      <div class="col-md-10 col-md-offset-2">
-        <div data-bind="attr: { 'class': 'level-' + level }">
-          <div class="well well-sm">
-            <div>
-              <span>Library: </span><code data-bind="text: libraryName"></code>
-            </div>
-            <div>
-              <span>Method Name: </span><code data-bind="text: libraryMethodName"></code>
-            </div>
-            <div>
-              <span>Method</span>
-              <pre><code data-bind="text: method ? method.toString() : ''"></code></pre>
-            </div>
+    <div class="details">
+      <div data-bind="attr: { 'class': 'level-' + level }">
+        <div class="well well-sm">
+          <div>
+            <span>Library: </span><code data-bind="text: libraryName"></code>
+          </div>
+          <div>
+            <span>Method Name: </span><code data-bind="text: libraryMethodName"></code>
+          </div>
+          <div>
+            <span>Method</span>
+            <pre><code data-bind="text: method ? method.toString() : ''"></code></pre>
           </div>
         </div>
       </div>
     </div>
   <!-- /ko -->
   <!-- ko if: commentsExpanded -->
-    <div class="comments row">
-      <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
-      </div>
+    <div class="comments">
+      <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: comments().join('\n')"></code></pre>
     </div>
   <!-- /ko -->
   <!-- ko if: errorExpanded -->
@@ -346,33 +330,29 @@
     <!-- ko template: { name: 'errorTemplate', data: lastError } --><!-- /ko -->
   <!-- /ko -->
   <!-- ko if: multiLineArg && multiLineArg.length > 0 -->
-    <div class="multi-line-arg row">
-      <div class="col-md-10 col-md-offset-2">
-        <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: multiLineArg.join('\n')"></code></pre>
-      </div>
+    <div class="multi-line-arg">
+      <pre data-bind="attr: { 'class': 'level-' + (level + 1) }"><code data-bind="text: multiLineArg.join('\n')"></code></pre>
     </div>
   <!-- /ko -->
   <!-- ko if: tableArg && tableArg.length > 0 -->
-    <div class="table-arg row">
-      <div class="col-md-10 col-md-offset-2">
-        <div data-bind="attr: { 'class': 'table-responsive level-' + (level + 1) }">
-          <table class="table table-bordered table-striped table-condensed table-nonfluid">
-            <thead>
-            <tr data-bind="foreach: tableArgColumns">
-              <th>
-                <small data-bind="text: $data"></small>
-              </th>
-            </tr>
-            </thead>
-            <tbody data-bind="foreach: tableArgArray">
-            <tr data-bind="foreach: $data">
-              <td>
-                <small data-bind="text: $data"></small>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="table-arg">
+      <div data-bind="attr: { 'class': 'table-responsive level-' + (level + 1) }">
+        <table class="table table-bordered table-striped table-condensed table-nonfluid">
+          <thead>
+          <tr data-bind="foreach: tableArgColumns">
+            <th>
+              <small data-bind="text: $data"></small>
+            </th>
+          </tr>
+          </thead>
+          <tbody data-bind="foreach: tableArgArray">
+          <tr data-bind="foreach: $data">
+            <td>
+              <small data-bind="text: $data"></small>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   <!-- /ko -->
@@ -384,27 +364,17 @@
 </script>
 
 <script type="text/html" id="errorTemplate">
-  <div class="error row">
-    <div class="col-md-10 col-md-offset-2">
-      <div data-bind="attr: { 'class': 'alert alert-danger level-' + (level + 1) }">
-        <!-- ko if: stack -->
-        <small><pre data-bind="text: stack"></pre></small>
-        <!-- /ko -->
-        <!-- ko if: responseText -->
-        <small><pre data-bind="text: responseText"></pre></small>
-        <!-- /ko -->
-        <!-- ko if: entityErrors -->
-        <!-- ko foreach: entityErrors -->
-        <small><pre data-bind="text: errorMessage"></pre></small>
-        <!-- /ko -->
-        <!-- /ko -->
-      </div>
+  <div class="error">
+    <div class="alert alert-danger">
+      <!-- ko if: stack -->
+      <pre><code><small class="small" data-bind="text: stack"></small></code></pre>
+      <!-- /ko -->
     </div>
   </div>
 </script>
 
 <script type="text/html" id="stepGroupTemplate">
-  <div class="step-group row" data-bind="template: { name: 'titleLine', data: $data }"></div>
+  <div class="step-group" data-bind="template: { name: 'titleLine', data: $data }"></div>
   <!-- ko if: expanded -->
     <!-- ko if: steps().length > 0 -->
       <!-- ko template: { name: 'stepTemplate', foreach: steps } --><!-- /ko -->
@@ -413,32 +383,62 @@
 </script>
 
 <script type="text/html" id="counts">
-  <table class="count-table" data-bind="attr: {
-      title: 'Loaded: ' + childLoaded() +
-      '\nMissing Methods: ' + childMissingMethod() +
-      '\nRun: ' + childRun() +
-      '\nPassed: ' + childPassed() +
-      '\nFailed: ' + childFailed() +
-      '\nSkipped: ' + childSkipped()}">
+  <table class="count-table">
     <tr>
-      <td data-bind="style: {
-        width: (((childLoaded()!==0?childLoaded():1) - childRun())
-        / (childLoaded()!==0?childLoaded():1)) * 100 + '%' }"></td>
-      <td class="label-success" data-bind="
-        style: {
-          width: (childPassed() / childLoaded()) * 100 + '%',
-          display: (childPassed() === 0)?'none':'table-cell'
-          }"></td>
-      <td class="label-warning" data-bind="
-        style: {
-          width: (childSkipped() / childLoaded()) * 100 + '%',
-          display: (childSkipped() === 0)?'none':'table-cell'
-          }"></td>
-      <td class="label-danger" data-bind="
-        style: {
-          width: (childFailed() / childLoaded()) * 100 + '%',
-          display: (childFailed() === 0)?'none':'table-cell'
-          }"></td>
+      <td>
+        <table data-bind="css: {'one-run':childLastRun() === 0, 'two-run':childLastRun() !== 0}">
+          <tr>
+            <td class="label-success" data-bind="
+              style: {
+                width: (childPassed() / childLoaded()) * 100 + '%',
+                display: (childPassed() === 0)?'none':'table-cell'
+                }"></td>
+            <td class="label-warning" data-bind="
+              style: {
+                width: (childSkipped() / childLoaded()) * 100 + '%',
+                display: (childSkipped() === 0)?'none':'table-cell'
+                }"></td>
+            <td class="label-danger" data-bind="
+              style: {
+                width: (childFailed() / childLoaded()) * 100 + '%',
+                display: (childFailed() === 0)?'none':'table-cell'
+                }"></td>
+            <td data-bind="
+              style: {
+                width: (((childLoaded()!==0?childLoaded():1) - childRun())
+                  / (childLoaded()!==0?childLoaded():1)) * 100 + '%',
+                }"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="last-run" data-bind="css: {'one-run':childLastRun() === 0, 'two-run':childLastRun() !== 0}">
+          <tr>
+            <td class="label-success" data-bind="
+              style: {
+                width: (childLastPassed() / childLoaded()) * 100 + '%',
+                display: (childLastPassed() === 0)?'none':'table-cell'
+                }"></td>
+            <td class="label-warning" data-bind="
+              style: {
+                width: (childLastSkipped() / childLoaded()) * 100 + '%',
+                display: (childLastSkipped() === 0)?'none':'table-cell'
+                }"></td>
+            <td class="label-danger" data-bind="
+              style: {
+                width: (childLastFailed() / childLoaded()) * 100 + '%',
+                display: (childLastFailed() === 0)?'none':'table-cell'
+                }"></td>
+            <td data-bind="
+              style: {
+                width: (((childLoaded()!==0?childLoaded():1) - childLastRun())
+                  / (childLoaded()!==0?childLoaded():1)) * 100 + '%',
+                }"></td>
+          </tr>
+        </table>
+      </td>
     </tr>
   </table>
 </script>

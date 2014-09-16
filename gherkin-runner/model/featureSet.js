@@ -24,6 +24,10 @@ function FeatureSet(featureSet, featureSetPath, parentFeatureSet) {
   this.childSkipped = ko.observable(0);
   this.childPassed = ko.observable(0);
   this.childFailed = ko.observable(0);
+  this.childLastRun = ko.observable(0);
+  this.childLastSkipped = ko.observable(0);
+  this.childLastPassed = ko.observable(0);
+  this.childLastFailed = ko.observable(0);
   this.parentFeatureSet = parentFeatureSet
   this.comments = ko.observableArray();
   this.expanded = ko.observable(false);

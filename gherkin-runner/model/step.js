@@ -42,6 +42,10 @@ function Step(line, lineNumber, feature, stepOwner) {
   this.childPassed = ko.observable(0);
   this.childFailed = ko.observable(0);
   this.runResult = ko.observable();
+  this.childLastRun = ko.observable(0);
+  this.childLastSkipped = ko.observable(0);
+  this.childLastPassed = ko.observable(0);
+  this.childLastFailed = ko.observable(0);
   this.lastRunResult = ko.observable();
   this.error = ko.observable();
   this.lastError = ko.observable();

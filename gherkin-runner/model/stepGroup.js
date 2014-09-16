@@ -25,6 +25,10 @@ function StepGroup(line, lineNumber, feature) {
   this.childSkipped = ko.observable(0);
   this.childPassed = ko.observable(0);
   this.childFailed = ko.observable(0);
+  this.childLastRun = ko.observable(0);
+  this.childLastSkipped = ko.observable(0);
+  this.childLastPassed = ko.observable(0);
+  this.childLastFailed = ko.observable(0);
   this.feature = feature;
   feature.stepGroups.push(this);
   this.level = feature.level + 1;

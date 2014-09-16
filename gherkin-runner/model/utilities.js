@@ -88,6 +88,10 @@ _this.resetStandardCounts = function resetStandardCounts(entity) {
   entity.runResult(null);
   if(entity.error)
     entity.lastError(entity.error());
+  entity.childLastRun(entity.childRun());
+  entity.childLastSkipped(entity.childSkipped());
+  entity.childLastPassed(entity.childPassed());
+  entity.childLastFailed(entity.childFailed());
   entity.childRun(0);
   entity.childSkipped(0);
   entity.childPassed(0);
